@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantalla 6 — Panel Administrativo | Circo de la Ciencia 310</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --crimson: #d32f2f;
+        --gold: #ffd700;
+        --midnight: #0d1b4b;
+        --deep-blue: #0a1035;
+        --green-ok: #4caf50;
+        --amber: #ff9800;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--deep-blue);
+        font-family: "Outfit", sans-serif;
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background-image: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 30px,
+          rgba(211, 47, 47, 0.04) 30px,
+          rgba(211, 47, 47, 0.04) 60px
+        );
+      }
+      .phone-frame {
+        width: 390px;
+        background: var(--midnight);
+        border-radius: 40px;
+        overflow: hidden;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.6),
+          0 0 60px rgba(255, 215, 0, 0.08);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+      }
+      .screen-label {
+        text-align: center;
+        padding: 8px;
+        background: rgba(255, 215, 0, 0.08);
+        font-size: 10px;
+        color: rgba(255, 215, 0, 0.6);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .status-bar {
+        background: var(--deep-blue);
+        padding: 12px 24px 8px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      /* HEADER */
+      .header {
+        background: linear-gradient(135deg, #0a1035 0%, #1a2f7a 100%);
+        padding: 16px 24px 16px;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      }
+      .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 4px;
+      }
+      .header-eyebrow {
+        font-size: 10px;
+        color: var(--gold);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .admin-badge {
+        background: rgba(211, 47, 47, 0.25);
+        border: 1px solid rgba(211, 47, 47, 0.5);
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 9px;
+        color: #ff7070;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+      .header-title {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 900;
+      }
+      .header-sub {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* TIMER STATUS BANNER */
+      .timer-banner {
+        margin: 12px 16px 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 152, 0, 0.15),
+          rgba(255, 152, 0, 0.05)
+        );
+        border: 1px solid rgba(255, 152, 0, 0.4);
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .timer-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .timer-value {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--amber);
+        font-variant-numeric: tabular-nums;
+      }
+      .timer-live {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        color: var(--green-ok);
+        font-weight: 700;
+      }
+      .live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green-ok);
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* STAT CARDS */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 16px;
+      }
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 14px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s;
+      }
+      .stat-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .stat-card.gold-accent {
+        border-color: rgba(255, 215, 0, 0.25);
+      }
+      .stat-card.red-accent {
+        border-color: rgba(211, 47, 47, 0.3);
+      }
+      .stat-card.green-accent {
+        border-color: rgba(76, 175, 80, 0.3);
+      }
+      .stat-card.amber-accent {
+        border-color: rgba(255, 152, 0, 0.3);
+      }
+      .stat-icon {
+        font-size: 20px;
+        margin-bottom: 6px;
+      }
+      .stat-value {
+        font-size: 26px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 2px;
+      }
+      .stat-gold {
+        color: var(--gold);
+      }
+      .stat-green {
+        color: var(--green-ok);
+      }
+      .stat-red {
+        color: #ff7070;
+      }
+      .stat-amber {
+        color: var(--amber);
+      }
+      .stat-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+        font-weight: 600;
+      }
+      .stat-sub {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.25);
+        margin-top: 2px;
+      }
+
+      /* BAR CHART */
+      .chart-section {
+        padding: 0 16px 16px;
+      }
+      .section-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .chart-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .chart-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .chart-label {
+        font-size: 11px;
+        width: 76px;
+        color: rgba(255, 255, 255, 0.7);
+        flex-shrink: 0;
+        text-align: right;
+      }
+      .chart-bar-bg {
+        flex: 1;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .chart-bar {
+        height: 100%;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        font-size: 11px;
+        font-weight: 700;
+        transition: width 0.8s;
+      }
+      .bar-math {
+        background: linear-gradient(90deg, var(--gold), #ffa500);
+        color: #000;
+      }
+      .bar-fisica {
+        background: linear-gradient(90deg, #42a5f5, #1565c0);
+        color: #fff;
+      }
+      .bar-quimica {
+        background: linear-gradient(90deg, #ab47bc, #6a1b9a);
+        color: #fff;
+      }
+      .bar-bio {
+        background: linear-gradient(90deg, #66bb6a, #2e7d32);
+        color: #fff;
+      }
+      .bar-geo {
+        background: linear-gradient(90deg, var(--crimson), #8b0000);
+        color: #fff;
+      }
+      .chart-count {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.4);
+        width: 28px;
+        flex-shrink: 0;
+        text-align: right;
+      }
+
+      /* STANDS SUMMARY */
+      .stands-section {
+        padding: 0 16px 16px;
+      }
+      .stands-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+      .stand-chip {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 8px 4px;
+        text-align: center;
+        font-size: 10px;
+      }
+      .stand-chip-icon {
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+      .stand-chip-name {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 9px;
+      }
+      .stand-chip-count {
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 11px;
+      }
+      .stand-chip.active {
+        border-color: rgba(76, 175, 80, 0.4);
+        background: rgba(76, 175, 80, 0.07);
+      }
+
+      /* FEEDBACK FEED */
+      .feed-section {
+        padding: 0 16px 16px;
+      }
+      .comment-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 8px;
+      }
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .comment-author {
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .comment-stand {
+        font-size: 10px;
+        color: var(--gold);
+      }
+      .comment-stars {
+        font-size: 11px;
+      }
+      .comment-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.4;
+      }
+
+      /* BOTTOM NAV */
+      .bottom-nav {
+        background: rgba(10, 16, 53, 0.95);
+        border-top: 1px solid rgba(255, 215, 0, 0.15);
+        padding: 12px 30px 20px;
+        display: flex;
+        justify-content: space-around;
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .nav-icon {
+        font-size: 20px;
+      }
+      .nav-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .nav-item.active .nav-label {
+        color: var(--gold);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <div class="screen-label">
+        📱 Pantalla 6 — Panel Administrativo (Dev/Docente)
+      </div>
+      <div class="status-bar">
+        <span>14:15</span>
+        <span>🔒 Admin · Circo 310 &nbsp;&nbsp;⚡ 87%</span>
+      </div>
+
+      <div class="header">
+        <div class="header-top">
+          <div>
+            <div class="header-eyebrow">Circo de la Ciencia 310</div>
+            <div class="header-title">Métricas</div>
+            <div class="header-sub">Resumen del espectáculo en vivo</div>
+          </div>
+          <span class="admin-badge">🔒 ADMIN</span>
+        </div>
+      </div>
+
+      <!-- TIMER -->
+      <div class="timer-banner">
+        <div>
+          <div class="timer-label">⏱ Tiempo restante de la Función</div>
+          <div class="timer-value">01:23:47</div>
+        </div>
+        <div class="timer-live">
+          <div class="live-dot"></div>
+          EN VIVO
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card gold-accent">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-value stat-gold">1,245</div>
+          <div class="stat-label">Espectadores</div>
+          <div class="stat-sub">Escaneos totales</div>
+        </div>
+        <div class="stat-card green-accent">
+          <div class="stat-icon">👏</div>
+          <div class="stat-value stat-green">92%</div>
+          <div class="stat-label">Aplausos</div>
+          <div class="stat-sub">Feedback positivo</div>
+        </div>
+        <div class="stat-card amber-accent">
+          <div class="stat-icon">🧠</div>
+          <div class="stat-value stat-amber">85%</div>
+          <div class="stat-label">Índice de Sabiduría</div>
+          <div class="stat-sub">Aciertos en trivia</div>
+        </div>
+        <div class="stat-card red-accent">
+          <div class="stat-icon">🎟️</div>
+          <div class="stat-value stat-red">28</div>
+          <div class="stat-label">Stands Activos</div>
+          <div class="stat-sub">Mat·12 + Resto·16</div>
+        </div>
+      </div>
+
+      <!-- BAR CHART -->
+      <div class="chart-section">
+        <div class="section-title">Rendimiento por Materia</div>
+        <div class="chart-container">
+          <div class="chart-row">
+            <span class="chart-label">Matemáticas</span>
+            <div class="chart-bar-bg">
+              <div class="chart-bar bar-math" style="width: 88%">88%</div>
+            </div>
+            <span class="chart-count">12</span>
+          </div>
+          <div class="chart-row">
+            <span class="chart-label">Física</span>
+            <div class="chart-bar-bg">
+              <div class="chart-bar bar-fisica" style="width: 75%">75%</div>
+            </div>
+            <span class="chart-count">4</span>
+          </div>
+          <div class="chart-row">
+            <span class="chart-label">Química</span>
+            <div class="chart-bar-bg">
+              <div class="chart-bar bar-quimica" style="width: 91%">91%</div>
+            </div>
+            <span class="chart-count">4</span>
+          </div>
+          <div class="chart-row">
+            <span class="chart-label">Biología</span>
+            <div class="chart-bar-bg">
+              <div class="chart-bar bar-bio" style="width: 68%">68%</div>
+            </div>
+            <span class="chart-count">4</span>
+          </div>
+          <div class="chart-row">
+            <span class="chart-label">Geografía</span>
+            <div class="chart-bar-bg">
+              <div class="chart-bar bar-geo" style="width: 82%">82%</div>
+            </div>
+            <span class="chart-count">4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STANDS ACTIVOS -->
+      <div class="stands-section">
+        <div class="section-title">Estado de Sub-Stands (28 total)</div>
+        <div class="stands-grid">
+          <div class="stand-chip active">
+            <div class="stand-chip-icon">🔢</div>
+            <div class="stand-chip-name">Mat-01</div>
+            <div class="stand-chip-count">48🔍</div>
+          </div>
+          <div class="stand-chip active">
+            <div class="stand-chip-icon">🔢</div>
+            <div class="stand-chip-name">Mat-02</div>
+            <div class="stand-chip-count">42🔍</div>
+          </div>
+          <div class="stand-chip active">
+            <div class="stand-chip-icon">⚡</div>
+            <div class="stand-chip-name">Fis-01</div>
+            <div class="stand-chip-count">37🔍</div>
+          </div>
+          <div class="stand-chip">
+            <div class="stand-chip-icon">⚗️</div>
+            <div class="stand-chip-name">Qui-01</div>
+            <div class="stand-chip-count">31🔍</div>
+          </div>
+          <div class="stand-chip">
+            <div class="stand-chip-icon">🌿</div>
+            <div class="stand-chip-name">Bio-01</div>
+            <div class="stand-chip-count">29🔍</div>
+          </div>
+          <div class="stand-chip">
+            <div class="stand-chip-icon">🌎</div>
+            <div class="stand-chip-name">Geo-01</div>
+            <div class="stand-chip-count">26🔍</div>
+          </div>
+          <div class="stand-chip">
+            <div class="stand-chip-icon">🔢</div>
+            <div class="stand-chip-name">Mat-03</div>
+            <div class="stand-chip-count">24🔍</div>
+          </div>
+          <div class="stand-chip">
+            <div class="stand-chip-icon">⚡</div>
+            <div class="stand-chip-name">Fis-02</div>
+            <div class="stand-chip-count">21🔍</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEEDBACK -->
+      <div class="feed-section">
+        <div class="section-title">Comentarios Destacados</div>
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">María G.</span>
+            <div>
+              <div class="comment-stand">⚗️ Química-02</div>
+              <div class="comment-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+          </div>
+          <div class="comment-text">
+            «¡Increíble el experimento! No paraba de hacerle preguntas al
+            expositor.»
+          </div>
+        </div>
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">Carlos R.</span>
+            <div>
+              <div class="comment-stand">🔢 Mat-05</div>
+              <div class="comment-stars">⭐⭐⭐⭐</div>
+            </div>
+          </div>
+          <div class="comment-text">
+            «La app es muy inmersiva, se me hizo fácil entender los temas con la
+            trivia.»
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <span class="nav-icon">📊</span><span class="nav-label">Panel</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">📈</span
+          ><span class="nav-label">Reportes</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">👥</span
+          ><span class="nav-label">Usuarios</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">⚙️</span><span class="nav-label">Config</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

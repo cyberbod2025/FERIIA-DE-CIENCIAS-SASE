@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantalla 4 — Interacción con Stand | Circo de la Ciencia 310</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --crimson: #d32f2f;
+        --gold: #ffd700;
+        --gold-dark: #b8860b;
+        --midnight: #0d1b4b;
+        --midnight-light: #1a2f7a;
+        --deep-blue: #0a1035;
+        --cream: #fff8e1;
+        --white: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--deep-blue);
+        font-family: "Outfit", sans-serif;
+        color: var(--white);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+        background-image: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 30px,
+          rgba(211, 47, 47, 0.04) 30px,
+          rgba(211, 47, 47, 0.04) 60px
+        );
+      }
+      .phone-frame {
+        width: 390px;
+        background: var(--midnight);
+        border-radius: 40px;
+        overflow: hidden;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.6),
+          0 0 60px rgba(255, 215, 0, 0.1);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+      }
+      /* STATUS BAR */
+      .status-bar {
+        background: var(--deep-blue);
+        padding: 12px 24px 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      /* HEADER */
+      .header {
+        background: linear-gradient(135deg, var(--crimson) 0%, #8b0000 100%);
+        padding: 20px 24px 24px;
+        position: relative;
+        overflow: hidden;
+      }
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 50%;
+      }
+      .header-tag-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .tag {
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .tag-materia {
+        background: rgba(255, 215, 0, 0.2);
+        border: 1px solid var(--gold);
+        color: var(--gold);
+      }
+      .tag-grado {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+      .header-title {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--gold);
+        text-shadow: 0 2px 10px rgba(255, 215, 0, 0.4);
+        line-height: 1.2;
+        margin-bottom: 4px;
+      }
+      .header-subtitle {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* PROGRESS */
+      .progress-section {
+        padding: 16px 24px;
+        background: rgba(255, 215, 0, 0.05);
+        border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+      }
+      .progress-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 6px;
+        letter-spacing: 0.05em;
+      }
+      .progress-bar-bg {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        height: 6px;
+      }
+      .progress-bar-fill {
+        background: linear-gradient(90deg, var(--gold), #ffa500);
+        border-radius: 10px;
+        height: 100%;
+        width: 60%;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      }
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        font-size: 11px;
+      }
+      .progress-pts {
+        color: var(--gold);
+        font-weight: 700;
+      }
+      .progress-stands {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      /* CONTENT */
+      .content {
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* TRIVIA */
+      .trivia-card {
+        background: linear-gradient(
+          135deg,
+          rgba(13, 27, 75, 0.9),
+          rgba(26, 47, 122, 0.6)
+        );
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        border-radius: 20px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .trivia-card::before {
+        content: "🎩";
+        font-size: 60px;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        opacity: 0.15;
+      }
+      .trivia-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, var(--gold), #ffa500);
+        color: #000;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .trivia-question {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--cream);
+        margin-bottom: 16px;
+        font-weight: 400;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .option-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: white;
+        font-size: 14px;
+        font-family: "Outfit", sans-serif;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .option-btn:hover {
+        background: rgba(255, 215, 0, 0.12);
+        border-color: rgba(255, 215, 0, 0.4);
+      }
+      .option-letter {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        border: 1px solid rgba(255, 215, 0, 0.5);
+        border-radius: 50%;
+        text-align: center;
+        line-height: 21px;
+        font-size: 11px;
+        color: var(--gold);
+        margin-right: 10px;
+        font-weight: 700;
+      }
+
+      /* DATO CURIOSO */
+      .curiosity-card {
+        background: linear-gradient(
+          135deg,
+          rgba(139, 0, 0, 0.4),
+          rgba(211, 47, 47, 0.2)
+        );
+        border: 1px solid rgba(211, 47, 47, 0.4);
+        border-radius: 20px;
+        padding: 18px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .curiosity-icon {
+        font-size: 28px;
+        flex-shrink: 0;
+      }
+      .curiosity-label {
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--gold);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .curiosity-text {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.5;
+      }
+
+      /* COMENTARIOS */
+      .comment-section {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px dashed rgba(255, 215, 0, 0.25);
+        border-radius: 20px;
+        padding: 18px;
+      }
+      .comment-label {
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--gold);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .comment-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 12px;
+        color: white;
+        font-family: "Outfit", sans-serif;
+        font-size: 13px;
+        resize: none;
+        height: 70px;
+        outline: none;
+      }
+      .comment-input:focus {
+        border-color: rgba(255, 215, 0, 0.5);
+      }
+      .comment-input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      /* BUTTONS */
+      .btn-primary {
+        background: linear-gradient(135deg, var(--gold) 0%, #ffa500 100%);
+        color: #1a0a00;
+        border: none;
+        border-radius: 16px;
+        padding: 16px;
+        width: 100%;
+        font-size: 15px;
+        font-weight: 800;
+        font-family: "Outfit", sans-serif;
+        cursor: pointer;
+        letter-spacing: 0.02em;
+        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.35);
+        transition: all 0.2s;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(255, 215, 0, 0.45);
+      }
+      .btn-secondary {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 14px;
+        width: 100%;
+        font-size: 14px;
+        font-family: "Outfit", sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      /* BOTTOM NAV */
+      .bottom-nav {
+        background: rgba(10, 16, 53, 0.95);
+        border-top: 1px solid rgba(255, 215, 0, 0.15);
+        padding: 12px 30px 20px;
+        display: flex;
+        justify-content: space-around;
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .nav-icon {
+        font-size: 20px;
+      }
+      .nav-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .nav-item.active .nav-label {
+        color: var(--gold);
+      }
+      .nav-item.active .nav-icon {
+        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+      }
+
+      /* BADGE LABEL */
+      .screen-label {
+        text-align: center;
+        padding: 8px;
+        background: rgba(255, 215, 0, 0.08);
+        font-size: 10px;
+        color: rgba(255, 215, 0, 0.6);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <div class="screen-label">📱 Pantalla 4 — Interacción con Stand</div>
+      <div class="status-bar">
+        <span>14:15</span>
+        <span>🔴 Circo 310 &nbsp;&nbsp;⚡ 87%</span>
+      </div>
+
+      <div class="header">
+        <div class="header-tag-row">
+          <span class="tag tag-materia">🔭 FÍSICA</span>
+          <span class="tag tag-grado">3° Grupo B</span>
+        </div>
+        <div class="header-title">La Magia de la Gravedad</div>
+        <div class="header-subtitle">¡El Espectáculo Continúa!</div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-label">TU PROGRESO EN LA FUNCIÓN</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <div class="progress-info">
+          <span class="progress-pts">⭐ 350 puntos</span>
+          <span class="progress-stands">3 de 5 stands visitados</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- TRIVIA -->
+        <div class="trivia-card">
+          <div class="trivia-badge">🎩 DESAFÍO DEL MAGO</div>
+          <div class="trivia-question">
+            ¿Cuál es la fuerza invisible que mantiene a los planetas en órbita
+            alrededor del sol, como si fueran malabaristas perfectos?
+          </div>
+          <div class="options">
+            <button class="option-btn">
+              <span class="option-letter">A</span>Fuerza Electromagnética
+            </button>
+            <button
+              class="option-btn"
+              style="
+                background: rgba(255, 215, 0, 0.12);
+                border-color: rgba(255, 215, 0, 0.5);
+              "
+            >
+              <span
+                class="option-letter"
+                style="background: rgba(255, 215, 0, 0.2)"
+                >B</span
+              >Fuerza Gravitacional ✓
+            </button>
+            <button class="option-btn">
+              <span class="option-letter">C</span>Fuerza Nuclear Fuerte
+            </button>
+            <button class="option-btn">
+              <span class="option-letter">D</span>Tensión Superficial
+            </button>
+          </div>
+        </div>
+
+        <!-- DATO CURIOSO -->
+        <div class="curiosity-card">
+          <div class="curiosity-icon">✨</div>
+          <div>
+            <div class="curiosity-label">Dato Curioso</div>
+            <div class="curiosity-text">
+              Si pudieras saltar en la Luna con la misma fuerza que aquí, ¡tu
+              salto sería <strong>6 veces más alto</strong> debido a la menor
+              gravedad!
+            </div>
+          </div>
+        </div>
+
+        <!-- COMENTARIOS -->
+        <div class="comment-section">
+          <div class="comment-label">🎟️ ¿Qué te pareció esta función?</div>
+          <textarea
+            class="comment-input"
+            placeholder="¡Escribe tu reseña del espectáculo y gana puntos extra!"
+          ></textarea>
+        </div>
+
+        <button class="btn-primary">🌟 ¡Ganar Bonus Extra!</button>
+        <button class="btn-secondary">Ir al siguiente stand →</button>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <span class="nav-icon">🏠</span><span class="nav-label">Inicio</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">🗺️</span><span class="nav-label">Mapa</span>
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon">🎪</span><span class="nav-label">Stands</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">👤</span><span class="nav-label">Perfil</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

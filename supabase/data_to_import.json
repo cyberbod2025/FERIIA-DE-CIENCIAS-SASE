@@ -1,0 +1,504 @@
+[
+  {
+    "nombre": "🫧 Burbujas Geométricas",
+    "categoria": "Geometría Visual",
+    "grado": 1,
+    "descripcion": "Al sumergir estructuras de alambre 3D (cubo, tetraedro) en solución de jabón, se forman superficies mínimas de geometría perfecta en el interior.",
+    "proceso": "1. Construir figuras de alambre (cubo, pirámide). 2. Sumergir en solución jabonosa. 3. Extraer lentamente y observar la superficie mínima interior. 4. Preguntar: ¿Por qué la burbuja adopta esa forma?",
+    "meta": "Superficies mínimas, áreas, geometría del espacio, poliedros",
+    "materiales": [
+      "Alambre galvanizado",
+      "recipiente con solución jabonosa (agua + jabón + glicerina)",
+      "guantes"
+    ],
+    "momento_wow": "💥 Al sumergir el cubo de alambre, aparece una burbuja cuadrada perfecta flotando en el centro",
+    "trivia": {
+      "pregunta": "¿Qué propiedad matemática busca minimizar una burbuja de jabón al formarse?",
+      "opciones": {
+        "A": "El volumen encerrado",
+        "B": "El área superficial",
+        "C": "El perímetro exterior",
+        "D": "El peso de la figura"
+      },
+      "respuesta_correcta": "B"
+    }
+  },
+  {
+    "nombre": "🔄 El Misterio de la Cinta de Möbius",
+    "categoria": "Topología",
+    "grado": 1,
+    "descripcion": "Se construye una cinta de papel con un giro de 180° antes de pegar los extremos. Al recorrerla con el dedo, nunca se cruza un borde — ¡solo tiene UNA cara y UN borde!",
+    "proceso": "1. Cortar tira larga de papel. 2. Darle una vuelta de 180° y pegar los extremos. 3. Trazar una línea por el centro sin levantar el lápiz — ¡la línea regresa al inicio por \"ambos lados\". 4. Cortar por esa línea del centro: resultado sorpresa = ¡un anillo gigante entrelazado!",
+    "meta": "Topología, superficies no orientables, propiedades de caras y bordes",
+    "materiales": [
+      "Tiras de papel de 4–5 cm de ancho",
+      "tijeras",
+      "pegamento",
+      "marcadores de color"
+    ],
+    "momento_wow": "💥 Al cortar la cinta por la mitad ¡se obtiene UN SOLO anillo grande en lugar de dos!",
+    "trivia": {
+      "pregunta": "¿Cuántas caras tiene la Cinta de Möbius?",
+      "opciones": {
+        "A": "Dos caras (como cualquier papel)",
+        "B": "Cero caras",
+        "C": "Una sola cara",
+        "D": "Tres caras"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "🎯 El Tablero de Galton en Acción",
+    "categoria": "Probabilidad y Estadística",
+    "grado": 3,
+    "descripcion": "Canicas caen por un tablero con clavos en forma triangular. Cada clavija desvía la canica aleatoriamente. Al acumular miles de caídas, la distribución resultante forma la CAMPANA DE GAUSS.",
+    "proceso": "1. Instalar tablero Galton vertical. 2. Visitante suelta 10 canicas. 3. Observar cómo se acumulan en el centro. 4. Preguntar: ¿Qué columna siempre acumula más? ¿Por qué?",
+    "meta": "Distribución normal, probabilidad, estadística descriptiva, moda, media",
+    "materiales": [
+      "Tablero de madera",
+      "clavos pequeños (mínimo 8 filas)",
+      "canicas",
+      "divisiones inferiores",
+      "soporte vertical"
+    ],
+    "momento_wow": "💥 Ver cómo el CAOS de las canicas siempre forma la misma curva perfecta: la Campana de Gauss",
+    "trivia": {
+      "pregunta": "¿Qué forma estadística se produce al caer miles de objetos aleatoriamente en el Tablero de Galton?",
+      "opciones": {
+        "A": "Un triángulo",
+        "B": "Una línea recta",
+        "C": "La Campana de Gauss (distribución normal)",
+        "D": "Un cuadrado"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "🌻 El Código Secreto de la Naturaleza (Fibonacci)",
+    "categoria": "Geometría / Datos / Patrones",
+    "grado": 2,
+    "descripcion": "Contar las espirales de piñas, girasoles y alcachofas. Siempre aparecen números de la sucesión de Fibonacci (5, 8, 13, 21...)",
+    "proceso": "1. Mostrar las espirales de la piña. 2. Contar espirales en sentido horario (8) y antihorario (13). 3. Mostrar que 8 y 13 son Fibonacci. 4. Dibujar la espiral en papel cuadriculado.",
+    "meta": "Sucesión de Fibonacci, patrones numéricos, espirales logarítmicas, proporción áurea",
+    "materiales": [
+      "Piñas",
+      "girasoles (secos)",
+      "alcachofas",
+      "marcadores",
+      "lupa",
+      "carteles explicativos"
+    ],
+    "momento_wow": "💥 Descubrir que la naturaleza \"usa\" matemáticas: siempre son números Fibonacci",
+    "trivia": {
+      "pregunta": "En la sucesión 1, 1, 2, 3, 5, 8, 13 ... ¿cuál es el siguiente número?",
+      "opciones": {
+        "A": "15",
+        "B": "18",
+        "C": "20",
+        "D": "21"
+      },
+      "respuesta_correcta": "D"
+    }
+  },
+  {
+    "nombre": "🔺 Pirámide Fractal 3D (Tetraedro de Sierpinski)",
+    "categoria": "Fractales",
+    "grado": 2,
+    "descripcion": "Se construye con palillos y bolitas de plastilina un Tetraedro de Sierpinski de 3 niveles. La figura resultante es \"casi todo espacio vacío\" pero mantiene su forma.",
+    "proceso": "1. Construir 4 tetraedros pequeños. 2. Unirlos para formar uno más grande. 3. Repetir escala hasta nivel 3. 4. Observar que la estructura crece pero \"se llena de huecos\".",
+    "meta": "Fractales, autosimilaridad, dimensión fractal, recursividad",
+    "materiales": [
+      "300–400 palillos de dientes",
+      "bolitas de plastilina o marshmallows"
+    ],
+    "momento_wow": "💥 Una pirámide gigante que es más espacio vacío que sólido — ¡parece hecha de aire!",
+    "trivia": {
+      "pregunta": "¿Cómo se llama la propiedad de los fractales donde cada parte es similar al todo?",
+      "opciones": {
+        "A": "Reflexión",
+        "B": "Traslación",
+        "C": "Autosimilaridad",
+        "D": "Rotación"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "💧 Reto de Volumen 3 a 1",
+    "categoria": "Geometría — Volumen",
+    "grado": 2,
+    "descripcion": "Se tienen un prisma y una pirámide transparentes de igual base y altura. El visitante llena la pirámide de agua y la vierte al prisma: necesita TRES veces para llenarlo.",
+    "proceso": "1. Mostrar las dos figuras vacías. 2. Pedir predicción al visitante. 3. Llenar pirámide y verter al prisma 3 veces exactas.",
+    "meta": "Volumen de cuerpos geométricos: V_prisma = base × altura / V_piramide = (1/3) × base × altura",
+    "materiales": [
+      "Prisma transparente",
+      "pirámide transparente (igual base y altura)",
+      "agua",
+      "embudo",
+      "colorante"
+    ],
+    "momento_wow": "💥 El visitante siempre se sorprende: \"¡Necesité TRES pirámides para llenar el prisma!\"",
+    "trivia": {
+      "pregunta": "Si el volumen del prisma es 3 litros, ¿cuántos litros caben en la pirámide de igual base y altura?",
+      "opciones": {
+        "A": "3 litros",
+        "B": "2 litros",
+        "C": "1.5 litros",
+        "D": "1 litro"
+      },
+      "respuesta_correcta": "D"
+    }
+  },
+  {
+    "nombre": "🎲 El Casino Matemático (Distribución de Dados)",
+    "categoria": "Probabilidad",
+    "grado": 1,
+    "descripcion": "Se lanzan dos dados gigantes repetidamente y se registra la suma. Se construye una gráfica de barras en tiempo real. La suma 7 siempre domina.",
+    "proceso": "1. Mostrar tabla del espacio muestral vacía. 2. Visitantes lanzan y anotan. 3. Al acumular 20 lanzamientos, emerge el patrón triangular centrado en 7.",
+    "meta": "Probabilidad clásica, espacio muestral, frecuencia relativa, gráficas de barras",
+    "materiales": [
+      "2 dados gigantes de foam",
+      "pizarrón o papel milimétrico grande",
+      "marcadores",
+      "tally marks"
+    ],
+    "momento_wow": "💥 Siempre el 7 gana — \"¿el dado está cargado?\" — No, ¡son las matemáticas!",
+    "trivia": {
+      "pregunta": "Al lanzar dos dados, ¿qué suma tiene MÁS probabilidad de salir?",
+      "opciones": {
+        "A": "2",
+        "B": "12",
+        "C": "7",
+        "D": "10"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "📐 El Compás de la Belleza (Proporción Áurea)",
+    "categoria": "Geometría / Proporción",
+    "grado": 3,
+    "descripcion": "Usando un \"compás áureo\" se miden partes del cuerpo (brazo/mano, cara/nariz, etc.) y se verifica que la proporción es siempre ≈ 1.618 (Phi).",
+    "proceso": "1. Medir longitud total del brazo. 2. Medir del codo a la mano. 3. Dividir. 4. Comparar con 1.618.",
+    "meta": "Razón áurea (φ = 1.618...), proporciones, números irracionales",
+    "materiales": [
+      "Compás áureo (o regla)",
+      "cinta métrica",
+      "calculadora",
+      "carteles con el número Phi en la naturaleza"
+    ],
+    "momento_wow": "💥 Descubrir que TU PROPIO cuerpo sigue una proporción matemática universal",
+    "trivia": {
+      "pregunta": "¿Cuál es el valor aproximado del Número de Oro (Phi)?",
+      "opciones": {
+        "A": "3.1416",
+        "B": "2.718",
+        "C": "1.618",
+        "D": "1.414"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "📐 Pitágoras en Movimiento",
+    "categoria": "Geometría",
+    "grado": 2,
+    "descripcion": "Un tablero con tres cuadrados unidos a un triángulo rectángulo, rellenos de líquido de colores. Al inclinar el tablero, el líquido de los cuadrados de los catetos llena exactamente el cuadrado de la hipotenusa.",
+    "proceso": "1. Mostrar el triángulo rectángulo 3-4-5. 2. Señalar los cuadrados de cada lado. 3. Inclinar el tablero: el azul + rojo llenan exactamente el amarillo (hipotenusa).",
+    "meta": "Teorema de Pitágoras: a² + b² = c²",
+    "materiales": [
+      "Tablero sellado",
+      "tres compartimentos cuadrados con líquido de colores",
+      "mecanismo de inclinación"
+    ],
+    "momento_wow": "💥 Ver literalmente cómo a² + b² = c² con líquido real — el teorema se vuelve tangible",
+    "trivia": {
+      "pregunta": "En un triángulo rectángulo con catetos de 3 y 4 cm, ¿cuánto mide la hipotenusa?",
+      "opciones": {
+        "A": "7 cm",
+        "B": "6 cm",
+        "C": "5 cm",
+        "D": "4.5 cm"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "👁️ La Habitación de Ames a Escala",
+    "categoria": "Geometría / Ilusiones Ópticas",
+    "grado": 3,
+    "descripcion": "Una maqueta trapezoidal diseñada para parecer rectangular desde un ángulo específico. Al asomarse por el agujero de observación, las personas dentro parecen gigantes o enanas.",
+    "proceso": "1. Construir caja trapezoidal decorada con perspectiva. 2. Hacer agujero de visión. 3. Visitantes se asoman y ven figuras de diferentes tamaños moverse.",
+    "meta": "Perspectiva, geometría proyectiva, ángulos, percepción del tamaño",
+    "materiales": [
+      "Caja de cartón grande (trapecio)",
+      "papel",
+      "pinturas que crean ilusión de cuadrícula regular"
+    ],
+    "momento_wow": "💥 Una canica parece CRECER al rodar por el suelo de la habitación mágica",
+    "trivia": {
+      "pregunta": "¿Qué tipo de figura geométrica real tiene el fondo de la Habitación de Ames?",
+      "opciones": {
+        "A": "Cuadrado",
+        "B": "Rectángulo",
+        "C": "Trapecio",
+        "D": "Hexágono"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "🧊 El Cubo Mágico del Álgebra",
+    "categoria": "Álgebra",
+    "grado": 3,
+    "descripcion": "Un set de 8 piezas cúbicas (diferentes tamaños) que se ensamblan para demostrar visualmente la fórmula del binomio al cubo: (a+b)³ = a³ + 3a²b + 3ab² + b³",
+    "proceso": "1. Mostrar la fórmula escrita. 2. Dar las 8 piezas mezcladas al visitante. 3. Pedir que las arme formando el cubo grande (a+b)³.",
+    "meta": "Identidades algebraicas, binomio al cubo, productos notables",
+    "materiales": [
+      "8 bloques de madera o cartón: 1 cubo grande (a³)",
+      "3 prismas a²b",
+      "3 prismas ab²",
+      "1 cubo pequeño (b³)"
+    ],
+    "momento_wow": "💥 Las 8 piezas abstractas de la fórmula se convierten en UN CUBO PERFECTO",
+    "trivia": {
+      "pregunta": "En la expansión de (a+b)³, ¿cuántos términos tiene el resultado?",
+      "opciones": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "8"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "⚖️ La Balanza del Despeje",
+    "categoria": "Álgebra",
+    "grado": 1,
+    "descripcion": "Una balanza real con pesas y cajas misteriosas (x). El visitante debe despejar la incógnita quitando pesas de ambos lados para mantener el equilibrio — ¡es una ecuación física!",
+    "proceso": "1. Poner caja+pesas a un lado, pesas al otro lado. 2. Decir: \"la caja es X, encuentra cuánto pesa\". 3. Visitante quita pesas de ambos lados. 4. Al retirar todas las pesas queda X sola = respuesta.",
+    "meta": "Ecuaciones lineales de primer grado, despeje de variable, principio de igualdad",
+    "materiales": [
+      "Balanza de platillos",
+      "pesas numeradas (100g",
+      "200g",
+      "etc.)",
+      "cajas cerradas con peso oculto dentro"
+    ],
+    "momento_wow": "💥 Resolver x + 3 = 7 con las manos sin escribir nada",
+    "trivia": {
+      "pregunta": "Si en una balanza equilibrada quitas 50g de un lado, ¿qué debes hacer para mantener el equilibrio?",
+      "opciones": {
+        "A": "Agregar 50g al mismo lado",
+        "B": "No hacer nada",
+        "C": "Quitar 50g del otro lado también",
+        "D": "Mover la balanza"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "🧱 El Muro de las Fracciones (LEGO)",
+    "categoria": "Fracciones",
+    "grado": 1,
+    "descripcion": "Bloques LEGO de diferentes tamaños representan fracciones. Se construyen \"muros\" de igual altura con distintos bloques para demostrar equivalencia y suma de fracciones.",
+    "proceso": "1. Etiquetar bloques: bloque 2x8 = 1 entero, 2x4 = ½, 2x2 = ¼. 2. Visitante intenta hacer un muro de igual altura que el entero usando ½ y ¼. 3. Comprobar: ½ + ¼ + ¼ = 1",
+    "meta": "Fracciones equivalentes, suma de fracciones, mínimo común múltiplo",
+    "materiales": [
+      "Bloques LEGO (2x2",
+      "2x4",
+      "2x8)",
+      "tablero base",
+      "etiquetas de fracciones"
+    ],
+    "momento_wow": "💥 Las fracciones \"encajan\" físicamente — la suma se VE con colores",
+    "trivia": {
+      "pregunta": "¿Cuántos bloques de ¼ necesitas para igualar un bloque entero?",
+      "opciones": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "8"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "💦 Atrapando el Agua en una Parábola",
+    "categoria": "Álgebra / Geometría Analítica",
+    "grado": 3,
+    "descripcion": "Un chorro de agua perfectamente alineado sigue la trayectoria de una función cuadrática y = -x². Se puede \"atrapar\" el patrón midiendo coordenadas del chorro.",
+    "proceso": "1. Poner botella con agujeros sobre fondo cuadriculado. 2. Abrir el agujero más alto. 3. El chorro dibuja una parábola. 4. Tomar foto y superponer la función.",
+    "meta": "Funciones cuadráticas, parábola, plano cartesiano, tiro parabólico",
+    "materiales": [
+      "Botella con agujeros alineados a distintas alturas",
+      "fondo cuadriculado grande",
+      "agua"
+    ],
+    "momento_wow": "💥 El agua dibuja literalmente una función matemática — ¡la ecuación cobra vida!",
+    "trivia": {
+      "pregunta": "La trayectoria de un chorro de agua sigue la forma de una...",
+      "opciones": {
+        "A": "Recta",
+        "B": "Elipse",
+        "C": "Parábola",
+        "D": "Hipérbola"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "🍬 Censo de M&M's",
+    "categoria": "Datos y Estadística",
+    "grado": 1,
+    "descripcion": "Abrir bolsas de M&M's, contar y clasificar por color, calcular proporciones y comparar con los porcentajes oficiales de la fábrica. ¿La muestra refleja la población?",
+    "proceso": "1. Dar bolsa sellada. 2. Contar por color. 3. Calcular porcentaje de cada color. 4. Comparar con distribución oficial.",
+    "meta": "Estadística descriptiva, moda, media, porcentajes, gráficas circulares",
+    "materiales": [
+      "Bolsas de M&M's",
+      "platos",
+      "contadores",
+      "tabla de frecuencias",
+      "hoja de comparación oficial"
+    ],
+    "momento_wow": "💥 La distribución de tu bolsa SE PARECE a la de todo el mundo (por la ley de los grandes números)",
+    "trivia": {
+      "pregunta": "¿Qué concepto estadístico explica por qué tu bolsa de chocolates tiene proporciones parecidas a la de millones de bolsas?",
+      "opciones": {
+        "A": "Moda",
+        "B": "Ley de los grandes números",
+        "C": "Mediana",
+        "D": "Rango"
+      },
+      "respuesta_correcta": "B"
+    }
+  },
+  {
+    "nombre": "🗼 El Fin del Mundo en Hanói",
+    "categoria": "Álgebra / Sucesiones / Exponencial",
+    "grado": 2,
+    "descripcion": "El clásico juego de las Torres de Hanói con 3–5 discos. El visitante descubre que el mínimo de movimientos es 2ⁿ−1. Con 64 discos (la leyenda) serían 584 mil millones de años.",
+    "proceso": "1. Demostrar con 3 discos (7 movimientos). 2. Pedir al visitante que intente con 4 discos. 3. Mostrar que con 64 discos sería imposible.",
+    "meta": "Potenciación, sucesiones exponenciales, recursividad, crecimiento exponencial",
+    "materiales": [
+      "Juego de Torres de Hanói (madera o impreso 3D)",
+      "3–5 discos",
+      "cartel con la tabla de n y 2ⁿ−1"
+    ],
+    "momento_wow": "💥 \"¿Cuánto tardarías con 64 discos? ¡Más que la edad del universo!\"",
+    "trivia": {
+      "pregunta": "¿Cuántos movimientos mínimos necesitas para resolver Torres de Hanói con 3 discos?",
+      "opciones": {
+        "A": "5",
+        "B": "7",
+        "C": "8",
+        "D": "15"
+      },
+      "respuesta_correcta": "B"
+    }
+  },
+  {
+    "nombre": "🕌 Magia de Mosaicos Árabes (Teselaciones)",
+    "categoria": "Geometría",
+    "grado": 2,
+    "descripcion": "Usar figuras geométricas regulares para cubrir el plano sin espacios ni solapamientos. Demostrar que solo triángulos, cuadrados y hexágonos regulares pueden teselar solos.",
+    "proceso": "1. Intentar cubrir la mesa con pentágonos regulares — ¡no se puede! 2. Intentar con hexágonos — ¡funciona perfectamente! 3. Diseñar mosaico combinado.",
+    "meta": "Ángulos internos de polígonos, teselaciones, sumas de ángulos alrededor de un punto (360°)",
+    "materiales": [
+      "Fichas de polígonos regulares (cartón o plástico)",
+      "tablero plano grande"
+    ],
+    "momento_wow": "💥 Fallar con el pentágono y triunfar con el hexágono: la geometría enseñada por el fracaso",
+    "trivia": {
+      "pregunta": "¿Cuánto suman los ángulos que se juntan en cada vértice de una teselación perfecta?",
+      "opciones": {
+        "A": "90°",
+        "B": "180°",
+        "C": "270°",
+        "D": "360°"
+      },
+      "respuesta_correcta": "D"
+    }
+  },
+  {
+    "nombre": "❄️ El Copo de Nieve Infinito (Curva de Koch)",
+    "categoria": "Fractales",
+    "grado": 3,
+    "descripcion": "Partir de un triángulo equilátero y agregar triángulos en el tercio medio de cada lado, indefinidamente. El área converge pero el perímetro crece infinito.",
+    "proceso": "1. Mostrar triángulo nivel 0. 2. Agregar triángulos → nivel 1 (estrella David). 3. Seguir → nivel 2, 3. 4. Medir perímetro en cada nivel: crece. Calcular área: converge.",
+    "meta": "Fractales, límites, convergencia e infinito, progresiones geométricas",
+    "materiales": [
+      "Cartulina",
+      "tijeras",
+      "regla",
+      "fichas impresas de cada iteración (0",
+      "1",
+      "2",
+      "3)"
+    ],
+    "momento_wow": "💥 Una figura con ÁREA FINITA y PERÍMETRO INFINITO — ¡paradoja matemática real!",
+    "trivia": {
+      "pregunta": "¿Qué le ocurre al perímetro de la Curva de Koch si continúas iterando indefinidamente?",
+      "opciones": {
+        "A": "Se mantiene igual",
+        "B": "Disminuye",
+        "C": "Crece hasta el infinito",
+        "D": "Se vuelve un círculo"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "⭕ Desenredando a Pi (π)",
+    "categoria": "Geometría",
+    "grado": 1,
+    "descripcion": "Medir el diámetro y el perímetro de diferentes círculos usando una cuerda. Al dividir P/d siempre da ≈ 3.14159... El visitante \"descubre\" Pi por sí mismo.",
+    "proceso": "1. Dar objeto circular. 2. Medir diámetro con regla. 3. Rodear el borde con cuerda, medir. 4. Dividir. 5. Siempre ≈ 3.14.",
+    "meta": "Número Pi, circunferencia, diámetro, razón matemática, constantes",
+    "materiales": [
+      "Varios objetos circulares (platos",
+      "latas",
+      "monedas)",
+      "cuerda",
+      "regla",
+      "calculadora",
+      "tabla de registro"
+    ],
+    "momento_wow": "💥 \"¡Yo encontré Pi! ¡Es verdad! En TODAS las figuras circulares!\"",
+    "trivia": {
+      "pregunta": "¿Cuántas veces cabe el diámetro de un círculo en su circunferencia?",
+      "opciones": {
+        "A": "2 veces",
+        "B": "4 veces",
+        "C": "Aproximadamente 3.14 veces",
+        "D": "6.28 veces"
+      },
+      "respuesta_correcta": "C"
+    }
+  },
+  {
+    "nombre": "🎮 El Juego Inganable (Nim Estratégico)",
+    "categoria": "Álgebra / Lógica / Sistema Binario",
+    "grado": 3,
+    "descripcion": "El expositor NUNCA pierde al juego de Nim (quitar objetos de filas, el que toma el último pierde). La estrategia secreta: usar el sistema binario para hacer que el XOR de las filas sea 0.",
+    "proceso": "1. Retar a los visitantes. 2. Ellos eligen cuántos quitar. 3. El expositor usa la estrategia binaria y gana siempre. 4. Revelar el secreto: el sistema binario.",
+    "meta": "Sistema binario, operación XOR, lógica matemática, teoría de juegos",
+    "materiales": [
+      "15–20 palitos o fichas en 3–4 filas de diferente cantidad",
+      "cartel de \"El expositor nunca pierde\""
+    ],
+    "momento_wow": "💥 \"¡Nadie puede ganarle al profe! ¿Cómo lo hace? ¡Con matemáticas binarias!\"",
+    "trivia": {
+      "pregunta": "¿En qué sistema numérico se basa la estrategia ganadora del Juego de Nim?",
+      "opciones": {
+        "A": "Sistema decimal (base 10)",
+        "B": "Sistema hexadecimal (base 16)",
+        "C": "Sistema binario (base 2)",
+        "D": "Sistema octal (base 8)"
+      },
+      "respuesta_correcta": "C"
+    }
+  }
+]

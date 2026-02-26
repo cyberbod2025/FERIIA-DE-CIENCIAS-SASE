@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diploma Digital — Circo de la Ciencia 310</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --gold: #ffd700;
+        --gold-dark: #b8860b;
+        --crimson: #d32f2f;
+        --electric-blue: #00e5ff;
+        --neon-green: #39ff14;
+        --midnight: #0d1b4b;
+        --deep: #060d25;
+        --white: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--deep);
+        font-family: "Outfit", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 20px;
+        overflow-x: hidden;
+      }
+
+      /* CANVAS PARTÍCULAS */
+      #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* WRAPPER */
+      .diploma-wrapper {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 700px;
+        animation: diplFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      @keyframes diplFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.85) translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* OUTER GLOW FRAME */
+      .diploma-glow {
+        border-radius: 24px;
+        padding: 3px;
+        background: linear-gradient(
+          135deg,
+          var(--gold),
+          var(--electric-blue),
+          var(--neon-green),
+          var(--crimson),
+          var(--gold)
+        );
+        background-size: 300% 300%;
+        animation: gradientShift 4s ease infinite;
+        box-shadow:
+          0 0 40px rgba(255, 215, 0, 0.3),
+          0 0 80px rgba(0, 229, 255, 0.2),
+          0 0 120px rgba(57, 255, 20, 0.1);
+      }
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* DIPLOMA BODY */
+      .diploma-body {
+        background: linear-gradient(
+          160deg,
+          #0a1535 0%,
+          #0d1b4b 40%,
+          #0a1535 100%
+        );
+        border-radius: 22px;
+        padding: 44px 40px 36px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* CORNER ORNAMENTS */
+      .diploma-body::before,
+      .diploma-body::after {
+        content: "";
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        opacity: 0.06;
+      }
+      .diploma-body::before {
+        top: -60px;
+        left: -60px;
+        background: radial-gradient(circle, var(--gold), transparent);
+      }
+      .diploma-body::after {
+        bottom: -60px;
+        right: -60px;
+        background: radial-gradient(circle, var(--electric-blue), transparent);
+      }
+
+      /* TOP STRIPE */
+      .top-stripe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--crimson),
+          var(--gold),
+          var(--electric-blue),
+          var(--neon-green)
+        );
+        background-size: 200%;
+        animation: stripeMove 3s linear infinite;
+      }
+      @keyframes stripeMove {
+        from {
+          background-position: 0%;
+        }
+        to {
+          background-position: 200%;
+        }
+      }
+
+      /* SEAL WATERMARK */
+      .seal-watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 300px;
+        opacity: 0.025;
+        pointer-events: none;
+        animation: sealRotate 60s linear infinite;
+        user-select: none;
+      }
+      @keyframes sealRotate {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      /* HEADER */
+      .dipl-header {
+        text-align: center;
+        margin-bottom: 28px;
+        position: relative;
+      }
+      .school-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--electric-blue);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        animation: glowPulse 2s ease-in-out infinite;
+      }
+      @keyframes glowPulse {
+        0%,
+        100% {
+          text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+        }
+        50% {
+          text-shadow:
+            0 0 20px rgba(0, 229, 255, 0.8),
+            0 0 40px rgba(0, 229, 255, 0.3);
+        }
+      }
+      .dipl-eyebrow {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.1em;
+        margin-bottom: 10px;
+      }
+      .dipl-certifica {
+        font-family: "Playfair Display", serif;
+        font-size: 38px;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          #ffa500 50%,
+          var(--gold) 100%
+        );
+        background-size: 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: goldShimmer 2.5s ease infinite;
+        line-height: 1.1;
+        margin-bottom: 8px;
+      }
+      @keyframes goldShimmer {
+        0% {
+          background-position: 0%;
+        }
+        50% {
+          background-position: 100%;
+        }
+        100% {
+          background-position: 0%;
+        }
+      }
+
+      /* DIVIDER */
+      .dipl-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 16px 0;
+      }
+      .div-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 215, 0, 0.5),
+          transparent
+        );
+      }
+      .div-icon {
+        font-size: 18px;
+      }
+
+      /* RECIPIENT */
+      .recipient-section {
+        text-align: center;
+        margin: 4px 0 28px;
+      }
+      .recipient-label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.1em;
+        margin-bottom: 8px;
+      }
+      .recipient-name {
+        font-family: "Playfair Display", serif;
+        font-size: 36px;
+        font-weight: 700;
+        font-style: italic;
+        color: var(--white);
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        position: relative;
+        display: inline-block;
+      }
+      .recipient-name::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+      .recipient-level {
+        margin-top: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(57, 255, 20, 0.1);
+        border: 1px solid rgba(57, 255, 20, 0.4);
+        border-radius: 30px;
+        padding: 6px 20px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--neon-green);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+        animation: greenPulse 2s ease-in-out infinite;
+      }
+      @keyframes greenPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(57, 255, 20, 0.4);
+        }
+      }
+
+      /* STATS ROW */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin: 24px 0;
+      }
+      .stat-box {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 12px 8px;
+        text-align: center;
+        transition: all 0.3s;
+      }
+      .stat-box:hover {
+        background: rgba(255, 215, 0, 0.08);
+        border-color: rgba(255, 215, 0, 0.3);
+        transform: translateY(-3px);
+      }
+      .stat-box-icon {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+      .stat-box-val {
+        font-size: 20px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 2px;
+      }
+      .val-gold {
+        color: var(--gold);
+      }
+      .val-blue {
+        color: var(--electric-blue);
+      }
+      .val-green {
+        color: var(--neon-green);
+      }
+      .val-red {
+        color: #ff7070;
+      }
+      .stat-box-label {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 0.05em;
+      }
+
+      /* ACHIEVEMENT BADGES */
+      .badges-section {
+        margin: 20px 0;
+      }
+      .badges-title {
+        font-size: 10px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .badges-row {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .badge-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: default;
+      }
+      .badge-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        position: relative;
+        animation: badgeSpin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      .badge-gold {
+        background: radial-gradient(
+          circle,
+          rgba(255, 215, 0, 0.25),
+          rgba(255, 215, 0, 0.05)
+        );
+        border: 2px solid rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+      }
+      .badge-blue {
+        background: radial-gradient(
+          circle,
+          rgba(0, 229, 255, 0.25),
+          rgba(0, 229, 255, 0.05)
+        );
+        border: 2px solid rgba(0, 229, 255, 0.5);
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+      }
+      .badge-green {
+        background: radial-gradient(
+          circle,
+          rgba(57, 255, 20, 0.25),
+          rgba(57, 255, 20, 0.05)
+        );
+        border: 2px solid rgba(57, 255, 20, 0.5);
+        box-shadow: 0 0 12px rgba(57, 255, 20, 0.3);
+      }
+      .badge-red {
+        background: radial-gradient(
+          circle,
+          rgba(211, 47, 47, 0.25),
+          rgba(211, 47, 47, 0.05)
+        );
+        border: 2px solid rgba(211, 47, 47, 0.5);
+        box-shadow: 0 0 12px rgba(211, 47, 47, 0.3);
+      }
+      @keyframes badgeSpin {
+        from {
+          opacity: 0;
+          transform: scale(0) rotate(-180deg);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+      .badge-circle:nth-child(1) {
+        animation-delay: 0.5s;
+      }
+      .badge-name {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.4);
+        text-align: center;
+        max-width: 58px;
+      }
+
+      /* BOTTOM SEALS */
+      .seals-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 16px;
+        align-items: center;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .seal-block {
+        text-align: center;
+      }
+      .seal-icon {
+        font-size: 32px;
+        margin-bottom: 4px;
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4));
+      }
+      .seal-title {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--gold);
+      }
+      .seal-sub {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .seal-center {
+        text-align: center;
+      }
+      .seal-main-icon {
+        font-size: 52px;
+        filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.5));
+        animation: sealBob 3s ease-in-out infinite;
+      }
+      @keyframes sealBob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+      .sig-line {
+        width: 100%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 8px 0 4px;
+      }
+      .sig-name {
+        font-family: "Playfair Display", serif;
+        font-size: 13px;
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .sig-role {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      /* BOTTOM QR + FOLIO */
+      .qr-folio {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .folio {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.2);
+        font-family: monospace;
+      }
+      .folio span {
+        color: var(--electric-blue);
+      }
+      .qr-box {
+        width: 56px;
+        height: 56px;
+        background: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        border: 2px solid rgba(0, 229, 255, 0.4);
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+      }
+
+      /* SHARE BUTTONS */
+      .share-section {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+      .btn-share {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-share:hover {
+        transform: translateY(-3px);
+      }
+      .btn-download {
+        background: linear-gradient(135deg, var(--gold), #ffa500);
+        color: #000;
+        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.35);
+      }
+      .btn-share-icon {
+        background: linear-gradient(135deg, var(--electric-blue), #0099cc);
+        color: #000;
+        box-shadow: 0 4px 20px rgba(0, 229, 255, 0.3);
+      }
+      .event-date {
+        text-align: center;
+        margin-top: 14px;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.2);
+        letter-spacing: 0.1em;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="diploma-wrapper">
+      <div class="diploma-glow">
+        <div class="diploma-body">
+          <div class="top-stripe"></div>
+          <div class="seal-watermark">🎪</div>
+
+          <!-- HEADER -->
+          <div class="dipl-header">
+            <div class="school-name">
+              ⚡ Escuela Secundaria Diurna No. 310 ⚡
+            </div>
+            <div class="dipl-eyebrow">
+              Presidentes de México · Ciclo Escolar 2025-2026
+            </div>
+            <div class="dipl-certifica">Diploma de Honor</div>
+            <div
+              style="
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.5);
+                margin-top: 4px;
+              "
+            >
+              otorgado con distinción a
+            </div>
+          </div>
+
+          <!-- DIVIDER -->
+          <div class="dipl-divider">
+            <div class="div-line"></div>
+            <span class="div-icon">✦</span>
+            <div class="div-line"></div>
+          </div>
+
+          <!-- RECIPIENT -->
+          <div class="recipient-section">
+            <div class="recipient-name">Mateo Rodríguez García</div>
+            <div style="margin-top: 16px">
+              <span class="recipient-level">🌟 EXPLORADOR ESTRELLA 🌟</span>
+            </div>
+            <div
+              style="
+                margin-top: 12px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.45);
+                line-height: 1.6;
+                max-width: 420px;
+                margin-inline: auto;
+              "
+            >
+              Por haber completado el recorrido completo de la Feria de
+              Ciencias<br />
+              <strong style="color: rgba(255, 255, 255, 0.7)"
+                >"Circo de la Ciencia 310"</strong
+              >
+              con excelencia académica y espíritu de explorador.
+            </div>
+          </div>
+
+          <!-- STATS -->
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-box-icon">🎪</div>
+              <div class="stat-box-val val-gold">28/28</div>
+              <div class="stat-box-label">Stands<br />Visitados</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-icon">🧠</div>
+              <div class="stat-box-val val-blue">96%</div>
+              <div class="stat-box-label">Aciertos<br />Trivia</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-icon">⭐</div>
+              <div class="stat-box-val val-gold">2,840</div>
+              <div class="stat-box-label">Puntos<br />Totales</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-icon">✅</div>
+              <div class="stat-box-val val-green">1:45</div>
+              <div class="stat-box-label">Tiempo<br />Logrado</div>
+            </div>
+          </div>
+
+          <!-- ACHIEVEMENTS -->
+          <div class="badges-section">
+            <div class="badges-title">Medallas Obtenidas</div>
+            <div class="badges-row">
+              <div class="badge-item">
+                <div class="badge-circle badge-gold">🔢</div>
+                <div class="badge-name">As de Matemáticas</div>
+              </div>
+              <div class="badge-item">
+                <div class="badge-circle badge-blue">⚡</div>
+                <div class="badge-name">Maestro de Física</div>
+              </div>
+              <div class="badge-item">
+                <div class="badge-circle badge-red">⚗️</div>
+                <div class="badge-name">Alquimista Quím.</div>
+              </div>
+              <div class="badge-item">
+                <div class="badge-circle badge-green">🌿</div>
+                <div class="badge-name">Biólogo Estelar</div>
+              </div>
+              <div class="badge-item">
+                <div
+                  class="badge-circle"
+                  style="
+                    background: radial-gradient(
+                      circle,
+                      rgba(255, 140, 0, 0.25),
+                      rgba(255, 140, 0, 0.05)
+                    );
+                    border: 2px solid rgba(255, 140, 0, 0.5);
+                    box-shadow: 0 0 12px rgba(255, 140, 0, 0.3);
+                  "
+                >
+                  🌎
+                </div>
+                <div class="badge-name">Explorador Geo.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DIVIDER -->
+          <div class="dipl-divider">
+            <div class="div-line"></div>
+            <span class="div-icon">✦</span>
+            <div class="div-line"></div>
+          </div>
+
+          <!-- SEALS / FIRMAS -->
+          <div class="seals-row">
+            <div class="seal-block">
+              <div class="seal-icon">👩‍🏫</div>
+              <div class="sig-line"></div>
+              <div class="sig-name">Dra. Esperanza Reyes</div>
+              <div class="sig-role">Directora · Sec. 310</div>
+            </div>
+            <div class="seal-center">
+              <div class="seal-main-icon">🎪</div>
+            </div>
+            <div class="seal-block">
+              <div class="seal-icon">🔬</div>
+              <div class="sig-line"></div>
+              <div class="sig-name">Coordinación Académica</div>
+              <div class="sig-role">Feria de Ciencias 2025-2026</div>
+            </div>
+          </div>
+
+          <!-- QR + FOLIO -->
+          <div class="qr-folio">
+            <div class="folio">
+              FOLIO: <span>CIR310-2026-00847</span><br />Verificable en
+              circo310.edu.mx
+            </div>
+            <div class="qr-box">🔲</div>
+          </div>
+        </div>
+        <!-- end diploma-body -->
+      </div>
+      <!-- end diploma-glow -->
+
+      <!-- BOTONES -->
+      <div class="share-section">
+        <button class="btn-share btn-download">⬇️ Descargar PDF</button>
+        <button class="btn-share btn-share-icon">📤 Compartir</button>
+      </div>
+      <div class="event-date">
+        FERIA DE CIENCIAS · CIRCO DE LA CIENCIA 310 · FEBRERO 2026
+      </div>
+    </div>
+    <!-- end wrapper -->
+
+    <script>
+      /* ====== PARTÍCULAS ANIMADAS ====== */
+      const canvas = document.getElementById("particles-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = [
+        "#FFD700",
+        "#00E5FF",
+        "#39FF14",
+        "#D32F2F",
+        "#FF8C00",
+        "#FFFFFF",
+      ];
+      const particles = [];
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 3 + 0.5;
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.speed = Math.random() * 0.4 + 0.1;
+          this.angle = Math.random() * Math.PI * 2;
+          this.drift = (Math.random() - 0.5) * 0.01;
+          this.opacity = Math.random() * 0.6 + 0.1;
+          this.pulse = Math.random() * Math.PI * 2;
+        }
+        update() {
+          this.angle += this.drift;
+          this.x += Math.cos(this.angle) * this.speed;
+          this.y -= this.speed * 0.5;
+          this.pulse += 0.03;
+          this.opacity = Math.sin(this.pulse) * 0.3 + 0.4;
+          if (this.y < -10 || this.x < -10 || this.x > canvas.width + 10)
+            this.reset();
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.opacity;
+          ctx.fillStyle = this.color;
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      /* ====== CONFETTI al cargar ====== */
+      function launchConfetti() {
+        const confetti = [];
+        const confColors = [
+          "#FFD700",
+          "#00E5FF",
+          "#39FF14",
+          "#D32F2F",
+          "#FF8C00",
+        ];
+        for (let i = 0; i < 60; i++) {
+          confetti.push({
+            x: Math.random() * canvas.width,
+            y: -20,
+            w: Math.random() * 10 + 4,
+            h: Math.random() * 6 + 3,
+            color: confColors[Math.floor(Math.random() * confColors.length)],
+            speed: Math.random() * 3 + 1,
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 8,
+            drift: (Math.random() - 0.5) * 2,
+            opacity: 1,
+          });
+        }
+
+        let frame = 0;
+        function dropConf() {
+          frame++;
+          confetti.forEach((c) => {
+            c.y += c.speed;
+            c.x += c.drift;
+            c.rotation += c.rotSpeed;
+            if (frame > 80) c.opacity -= 0.02;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, c.opacity);
+            ctx.translate(c.x, c.y);
+            ctx.rotate((c.rotation * Math.PI) / 180);
+            ctx.fillStyle = c.color;
+            ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+            ctx.restore();
+          });
+          if (frame < 160) requestAnimationFrame(dropConf);
+        }
+        dropConf();
+      }
+
+      window.addEventListener("load", () => setTimeout(launchConfetti, 800));
+    </script>
+  </body>
+</html>

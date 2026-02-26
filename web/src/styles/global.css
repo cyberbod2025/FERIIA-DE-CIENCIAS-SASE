@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600;700&display=swap");
+
+:root {
+  --crimson: #d32f2f;
+  --gold: #ffd700;
+  --gold-dark: #b8860b;
+  --midnight: #0d1b4b;
+  --midnight-light: #1a2f7a;
+  --deep-blue: #0a1035;
+  --cream: #fff8e1;
+  --white: #ffffff;
+  --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #000; /* Fondo negro profundo fuera del frame */
+  font-family: "Outfit", sans-serif;
+  color: var(--white);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.phone-frame {
+  width: 100%;
+  max-width: 430px; /* Tamaño iPhone Pro Max */
+  height: 100vh;
+  background: var(--deep-blue);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-image:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(211, 47, 47, 0.15) 0%,
+      transparent 50%
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 30px,
+      rgba(255, 215, 0, 0.02) 30px,
+      rgba(255, 215, 0, 0.02) 60px
+    );
+}
+
+@media (min-width: 450px) {
+  body {
+    background: #050505;
+    padding: 20px;
+  }
+  .phone-frame {
+    height: 92vh;
+    max-height: 932px;
+    border-radius: 48px;
+    border: 8px solid #1a1a1a; /* Simulación de bisel físico */
+    box-shadow:
+      0 50px 100px -20px rgba(0, 0, 0, 0.8),
+      0 30px 60px -30px rgba(0, 0, 0, 0.9),
+      0 0 0 2px rgba(255, 215, 0, 0.1);
+  }
+}
+
+/* Scrollbar invisible pero funcional para móviles */
+.phone-frame .content-scroll::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.content-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Playfair Display", serif;
+  letter-spacing: -0.02em;
+}
+
+button {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+button:active {
+  transform: scale(0.96);
+}

@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo Premium - Circo de la Ciencia 310</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --crimson: #d32f2f;
+        --gold: #ffd700;
+        --dark-blue: #0d1b4b;
+        --electric-blue: #00e5ff;
+        --neon-green: #39ff14;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-dark: rgba(0, 0, 0, 0.4);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--dark-blue);
+        background-image:
+          radial-gradient(
+            circle at 10% 20%,
+            rgba(211, 47, 47, 0.15) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(0, 229, 255, 0.15) 0%,
+            transparent 40%
+          );
+        color: #fff;
+        font-family: "Outfit", sans-serif;
+        overflow-x: hidden;
+      }
+
+      header {
+        padding: 60px 20px;
+        text-align: center;
+        background: linear-gradient(
+          to bottom,
+          rgba(13, 27, 75, 0.8),
+          transparent
+        );
+        position: relative;
+      }
+
+      header h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 3.5rem;
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+      }
+
+      header p {
+        font-size: 1.2rem;
+        color: var(--electric-blue);
+        font-weight: 300;
+        letter-spacing: 2px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      /* Shop Controls (Filters) */
+      .shop-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        padding: 20px;
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .filter-tabs {
+        display: flex;
+        gap: 15px;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        border-radius: 30px;
+        background: transparent;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .tab.active,
+      .tab:hover {
+        background: var(--gold);
+        color: var(--dark-blue);
+      }
+
+      /* Products Grid */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 40px;
+      }
+
+      /* Product Card */
+      .product-card {
+        background: var(--glass-dark);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition:
+          transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          box-shadow 0.4s;
+        position: relative;
+      }
+
+      .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        border-color: var(--electric-blue);
+      }
+
+      .product-image {
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .product-image::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent, var(--glass-dark));
+      }
+
+      /* Badge WOW */
+      .badge-wow {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--crimson);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        z-index: 2;
+        box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .product-info {
+        padding: 25px;
+      }
+
+      .category {
+        color: var(--electric-blue);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+
+      .product-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+        color: #fff;
+      }
+
+      .metadata {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .stars {
+        color: var(--gold);
+      }
+
+      .price-tag {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--neon-green);
+      }
+
+      .buy-btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--gold);
+        color: var(--dark-blue);
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .buy-btn:hover {
+        background: #fff;
+        transform: scale(1.02);
+      }
+
+      /* Abstract placeholders instead of real images for now */
+      .placeholder-icon {
+        font-size: 100px;
+        filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.5));
+        z-index: 1;
+      }
+
+      .quick-view {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(50px);
+        background: rgba(255, 255, 255, 0.9);
+        color: #000;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        opacity: 0;
+        transition: 0.3s;
+      }
+
+      .product-card:hover .quick-view {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      footer {
+        text-align: center;
+        padding: 60px;
+        background: rgba(0, 0, 0, 0.3);
+        margin-top: 80px;
+      }
+
+      .tag-secu {
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        margin-left: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Math Couture</h1>
+      <p>Collection Printemps-Été 2026 | École Secondaire 310</p>
+    </header>
+
+    <div class="container">
+      <!-- Filtros Estilo Boutique -->
+      <div class="shop-controls">
+        <div class="filter-tabs">
+          <button class="tab active">Todos</button>
+          <button class="tab">Best Sellers</button>
+          <button class="tab">Nouveautés</button>
+          <button class="tab">Impact WOW</button>
+        </div>
+        <div class="view-options">
+          <span>Trier par: <strong>Plus Populaire</strong></span>
+        </div>
+      </div>
+
+      <!-- Grid de Productos -->
+      <div class="products-grid">
+        <!-- Item 1: Pitágoras -->
+        <div class="product-card">
+          <div class="badge-wow">Momento WOW</div>
+          <div
+            class="product-image"
+            style="background-image: linear-gradient(45deg, #0d1b4b, #1a2a6c)"
+          >
+            <span class="placeholder-icon">📐</span>
+            <button class="quick-view">Vista Rápida</button>
+          </div>
+          <div class="product-info">
+            <div class="category">
+              Geometría Visual <span class="tag-secu">2°</span>
+            </div>
+            <h3 class="product-title">Pitágoras en Movimiento</h3>
+            <div class="metadata">
+              <span class="stars">★★★★★</span>
+              <span>Mecánico / Líquido</span>
+            </div>
+            <div class="metadata">
+              <span class="price-tag">VIP Stand</span>
+            </div>
+            <button class="buy-btn">Ver Detalles del Experimento</button>
+          </div>
+        </div>
+
+        <!-- Item 2: Galton -->
+        <div class="product-card">
+          <div class="badge-wow">Alta Demanda</div>
+          <div
+            class="product-image"
+            style="background-image: linear-gradient(135deg, #0d1b4b, #2c3e50)"
+          >
+            <span class="placeholder-icon">🎯</span>
+            <button class="quick-view">Vista Rápida</button>
+          </div>
+          <div class="product-info">
+            <div class="category">
+              Probabilidad <span class="tag-secu">3°</span>
+            </div>
+            <h3 class="product-title">Tablero de Galton Pro</h3>
+            <div class="metadata">
+              <span class="stars">★★★★★</span>
+              <span>Estadística Pura</span>
+            </div>
+            <div class="metadata">
+              <span class="price-tag">Top Tier</span>
+            </div>
+            <button class="buy-btn">Ver Detalles del Experimento</button>
+          </div>
+        </div>
+
+        <!-- Item 3: Möbius -->
+        <div class="product-card">
+          <div
+            class="product-image"
+            style="background-image: linear-gradient(225deg, #0d1b4b, #4a148c)"
+          >
+            <span class="placeholder-icon">🔄</span>
+            <button class="quick-view">Vista Rápida</button>
+          </div>
+          <div class="product-info">
+            <div class="category">
+              Topología <span class="tag-secu">1°</span>
+            </div>
+            <h3 class="product-title">Infinity Loop Möbius</h3>
+            <div class="metadata">
+              <span class="stars">★★★★☆</span>
+              <span>Interactivo / Papel</span>
+            </div>
+            <div class="metadata">
+              <span class="price-tag">Must Have</span>
+            </div>
+            <button class="buy-btn">Ver Detalles del Experimento</button>
+          </div>
+        </div>
+
+        <!-- Item 4: Volumen -->
+        <div class="product-card">
+          <div class="badge-wow">3 a 1</div>
+          <div
+            class="product-image"
+            style="background-image: linear-gradient(315deg, #0d1b4b, #b71c1c)"
+          >
+            <span class="placeholder-icon">💧</span>
+            <button class="quick-view">Vista Rápida</button>
+          </div>
+          <div class="product-info">
+            <div class="category">
+              Geometría <span class="tag-secu">2°</span>
+            </div>
+            <h3 class="product-title">Pirámide vs Prisma Gold</h3>
+            <div class="metadata">
+              <span class="stars">★★★★★</span>
+              <span>Clásico Infalible</span>
+            </div>
+            <div class="metadata">
+              <span class="price-tag">Edición Feria</span>
+            </div>
+            <button class="buy-btn">Ver Detalles del Experimento</button>
+          </div>
+        </div>
+
+        <!-- Item 5: Ames -->
+        <div class="product-card">
+          <div
+            class="product-image"
+            style="background-image: linear-gradient(45deg, #0d1b4b, #111)"
+          >
+            <span class="placeholder-icon">👁️</span>
+            <button class="quick-view">Vista Rápida</button>
+          </div>
+          <div class="product-info">
+            <div class="category">
+              Ilusión Óptica <span class="tag-secu">3°</span>
+            </div>
+            <h3 class="product-title">Chambre d'Ames (Mini)</h3>
+            <div class="metadata">
+              <span class="stars">★★★★☆</span>
+              <span>Arquitectura Mágica</span>
+            </div>
+            <div class="metadata">
+              <span class="price-tag">Instagrameable</span>
+            </div>
+            <button class="buy-btn">Ver Detalles del Experimento</button>
+          </div>
+        </div>
+
+        <!-- Item 6: Fibonacci -->
+        <div class="product-card">
+          <div
+            class="product-image"
+            style="background-image: linear-gradient(135deg, #0d1b4b, #1b5e20)"
+          >
+            <span class="placeholder-icon">🌻</span>
+            <button class="quick-view">Vista Rápida</button>
+          </div>
+          <div class="product-info">
+            <div class="category">
+              Patrones <span class="tag-secu">2°</span>
+            </div>
+            <h3 class="product-title">Fibonacci Nature Pack</h3>
+            <div class="metadata">
+              <span class="stars">★★★★☆</span>
+              <span>Botánica & Math</span>
+            </div>
+            <div class="metadata">
+              <span class="price-tag">Selección Orgánica</span>
+            </div>
+            <button class="buy-btn">Ver Detalles del Experimento</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 Circo de la Ciencia 310. Tous droits réservés.</p>
+      <p
+        style="
+          font-size: 0.8rem;
+          margin-top: 10px;
+          color: rgba(255, 255, 255, 0.4);
+        "
+      >
+        Explora los 20 modelos en nuestro catálogo completo interactivo.
+      </p>
+    </footer>
+  </body>
+</html>

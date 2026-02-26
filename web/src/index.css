@@ -1,0 +1,59 @@
+:root {
+  --crimson: #d32f2f;
+  --gold: #ffd700;
+  --gold-dark: #b8860b;
+  --midnight: #0d1b4b;
+  --midnight-light: #1a2f7a;
+  --deep-blue: #050b24;
+  --cream: #fff9e6;
+  --white: #ffffff;
+
+  font-family: "Outfit", sans-serif;
+  background-color: var(--deep-blue);
+  color: var(--white);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--deep-blue);
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Playfair Display", serif;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--deep-blue);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--midnight-light);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}

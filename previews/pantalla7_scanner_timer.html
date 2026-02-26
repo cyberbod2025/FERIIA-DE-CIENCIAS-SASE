@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Pantalla 7 — Escáner QR + Temporizador | Circo de la Ciencia 310
+    </title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --gold: #ffd700;
+        --crimson: #d32f2f;
+        --electric: #00e5ff;
+        --neon: #39ff14;
+        --midnight: #0d1b4b;
+        --deep: #060d25;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--deep);
+        font-family: "Outfit", sans-serif;
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background-image: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 30px,
+          rgba(0, 229, 255, 0.02) 30px,
+          rgba(0, 229, 255, 0.02) 60px
+        );
+      }
+      .phone-frame {
+        width: 390px;
+        background: var(--midnight);
+        border-radius: 40px;
+        overflow: hidden;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.7),
+          0 0 60px rgba(0, 229, 255, 0.12);
+        border: 1px solid rgba(0, 229, 255, 0.2);
+      }
+      .screen-label {
+        text-align: center;
+        padding: 8px;
+        background: rgba(0, 229, 255, 0.06);
+        font-size: 10px;
+        color: rgba(0, 229, 255, 0.6);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .status-bar {
+        background: var(--deep);
+        padding: 12px 24px 8px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .status-live {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--neon);
+        font-weight: 700;
+      }
+      .live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--neon);
+        animation: livePulse 1.5s infinite;
+      }
+      @keyframes livePulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.8);
+        }
+      }
+
+      /* TIMER HEADER */
+      .timer-header {
+        background: linear-gradient(
+          180deg,
+          var(--deep) 0%,
+          rgba(0, 13, 37, 0.95) 100%
+        );
+        padding: 14px 24px 16px;
+        border-bottom: 1px solid rgba(0, 229, 255, 0.12);
+      }
+      .timer-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 6px;
+      }
+      .timer-display {
+        text-align: center;
+        font-size: 48px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.04em;
+        background: linear-gradient(135deg, var(--gold), var(--electric));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        animation: timerGlow 2s ease-in-out infinite;
+      }
+      @keyframes timerGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.3));
+        }
+        50% {
+          filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.6));
+        }
+      }
+      .timer-sub {
+        text-align: center;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.35);
+        margin-top: 4px;
+      }
+      .progress-bar-bg {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        height: 5px;
+        margin-top: 10px;
+      }
+      .progress-bar-fill {
+        background: linear-gradient(90deg, var(--neon), var(--electric));
+        border-radius: 10px;
+        height: 100%;
+        width: 72%;
+        box-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+        animation: progressGlow 2s ease-in-out infinite;
+      }
+      @keyframes progressGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+        }
+        50% {
+          box-shadow:
+            0 0 20px rgba(57, 255, 20, 0.7),
+            0 0 40px rgba(0, 229, 255, 0.3);
+        }
+      }
+      .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .prog-pts {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      /* QR SCANNER AREA */
+      .scanner-section {
+        padding: 20px 24px;
+      }
+      .scanner-title {
+        font-family: "Playfair Display", serif;
+        font-size: 20px;
+        font-weight: 900;
+        text-align: center;
+        color: var(--gold);
+        margin-bottom: 4px;
+      }
+      .scanner-sub {
+        text-align: center;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 16px;
+      }
+      .qr-viewport {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1;
+        max-width: 260px;
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid rgba(0, 229, 255, 0.3);
+        box-shadow:
+          0 0 40px rgba(0, 229, 255, 0.2),
+          inset 0 0 40px rgba(0, 0, 0, 0.5);
+      }
+      .qr-bg {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 13, 37, 0.9),
+          rgba(13, 27, 75, 0.7)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 80px;
+        opacity: 0.15;
+      }
+      /* CORNER MARKERS */
+      .corner {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        border-color: var(--electric);
+        border-style: solid;
+        border-width: 0;
+      }
+      .top-left {
+        top: 10px;
+        left: 10px;
+        border-top-width: 3px;
+        border-left-width: 3px;
+        border-radius: 4px 0 0 0;
+      }
+      .top-right {
+        top: 10px;
+        right: 10px;
+        border-top-width: 3px;
+        border-right-width: 3px;
+        border-radius: 0 4px 0 0;
+      }
+      .bot-left {
+        bottom: 10px;
+        left: 10px;
+        border-bottom-width: 3px;
+        border-left-width: 3px;
+        border-radius: 0 0 0 4px;
+      }
+      .bot-right {
+        bottom: 10px;
+        right: 10px;
+        border-bottom-width: 3px;
+        border-right-width: 3px;
+        border-radius: 0 0 4px 0;
+      }
+      /* SCAN LINE */
+      .scan-line {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--electric),
+          var(--neon),
+          var(--electric),
+          transparent
+        );
+        box-shadow:
+          0 0 10px var(--electric),
+          0 0 20px rgba(0, 229, 255, 0.5);
+        animation: scanAnim 2.5s ease-in-out infinite;
+        top: 10px;
+      }
+      @keyframes scanAnim {
+        0% {
+          top: 10px;
+          opacity: 1;
+        }
+        90% {
+          top: calc(100% - 14px);
+          opacity: 1;
+        }
+        100% {
+          top: 10px;
+          opacity: 0;
+        }
+      }
+      /* SCAN OVERLAY TEXT */
+      .scan-overlay {
+        position: absolute;
+        bottom: 14px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 11px;
+        color: rgba(0, 229, 255, 0.7);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        animation: blinkText 1.5s ease-in-out infinite;
+      }
+      @keyframes blinkText {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* INSTRUCTION */
+      .instruction-card {
+        background: rgba(0, 229, 255, 0.06);
+        border: 1px solid rgba(0, 229, 255, 0.15);
+        border-radius: 16px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .instr-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      .instr-text {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.4;
+      }
+      .instr-text strong {
+        color: var(--electric);
+      }
+
+      /* STANDS CHIPS */
+      .chips-section {
+        padding: 0 24px 16px;
+      }
+      .chips-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .chips-scroll {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scrollbar-width: none;
+      }
+      .chips-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      .subject-chip {
+        flex-shrink: 0;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .chip-math {
+        background: rgba(255, 215, 0, 0.12);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: var(--gold);
+      }
+      .chip-fis {
+        background: rgba(0, 229, 255, 0.1);
+        border: 1px solid rgba(0, 229, 255, 0.3);
+        color: var(--electric);
+      }
+      .chip-quim {
+        background: rgba(171, 71, 188, 0.15);
+        border: 1px solid rgba(171, 71, 188, 0.4);
+        color: #ce93d8;
+      }
+      .chip-bio {
+        background: rgba(57, 255, 20, 0.08);
+        border: 1px solid rgba(57, 255, 20, 0.25);
+        color: var(--neon);
+      }
+      .chip-geo {
+        background: rgba(211, 47, 47, 0.12);
+        border: 1px solid rgba(211, 47, 47, 0.3);
+        color: #ff7070;
+      }
+      .subject-chip:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.2);
+      }
+      .chip-badge {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 1px 6px;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      /* BOTTOM NAV */
+      .bottom-nav {
+        background: rgba(6, 13, 37, 0.97);
+        border-top: 1px solid rgba(0, 229, 255, 0.1);
+        padding: 12px 30px 20px;
+        display: flex;
+        justify-content: space-around;
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .nav-icon {
+        font-size: 20px;
+      }
+      .nav-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .nav-item.active .nav-label {
+        color: var(--electric);
+      }
+      .nav-item.active .nav-icon {
+        filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.7));
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <div class="screen-label">📱 Pantalla 7 — Escáner QR + Temporizador</div>
+      <div class="status-bar">
+        <span>14:15</span>
+        <div class="status-live">
+          <div class="live-dot"></div>
+          EN FUNCIÓN
+        </div>
+        <span>⚡ 87%</span>
+      </div>
+
+      <!-- TIMER -->
+      <div class="timer-header">
+        <div class="timer-label">
+          ⏱ Tiempo Restante para Completar la Función
+        </div>
+        <div class="timer-display" id="timer">01:23:47</div>
+        <div class="timer-sub">¡No pares el recorrido, explorador!</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <div class="progress-labels">
+          <span>20 de 28 stands completados</span>
+          <span class="prog-pts">⭐ 1,920 pts</span>
+        </div>
+      </div>
+
+      <!-- SCANNER -->
+      <div class="scanner-section">
+        <div class="scanner-title">🎯 Escanear Siguiente Stand</div>
+        <div class="scanner-sub">Apunta la cámara al código QR del stand</div>
+
+        <div class="qr-viewport">
+          <div class="qr-bg">🔲</div>
+          <div class="corner top-left"></div>
+          <div class="corner top-right"></div>
+          <div class="corner bot-left"></div>
+          <div class="corner bot-right"></div>
+          <div class="scan-line"></div>
+          <div class="scan-overlay">BUSCANDO CÓDIGO QR...</div>
+        </div>
+
+        <div class="instruction-card">
+          <div class="instr-icon">💡</div>
+          <div class="instr-text">
+            Escanea el QR en el cartel de cada stand para registrar tu visita.
+            Recibirás la info del experimento y tu
+            <strong>desafío del mago</strong>.
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBJECT CHIPS -->
+      <div class="chips-section">
+        <div class="chips-label">Stands por Materia — Progreso</div>
+        <div class="chips-scroll">
+          <div class="subject-chip chip-math">
+            🔢 Matemáticas <span class="chip-badge">12/12</span>
+          </div>
+          <div class="subject-chip chip-fis">
+            ⚡ Física <span class="chip-badge">3/4</span>
+          </div>
+          <div class="subject-chip chip-quim">
+            ⚗️ Química <span class="chip-badge">2/4</span>
+          </div>
+          <div class="subject-chip chip-bio">
+            🌿 Biología <span class="chip-badge">2/4</span>
+          </div>
+          <div class="subject-chip chip-geo">
+            🌎 Geografía <span class="chip-badge">1/4</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <span class="nav-icon">🏠</span><span class="nav-label">Inicio</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">🗺️</span><span class="nav-label">Mapa</span>
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon">📷</span
+          ><span class="nav-label">Escanear</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">🏆</span><span class="nav-label">Ranking</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* TIMER COUNTDOWN */
+      let seconds = 83 * 60 + 47;
+      const timerEl = document.getElementById("timer");
+      setInterval(() => {
+        if (seconds > 0) {
+          seconds--;
+          const h = Math.floor(seconds / 3600);
+          const m = Math.floor((seconds % 3600) / 60);
+          const s = seconds % 60;
+          timerEl.textContent =
+            String(h).padStart(2, "0") +
+            ":" +
+            String(m).padStart(2, "0") +
+            ":" +
+            String(s).padStart(2, "0");
+          if (seconds < 600)
+            timerEl.style.setProperty("-webkit-text-fill-color", "#FF7070");
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
