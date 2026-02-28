@@ -32,14 +32,13 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         style={{
           padding: "12px 24px 8px",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-end", // Cambiado a flex-end para mantener el contenido a la derecha
           alignItems: "center",
           fontSize: "11px",
           fontWeight: 600,
           background: "var(--deep-blue)",
         }}
       >
-        <span>09:41</span>
         <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           ✨ Circo 310 &nbsp;&nbsp;🔋 95%
         </span>

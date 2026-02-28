@@ -251,7 +251,11 @@ export const MapView: React.FC = () => {
               }}
             >
               <div style={{ flexShrink: 0 }}>
-                <SaseIdentityOrb state="stable" size={60} />
+                <SaseIdentityOrb
+                  state="stable"
+                  size={70}
+                  showAccessories={true}
+                />
               </div>
               <div style={{ flex: 1 }}>
                 <h4

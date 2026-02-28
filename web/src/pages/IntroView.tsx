@@ -18,13 +18,12 @@ const Confetti = () => {
           key={i}
           initial={{
             y: -20,
-            x: Math.random() * window.innerWidth,
+            x: Math.random() * 100 + "%",
             rotate: 0,
             opacity: 1,
           }}
           animate={{
-            y: window.innerHeight + 20,
-            x: (Math.random() - 0.5) * 100 + Math.random() * window.innerWidth,
+            y: "110vh",
             rotate: 360,
             opacity: 0,
           }}
@@ -106,9 +105,9 @@ export const IntroView: React.FC = () => {
     // Stage 1: Plasma
     const t1 = setTimeout(() => setStage("orb"), 2500);
 
-    // Stage 2: Orbe cambiando colores (Secuencia: Azul -> Verde -> Amarillo/Naranja -> Rojo)
+    // Stage 2: Orbe cambiando colores (Azul, Verde, Amarillo, Rojo)
     const t2 = setTimeout(() => {
-      const colors: OrbState[] = ["imposing", "stable", "alert", "critical"]; // Azul, Verde, Amarillo/Naranja, Rojo
+      const colors: OrbState[] = ["imposing", "stable", "alert", "critical"];
       let i = 0;
       const interval = setInterval(() => {
         setOrbState(colors[i % colors.length]);
@@ -117,7 +116,7 @@ export const IntroView: React.FC = () => {
       }, 600);
     }, 2600);
 
-    // Stage 3: Emerge carpa de circo
+    // Stage 3: Emerge carpa
     const t3 = setTimeout(() => setStage("circus"), 7000);
 
     // Stage 4: Domadora
@@ -143,7 +142,7 @@ export const IntroView: React.FC = () => {
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
-        position: "fixed", // Para ocultar la hora del sistema si el navegador lo permite en fullscreen
+        position: "fixed",
         top: 0,
         left: 0,
         color: "white",
@@ -153,7 +152,7 @@ export const IntroView: React.FC = () => {
       <Confetti />
       <Reflectores />
 
-      {/* Fondo de Plasma */}
+      {/* Plasma Background */}
       <AnimatePresence>
         {stage === "plasma" && (
           <motion.div
@@ -172,20 +171,20 @@ export const IntroView: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Carpa de Circo - Ahora más grande y central */}
+      {/* Circus Tent */}
       <AnimatePresence>
         {(stage === "circus" || stage === "domadora") && (
           <motion.div
             initial={{ y: 500, opacity: 0, scale: 0.8 }}
             animate={{
-              y: stage === "domadora" ? -50 : 0,
-              opacity: 0.4,
-              scale: 1.5,
+              y: stage === "domadora" ? -40 : 0,
+              opacity: 0.3,
+              scale: 1.6,
             }}
             style={{
               position: "absolute",
               bottom: "15%",
-              fontSize: "200px",
+              fontSize: "220px",
               zIndex: 1,
               filter: "drop-shadow(0 0 50px rgba(211, 47, 47, 0.6)) blur(2px)",
             }}
@@ -227,124 +226,76 @@ export const IntroView: React.FC = () => {
               }}
             >
               <div style={{ position: "relative" }}>
-                <SaseIdentityOrb state="imposing" size={300} />
+                <SaseIdentityOrb
+                  state="imposing"
+                  size={300}
+                  showAccessories={true}
+                />
 
-                {/* Sombrero de Copa */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "-60px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    fontSize: "100px",
-                    zIndex: 11,
-                  }}
-                >
-                  🎩
-                </div>
-
-                {/* Bigote */}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "35%",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    fontSize: "50px",
-                    zIndex: 12,
-                  }}
-                >
-                  👨🏻‍🦱
-                </div>
-
-                {/* El Niño / Cabeza en la boca (Efecto de truco de circo) */}
+                {/* Látigo animado */}
                 <motion.div
-                  initial={{ y: 20, opacity: 0, scale: 0.5 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  transition={{ delay: 1, duration: 0.5 }}
+                  animate={{ rotate: [0, -30, 20, 0] }}
+                  transition={{ repeat: Infinity, duration: 1 }}
                   style={{
                     position: "absolute",
-                    bottom: "20%",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    fontSize: "45px",
-                    zIndex: 15, // Por encima de los ojos
-                    background: "rgba(0,0,0,0.2)",
-                    borderRadius: "50%",
-                    padding: "5px",
-                    filter: "drop-shadow(0 0 10px rgba(255,255,255,0.5))",
-                  }}
-                >
-                  👦🏻
-                </motion.div>
-
-                {/* Látigo lateral */}
-                <motion.div
-                  animate={{ rotate: [0, -30, 10, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.2 }}
-                  style={{
-                    position: "absolute",
-                    right: "-80px",
+                    right: "-90px",
                     top: "30%",
                     fontSize: "80px",
+                    zIndex: 20,
                   }}
                 >
                   ➰
                 </motion.div>
               </div>
 
-              {/* Texto de Bienvenida */}
+              {/* Welcome Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5 }}
+                transition={{ delay: 1 }}
                 style={{
                   textAlign: "center",
                   background:
                     "linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.9))",
-                  padding: "30px",
-                  borderRadius: "32px",
+                  padding: "24px",
+                  borderRadius: "28px",
                   border: "3px solid #FFD700",
                   maxWidth: "340px",
                   boxShadow:
-                    "0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255, 215, 0, 0.3)",
-                  backdropFilter: "blur(15px)",
-                  marginTop: "20px",
+                    "0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255, 215, 0, 0.2)",
+                  backdropFilter: "blur(10px)",
+                  marginTop: "10px",
                 }}
               >
                 <h2
                   style={{
                     color: "#FFD700",
-                    marginBottom: "15px",
-                    fontSize: "28px",
-                    textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+                    marginBottom: "10px",
+                    fontSize: "24px",
                   }}
                 >
                   ¡EL ESPECTÁCULO COMIENZA!
                 </h2>
                 <p
-                  style={{ fontSize: "16px", lineHeight: "1.6", color: "#FFF" }}
+                  style={{ fontSize: "15px", lineHeight: "1.5", color: "#FFF" }}
                 >
                   Soy la IA-SASE, tu guía en este Circo de la Ciencia. ¡Entra
                   ahora y descubre los secretos del saber!
                 </p>
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/login")}
                   style={{
-                    marginTop: "25px",
-                    padding: "15px 40px",
+                    marginTop: "20px",
+                    padding: "14px 40px",
                     background: "#D32F2F",
                     border: "none",
                     borderRadius: "50px",
                     color: "white",
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "16px",
                     cursor: "pointer",
-                    boxShadow: "0 10px 20px rgba(211, 47, 47, 0.4)",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
+                    boxShadow: "0 10px 20px rgba(211, 47, 47, 0.3)",
                   }}
                 >
                   ENTRAR A LA FUNCIÓN
@@ -357,13 +308,8 @@ export const IntroView: React.FC = () => {
 
       <style>{`
         .intro-root {
-          cursor: none;
           user-select: none;
-        }
-        @media (max-width: 600px) {
-          .intro-root {
-            padding: 20px;
-          }
+          touch-action: none;
         }
       `}</style>
     </div>

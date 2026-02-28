@@ -63,7 +63,7 @@ export const TutorialView: React.FC = () => {
               marginBottom: "15px",
             }}
           >
-            <SaseIdentityOrb state="stable" size={120} />
+            <SaseIdentityOrb state="stable" size={140} showAccessories={true} />
           </div>
           <h2
             style={{

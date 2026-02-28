@@ -118,12 +118,12 @@ export const LoginView: React.FC = () => {
     <Layout title="🎪 Acceso al Circo">
       <div
         style={{
-          padding: "40px 24px",
+          padding: "20px 24px",
           display: "flex",
           flexDirection: "column",
-          gap: "30px",
+          gap: "20px",
           flex: 1,
-          justifyContent: "center",
+          justifyContent: "flex-start",
         }}
       >
         <motion.div
@@ -132,10 +132,11 @@ export const LoginView: React.FC = () => {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginBottom: "-20px",
+            marginTop: "20px", // Añadido margen arriba
+            marginBottom: "0px",
           }}
         >
-          <SaseIdentityOrb state="imposing" size={240} />
+          <SaseIdentityOrb state="imposing" size={220} showAccessories={true} />
         </motion.div>
 
         <motion.div

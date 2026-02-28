@@ -6,6 +6,7 @@ interface SaseIdentityOrbProps {
   state?: OrbState;
   size?: number;
   className?: string;
+  showAccessories?: boolean;
 }
 
 const stateColors = {
@@ -35,6 +36,7 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
   state = "imposing",
   size = 300,
   className = "",
+  showAccessories = false,
 }) => {
   const colors = stateColors[state];
 
@@ -44,6 +46,9 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
       style={{ "--orb-size": `${size}px` } as React.CSSProperties}
     >
       <div className="orb-container">
+        {/* Accesorios de Domadora (Sombrero) */}
+        {showAccessories && <div className="accessory hat">🎩</div>}
+
         {/* Plasma Exterior Ring 1 */}
         <div
           className="plasma-ring ring-1"
@@ -68,7 +73,13 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
             <div className="eye"></div>
             <div className="eye"></div>
           </div>
+
+          {/* Cabeza en la boca (Efecto Truco) */}
+          {showAccessories && <div className="mouth-accessory">👦🏻</div>}
         </div>
+
+        {/* Bigote (Fuera del main-orb para que no se corte por overflow hidden) */}
+        {showAccessories && <div className="accessory mustache">👨🏻‍🦱</div>}
       </div>
 
       <style>{`
@@ -81,8 +92,8 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
         }
         .orb-container {
           position: relative;
-          width: 80%;
-          height: 80%;
+          width: 70%;  /* Reducido para dejar espacio a accesorios y resplandor */
+          height: 70%;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -97,6 +108,7 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
           justify-content: center;
           overflow: hidden;
           position: relative;
+          z-index: 2;
           transition: background 0.5s ease, box-shadow 0.5s ease;
           animation: breathe 6s ease-in-out infinite;
         }
@@ -112,6 +124,37 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
           box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
           animation: blink 5s infinite;
         }
+        
+        /* Accesorios */
+        .accessory {
+          position: absolute;
+          z-index: 10;
+          pointer-events: none;
+        }
+        .hat {
+          top: -35%;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: calc(var(--orb-size) * 0.35);
+        }
+        .mustache {
+          bottom: 20%;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: calc(var(--orb-size) * 0.18);
+        }
+        .mouth-accessory {
+          position: absolute;
+          bottom: 15%;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: calc(var(--orb-size) * 0.15);
+          z-index: 11;
+          background: rgba(0,0,0,0.1);
+          border-radius: 50%;
+          padding: 2px;
+        }
+
         @keyframes float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-15px); }
@@ -129,6 +172,7 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
           border-radius: 50%;
           border: 2px solid transparent;
           transition: border-color 0.5s ease;
+          z-index: 1;
         }
         .ring-1 {
           inset: -15px;
