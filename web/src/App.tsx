@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { IntroView } from "./pages/IntroView";
 import { LoginView } from "./pages/LoginView";
 import { TutorialView } from "./pages/TutorialView";
 import { MapView } from "./pages/MapView";
@@ -10,7 +11,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginView />} />
+        <Route path="/" element={<IntroView />} />
+        <Route path="/login" element={<LoginView />} />
         <Route path="/tutorial" element={<TutorialView />} />
         <Route path="/mapa" element={<MapView />} />
         <Route path="/stand/:id" element={<StandDetailView />} />
