@@ -178,7 +178,7 @@ export const IntroView: React.FC = () => {
             initial={{ y: 500, opacity: 0, scale: 0.8 }}
             animate={{
               y: stage === "domadora" ? -40 : 0,
-              opacity: 0.3,
+              opacity: 0.8,
               scale: 1.6,
             }}
             style={{
