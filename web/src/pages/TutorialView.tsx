@@ -2,7 +2,8 @@ import React from "react";
 import { Layout } from "../components/Layout";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Target, Sparkles, ChevronRight } from "lucide-react";
+import { BookOpen, Target, ChevronRight } from "lucide-react";
+import { SaseIdentityOrb } from "../components/SaseIdentityOrb";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -55,10 +56,15 @@ export const TutorialView: React.FC = () => {
             textAlign: "center",
           }}
         >
-          <Sparkles
-            style={{ color: "var(--gold)", marginBottom: "10px" }}
-            size={32}
-          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "15px",
+            }}
+          >
+            <SaseIdentityOrb state="stable" size={120} />
+          </div>
           <h2
             style={{
               fontSize: "20px",

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Compass, Users, CheckCircle, Lock, XCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
+import { SaseIdentityOrb } from "../components/SaseIdentityOrb";
 
 interface Estacion {
   id: string;
@@ -246,9 +247,13 @@ export const MapView: React.FC = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                gap: "15px",
               }}
             >
-              <div>
+              <div style={{ flexShrink: 0 }}>
+                <SaseIdentityOrb state="stable" size={60} />
+              </div>
+              <div style={{ flex: 1 }}>
                 <h4
                   style={{
                     color: "white",

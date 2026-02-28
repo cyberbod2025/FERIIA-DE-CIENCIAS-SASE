@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { User, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { SaseIdentityOrb } from "../components/SaseIdentityOrb";
 
 const GRUPOS = [
   "1°A",
@@ -126,6 +127,18 @@ export const LoginView: React.FC = () => {
         }}
       >
         <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "-20px",
+          }}
+        >
+          <SaseIdentityOrb state="imposing" size={240} />
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           style={{ textAlign: "center" }}
@@ -134,13 +147,20 @@ export const LoginView: React.FC = () => {
             style={{
               color: "var(--gold)",
               fontSize: "28px",
-              marginBottom: "8px",
+              marginBottom: "4px",
+              textShadow: "0 0 20px rgba(255, 215, 0, 0.3)",
             }}
           >
-            ¡Bienvenido!
+            S.A.S.E.
           </h1>
-          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px" }}>
-            Identifícate para comenzar la función
+          <p
+            style={{
+              color: "rgba(255,255,255,0.7)",
+              fontSize: "14px",
+              letterSpacing: "0.1em",
+            }}
+          >
+            SISTEMA DE ACOMPAÑAMIENTO Y SEGUIMIENTO ESCOLAR
           </p>
         </motion.div>
 
