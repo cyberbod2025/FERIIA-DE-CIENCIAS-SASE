@@ -55,12 +55,12 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
           style={{ borderBottomColor: colors.glow }}
         ></div>
 
-        {/* Cuerpo del Orbe */}
+        {/* Cuerpo del Orbe (Estructura 3D de Alta Densidad) */}
         <div
           className="main-orb"
           style={{
-            background: `radial-gradient(circle at 35% 35%, ${colors.shimmer} 0%, ${colors.main} 40%, #1e3a8a 80%, #020617 100%)`,
-            boxShadow: `0 0 60px ${colors.glow}, inset -20px -20px 40px rgba(0,0,0,0.7), inset 20px 20px 30px rgba(255,255,255,0.2)`,
+            background: `radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9) 0%, ${colors.main} 40%, rgba(30, 58, 138, 0.9) 80%, rgba(2, 6, 23, 0.95) 100%)`,
+            boxShadow: `0 0 100px 40px ${colors.glow}, inset -30px -30px 60px rgba(0, 0, 0, 0.8), inset 30px 30px 50px rgba(255, 255, 255, 0.4)`,
           }}
         >
           {/* Los Ojos */}
