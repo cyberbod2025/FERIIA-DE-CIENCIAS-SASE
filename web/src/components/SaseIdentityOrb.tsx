@@ -145,14 +145,13 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
         }
         .mouth-accessory {
           position: absolute;
-          bottom: 15%;
+          bottom: 5%; /* Más abajo para que parezca la boca */
           left: 50%;
           transform: translateX(-50%);
-          font-size: calc(var(--orb-size) * 0.15);
-          z-index: 11;
-          background: rgba(0,0,0,0.1);
-          border-radius: 50%;
-          padding: 2px;
+          font-size: calc(var(--orb-size) * 0.12); /* Un poco más pequeña */
+          z-index: 5; /* Por encima del fondo pero bajo los ojos si es necesario */
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+          pointer-events: none;
         }
 
         @keyframes float {
