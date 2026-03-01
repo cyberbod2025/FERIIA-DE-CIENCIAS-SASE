@@ -73,9 +73,6 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
             <div className="eye"></div>
             <div className="eye"></div>
           </div>
-
-          {/* Cabeza en la boca (Efecto Truco) */}
-          {showAccessories && <div className="mouth-accessory">👦🏻</div>}
         </div>
 
         {/* Bigote (Fuera del main-orb para que no se corte por overflow hidden) */}
@@ -142,16 +139,6 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
           left: 50%;
           transform: translateX(-50%);
           font-size: calc(var(--orb-size) * 0.18);
-        }
-        .mouth-accessory {
-          position: absolute;
-          bottom: 5%; /* Más abajo para que parezca la boca */
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: calc(var(--orb-size) * 0.12); /* Un poco más pequeña */
-          z-index: 5; /* Por encima del fondo pero bajo los ojos si es necesario */
-          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-          pointer-events: none;
         }
 
         @keyframes float {
