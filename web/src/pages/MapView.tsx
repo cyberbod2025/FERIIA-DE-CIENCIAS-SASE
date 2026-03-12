@@ -216,7 +216,7 @@ export const MapView: React.FC = () => {
               opacity: 1, 
               y: 0,
             }}
-            className="glass-circus circus-glow"
+            className="glass-circus-quantum circus-glow"
             style={{
               padding: "24px",
               borderRadius: "32px",
@@ -341,7 +341,7 @@ export const MapView: React.FC = () => {
                       navigate(`/stand/${estacion.id}`);
                     }
                   }}
-                  className={isBlocked ? "glass-circus opacity-60" : "glass-circus"}
+                  className={isBlocked ? "glass-circus-quantum opacity-60" : "glass-circus-quantum"}
                   style={{
                     display: "flex",
                     alignItems: "center",

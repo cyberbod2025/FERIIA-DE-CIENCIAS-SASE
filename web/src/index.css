@@ -12,6 +12,8 @@
 
   --glass-bg: rgba(15, 23, 42, 0.7);
   --glass-border: rgba(255, 215, 0, 0.3);
+  --quantum-blue: #0ea5e9;
+  --quantum-purple: #8b5cf6;
 
   font-family: 'Nunito', sans-serif;
   background-color: var(--deep-blue);
@@ -20,6 +22,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+@font-face {
+  font-family: 'Orbitron';
+  src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+}
+
 
 body {
   margin: 0;
@@ -59,6 +67,53 @@ h6 {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
               inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+
+.glass-circus-quantum {
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 20px rgba(255, 215, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-circus-quantum::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 215, 0, 0.05),
+    transparent
+  );
+  animation: shine-quantum 8s infinite linear;
+}
+
+@keyframes shine-quantum {
+  0% { left: -100%; }
+  20% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.title-circus {
+  font-family: 'Fredoka', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--gold), #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3));
+}
+
 
 .circus-glow {
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.2),

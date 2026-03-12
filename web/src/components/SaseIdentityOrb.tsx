@@ -74,9 +74,6 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
             <div className="eye"></div>
           </div>
         </div>
-
-        {/* Bigote (Fuera del main-orb para que no se corte por overflow hidden) */}
-        {showAccessories && <div className="accessory mustache">👨🏻‍🦱</div>}
       </div>
 
       <style>{`
@@ -133,12 +130,6 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
           left: 50%;
           transform: translateX(-50%);
           font-size: calc(var(--orb-size) * 0.35);
-        }
-        .mustache {
-          bottom: 20%;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: calc(var(--orb-size) * 0.18);
         }
 
         @keyframes float {

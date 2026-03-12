@@ -258,7 +258,7 @@ export const IntroView: React.FC = () => {
                   stiffness: 100,
                   damping: 15
                 }}
-                className="glass-circus circus-glow"
+                className="glass-circus-quantum circus-glow"
                 style={{
                   textAlign: "center",
                   padding: "40px 32px",
