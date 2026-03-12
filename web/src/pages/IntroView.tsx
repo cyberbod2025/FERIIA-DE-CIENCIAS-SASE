@@ -248,57 +248,85 @@ export const IntroView: React.FC = () => {
                 </motion.div>
               </div>
 
-              {/* Welcome Card */}
+              {/* Welcome Card Premium */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ 
+                  delay: 1,
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15
+                }}
+                className="glass-circus circus-glow"
                 style={{
                   textAlign: "center",
-                  background:
-                    "linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 58, 138, 0.9))",
-                  padding: "24px",
-                  borderRadius: "28px",
-                  border: "3px solid #FFD700",
-                  maxWidth: "340px",
-                  boxShadow:
-                    "0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255, 215, 0, 0.2)",
-                  backdropFilter: "blur(10px)",
-                  marginTop: "10px",
+                  padding: "40px 32px",
+                  borderRadius: "40px",
+                  maxWidth: "400px",
+                  marginTop: "20px",
+                  position: "relative",
+                  overflow: "hidden"
                 }}
               >
+                {/* Decorative Shine Effect */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-50%',
+                  left: '-50%',
+                  width: '200%',
+                  height: '200%',
+                  background: 'radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%)',
+                  pointerEvents: 'none'
+                }} />
+
                 <h2
+                  className="title-glow"
                   style={{
-                    color: "#FFD700",
-                    marginBottom: "10px",
-                    fontSize: "24px",
+                    color: "var(--gold)",
+                    marginBottom: "16px",
+                    fontSize: "32px",
+                    lineHeight: "1.1",
+                    textTransform: "uppercase"
                   }}
                 >
                   ¡EL ESPECTÁCULO COMIENZA!
                 </h2>
                 <p
-                  style={{ fontSize: "15px", lineHeight: "1.5", color: "#FFF" }}
+                  style={{ 
+                    fontSize: "17px", 
+                    lineHeight: "1.6", 
+                    color: "rgba(255,255,255,0.9)",
+                    marginBottom: "32px",
+                    fontWeight: 500
+                  }}
                 >
-                  Soy la IA-SASE, tu guía en este Circo de la Ciencia. ¡Entra
-                  ahora y descubre los secretos del saber!
+                  Soy la <span style={{ color: 'var(--gold)', fontWeight: 700 }}>IA-SASE</span>, tu guía en este <span style={{ color: 'var(--crimson)', fontWeight: 700 }}>Circo de la Ciencia</span>. ¡Entra ahora y descubre los secretos del saber!
                 </p>
+                
                 <motion.button
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 15px 30px rgba(211, 47, 47, 0.4)"
+                  }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/login")}
                   style={{
-                    marginTop: "20px",
-                    padding: "14px 40px",
-                    background: "#D32F2F",
+                    padding: "18px 48px",
+                    background: "var(--crimson)",
                     border: "none",
-                    borderRadius: "50px",
+                    borderRadius: "100px",
                     color: "white",
-                    fontWeight: "bold",
-                    fontSize: "16px",
+                    fontWeight: "900",
+                    fontSize: "18px",
                     cursor: "pointer",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
                     boxShadow: "0 10px 20px rgba(211, 47, 47, 0.3)",
+                    width: "100%"
                   }}
                 >
-                  ENTRAR A LA FUNCIÓN
+                  Entrar a la Función
                 </motion.button>
               </motion.div>
             </motion.div>

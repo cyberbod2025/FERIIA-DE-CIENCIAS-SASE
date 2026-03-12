@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
+  ArrowLeft,
   QrCode,
+  Users,
   Star,
+  Clock,
+  ExternalLink,
+  Info,
+  Award,
   ArrowRight,
   ShieldAlert,
   CheckCircle,
@@ -18,6 +24,8 @@ interface Estacion {
   nombre: string;
   categoria: string;
   materia: string;
+  docente_responsable: string;
+  grupo: string;
   descripcion_pedagogica: string;
   proceso: string;
   meta: string;
@@ -57,6 +65,9 @@ export const StandDetailView: React.FC = () => {
   const [visitResult, setVisitResult] = useState<
     "correct" | "incorrect" | null
   >(null);
+  const [question, setQuestion] = useState("");
+  const [isSendingQuestion, setIsSendingQuestion] = useState(false);
+  const [questionSent, setQuestionSent] = useState(false);
   const [loading, setLoading] = useState(true);
   const studentId = localStorage.getItem("student_id") || "";
 
@@ -99,45 +110,23 @@ export const StandDetailView: React.FC = () => {
     setShowQRModal(true);
 
     try {
-      // Registrar check-in en progreso_recorrido
       if (studentId && id) {
-        await supabase.from("progreso_recorrido").insert({
-          estudiante_id: studentId,
-          estacion_id: id,
-          trivia_respondida_correctamente: false,
-          puntos_ganados: 0,
-        });
-
-        // Incrementar visitantes_activos
-        const { error: rpcError } = await supabase.rpc("increment_visitantes", {
-          stand_id: id,
+        // Usar la función RPC atómica para registrar check-in y actualizar visitantes
+        const { data, error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
+          p_estudiante_id: studentId,
+          p_estacion_id: id,
+          p_puntos_ganados: 0
         });
 
         if (rpcError) {
-          // Si no existe el RPC o falla, hacerlo manual
-          await supabase
-            .from("estaciones")
-            .update({
-              visitantes_activos: (stand?.visitantes_activos || 0) + 1,
-            })
-            .eq("id", id);
-        }
-
-        // Incrementar escaneos del estudiante (Simulación si no hay RPC específico)
-        // Obtenemos el estudiante para tener el conteo actual o usamos un valor base
-        const { data: studentData } = await supabase
-          .from("estudiantes")
-          .select("escaneos_realizados")
-          .eq("id", studentId)
-          .single();
-
-        if (studentData) {
-          await supabase
-            .from("estudiantes")
-            .update({
-              escaneos_realizados: (studentData.escaneos_realizados || 0) + 1,
-            })
-            .eq("id", studentId);
+          console.error("Error en RPC registrar_progreso_v2:", rpcError);
+          // Fallback a lógica manual si el RPC falla (por compatibilidad)
+          await supabase.from("progreso_recorrido").insert({
+            estudiante_id: studentId,
+            estacion_id: id,
+            trivia_respondida_correctamente: false,
+            puntos_ganados: 0,
+          });
         }
       }
     } catch (err) {
@@ -148,6 +137,37 @@ export const StandDetailView: React.FC = () => {
       setShowQRModal(false);
       setCheckedIn(true);
     }, 2000);
+  };
+
+  const handleSendQuestion = async () => {
+    if (!question.trim() || !studentId || !id) return;
+    
+    setIsSendingQuestion(true);
+    try {
+      const { error } = await supabase.from("preguntometro").insert({
+        estudiante_id: studentId,
+        estacion_id: id,
+        pregunta: question.trim(),
+        estado: "pendiente"
+      });
+
+      if (error) {
+        if (error.message.includes("limit")) {
+          alert("Has alcanzado el límite de preguntas pendientes. Espera a que los expositores respondan.");
+        } else {
+          throw error;
+        }
+      } else {
+        setQuestionSent(true);
+        setQuestion("");
+        setTimeout(() => setQuestionSent(false), 3000);
+      }
+    } catch (err) {
+      console.error("Error enviando pregunta:", err);
+      alert("No se pudo enviar la pregunta.");
+    } finally {
+      setIsSendingQuestion(false);
+    }
   };
 
   if (loading) {
@@ -364,9 +384,19 @@ export const StandDetailView: React.FC = () => {
                 letterSpacing: "0.1em",
               }}
             >
-              {stand.materia?.toUpperCase()}
+              GRUPO {stand.grupo?.toUpperCase()}
             </span>
           </div>
+
+          <p style={{ 
+            color: "var(--gold)", 
+            fontSize: "12px", 
+            fontWeight: "bold", 
+            marginTop: "12px",
+            marginBottom: "0" 
+          }}>
+            Responsable: {stand.docente_responsable}
+          </p>
 
           <h2
             style={{
@@ -476,6 +506,7 @@ export const StandDetailView: React.FC = () => {
                 background: "rgba(255,255,255,0.03)",
                 padding: "20px",
                 borderRadius: "16px",
+                border: "1px solid rgba(255,215,0,0.1)",
               }}
             >
               <h4
@@ -483,9 +514,12 @@ export const StandDetailView: React.FC = () => {
                   color: "var(--gold)",
                   marginBottom: "10px",
                   fontSize: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
                 }}
               >
-                ¿Tienes dudas?
+                <Users size={16} /> Preguntómetro Anónimo
               </h4>
               <p
                 style={{
@@ -494,8 +528,50 @@ export const StandDetailView: React.FC = () => {
                   marginBottom: "15px",
                 }}
               >
-                Puedes preguntar al terminar la explicación.
+                ¿Tienes alguna duda sobre la explicación? Envíala aquí.
               </p>
+              
+              <div style={{ position: "relative", marginBottom: "15px" }}>
+                <textarea
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder="Escribe tu pregunta aquí..."
+                  disabled={questionSent || isSendingQuestion}
+                  style={{
+                    width: "100%",
+                    height: "80px",
+                    background: "rgba(0,0,0,0.2)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "12px",
+                    padding: "12px",
+                    color: "white",
+                    fontSize: "14px",
+                    resize: "none",
+                    outline: "none",
+                  }}
+                />
+                <button
+                  onClick={handleSendQuestion}
+                  disabled={!question.trim() || isSendingQuestion || questionSent}
+                  style={{
+                    position: "absolute",
+                    bottom: "10px",
+                    right: "10px",
+                    background: questionSent ? "#27ae60" : "var(--gold)",
+                    color: "black",
+                    border: "none",
+                    padding: "6px 15px",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    opacity: (!question.trim() || isSendingQuestion) && !questionSent ? 0.5 : 1,
+                  }}
+                >
+                  {isSendingQuestion ? "Enviando..." : questionSent ? " ¡Enviada! " : "Enviar"}
+                </button>
+              </div>
+
               <button
                 onClick={() => {
                   // Marcar acceso válido a la trivia

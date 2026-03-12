@@ -99,52 +99,27 @@ export const TriviaView: React.FC = () => {
       // Limpiar el acceso de sesión
       sessionStorage.removeItem(`trivia_access_${id}`);
 
-      // Guardar resultado en progreso_recorrido
+      // Guardar resultado de forma atómica usando RPC
       if (studentId && id) {
         try {
-          await supabase
-            .from("progreso_recorrido")
-            .update({
-              trivia_respondida_correctamente: finalPuntos > 0,
-              puntos_ganados: finalPuntos,
-              completado_at: new Date().toISOString(),
-            })
-            .eq("estudiante_id", studentId)
-            .eq("estacion_id", id);
+          const { error: rpcError } = await supabase.rpc("finalizar_trivia_v2", {
+            p_estudiante_id: studentId,
+            p_estacion_id: id,
+            p_puntos_adicionales: finalPuntos,
+          });
 
-          // Actualizar puntos totales del estudiante
-          const { data: currentStudent } = await supabase
-            .from("estudiantes")
-            .select("total_puntos")
-            .eq("id", studentId)
-            .single();
-
-          if (currentStudent) {
+          if (rpcError) {
+            console.error("Error en finalizar_trivia_v2:", rpcError);
+            // Fallback manual si el RPC falla
             await supabase
-              .from("estudiantes")
+              .from("progreso_recorrido")
               .update({
-                total_puntos: (currentStudent.total_puntos || 0) + finalPuntos,
+                trivia_respondida_correctamente: finalPuntos > 0,
+                puntos_ganados: finalPuntos,
+                completado_at: new Date().toISOString(),
               })
-              .eq("id", studentId);
-          }
-
-          // Decrementar visitantes_activos del stand
-          const { data: currentStand } = await supabase
-            .from("estaciones")
-            .select("visitantes_activos")
-            .eq("id", id)
-            .single();
-
-          if (currentStand) {
-            await supabase
-              .from("estaciones")
-              .update({
-                visitantes_activos: Math.max(
-                  0,
-                  (currentStand.visitantes_activos || 1) - 1,
-                ),
-              })
-              .eq("id", id);
+              .eq("estudiante_id", studentId)
+              .eq("estacion_id", id);
           }
         } catch (err) {
           console.error("Error guardando resultado:", err);

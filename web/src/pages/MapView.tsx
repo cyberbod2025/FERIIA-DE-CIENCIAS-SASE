@@ -44,19 +44,19 @@ interface ProgresoItem {
 }
 
 const MATERIA_COLORS: Record<string, string> = {
-  Física: "#e74c3c",
-  Biología: "#27ae60",
-  Química: "#f39c12",
-  Geografía: "#3498db",
-  Matemáticas: "#9b59b6",
+  Matemáticas: "#9b59b6", // Púrpura
+  Biología: "#27ae60",    // Verde
+  Geografía: "#3498db",   // Azul
+  Física: "#e74c3c",      // Rojo
+  Química: "#f39c12",     // Naranja
 };
 
 const MATERIA_EMOJI: Record<string, string> = {
-  Física: "⚡",
-  Biología: "🧬",
-  Química: "🧪",
-  Geografía: "🌎",
   Matemáticas: "📐",
+  Biología: "🧬",
+  Geografía: "🌎",
+  Física: "⚡",
+  Química: "🧪",
 };
 
 export const MapView: React.FC = () => {
@@ -111,21 +111,21 @@ export const MapView: React.FC = () => {
       case "completado":
         return {
           icon: <CheckCircle size={14} />,
-          text: "✅ Completado",
-          color: "#27ae60",
-          bg: "rgba(39,174,96,0.15)",
+          text: "✅ ¡Éxito!",
+          color: "#00ff88",
+          bg: "rgba(0,255,136,0.15)",
         };
       case "visitado":
         return {
           icon: <XCircle size={14} />,
-          text: "❌ Fallido",
-          color: "#e74c3c",
-          bg: "rgba(231,76,60,0.15)",
+          text: "❌ Reintentar",
+          color: "#ff4d4d",
+          bg: "rgba(255,77,77,0.15)",
         };
       default:
         return {
           icon: <Lock size={14} />,
-          text: "🔓 Disponible",
+          text: "🔓 Explorar",
           color: "var(--gold)",
           bg: "rgba(255,215,0,0.1)",
         };
@@ -212,13 +212,16 @@ export const MapView: React.FC = () => {
         {standSugerido && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ 
+              opacity: 1, 
+              y: 0,
+            }}
+            className="glass-circus circus-glow"
             style={{
-              background:
-                "linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(26,47,122,0.3) 100%)",
-              padding: "16px",
-              borderRadius: "16px",
-              border: "1px solid rgba(255,215,0,0.25)",
+              padding: "24px",
+              borderRadius: "32px",
+              position: "relative",
+              border: "1px solid rgba(255,215,0,0.4)",
             }}
           >
             <div
@@ -338,20 +341,23 @@ export const MapView: React.FC = () => {
                       navigate(`/stand/${estacion.id}`);
                     }
                   }}
+                  className={isBlocked ? "glass-circus opacity-60" : "glass-circus"}
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: "14px",
-                    padding: "14px 16px",
-                    background: isBlocked
-                      ? "rgba(255,255,255,0.02)"
-                      : "rgba(26, 47, 122, 0.25)",
-                    borderRadius: "14px",
-                    border: `1px solid ${isBlocked ? "rgba(255,255,255,0.05)" : `${color}33`}`,
+                    padding: "16px",
+                    borderRadius: "24px",
                     cursor: isBlocked ? "not-allowed" : "pointer",
-                    opacity: isBlocked ? 0.6 : 1,
-                    transition: "background 0.2s ease, border 0.2s ease",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    border: isBlocked ? "1px solid rgba(255,255,255,0.05)" : `1px solid ${color}33`,
                   }}
+                  whileHover={!isBlocked ? { 
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    borderColor: `${color}66`,
+                    x: 8,
+                    boxShadow: `0 10px 30px -10px ${color}33`
+                  } : {}}
                 >
                   {/* Icono de materia */}
                   <div

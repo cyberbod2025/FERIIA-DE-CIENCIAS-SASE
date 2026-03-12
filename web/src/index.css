@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
+
 :root {
   --crimson: #d32f2f;
   --gold: #ffd700;
   --gold-dark: #b8860b;
   --midnight: #0d1b4b;
   --midnight-light: #1a2f7a;
-  --deep-blue: #050b24;
+  --deep-blue: #020617;
   --cream: #fff9e6;
   --white: #ffffff;
 
-  font-family: "Outfit", sans-serif;
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 215, 0, 0.3);
+
+  font-family: 'Nunito', sans-serif;
   background-color: var(--deep-blue);
   color: var(--white);
   margin: 0;
@@ -36,8 +41,33 @@ body {
 
 h1,
 h2,
-h3 {
-  font-family: "Playfair Display", serif;
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Premium Utilities */
+.glass-circus {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.circus-glow {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2),
+              0 0 40px rgba(255, 215, 0, 0.1);
+}
+
+.title-glow {
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5),
+               0 0 20px rgba(211, 47, 47, 0.3);
 }
 
 /* Scrollbar personalizada */
