@@ -3,14 +3,9 @@ import { Layout } from "../components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  ArrowLeft,
   QrCode,
   Users,
   Star,
-  Clock,
-  ExternalLink,
-  Info,
-  Award,
   ArrowRight,
   ShieldAlert,
   CheckCircle,
@@ -112,7 +107,7 @@ export const StandDetailView: React.FC = () => {
     try {
       if (studentId && id) {
         // Usar la función RPC atómica para registrar check-in y actualizar visitantes
-        const { data, error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
+        const { error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
           p_estudiante_id: studentId,
           p_estacion_id: id,
           p_puntos_ganados: 0
