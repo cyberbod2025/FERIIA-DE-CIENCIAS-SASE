@@ -6,7 +6,6 @@ interface SaseIdentityOrbProps {
   state?: OrbState;
   size?: number;
   className?: string;
-  showAccessories?: boolean;
 }
 
 const stateColors = {
@@ -36,7 +35,6 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
   state = "imposing",
   size = 300,
   className = "",
-  showAccessories = false,
 }) => {
   const colors = stateColors[state];
 
@@ -46,9 +44,6 @@ export const SaseIdentityOrb: React.FC<SaseIdentityOrbProps> = ({
       style={{ "--orb-size": `${size}px` } as React.CSSProperties}
     >
       <div className="orb-container">
-        {/* Accesorios de Domadora (Sombrero) */}
-        {showAccessories && <div className="accessory hat">🎩</div>}
-
         {/* Plasma Exterior Ring 1 */}
         <div
           className="plasma-ring ring-1"

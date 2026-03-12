@@ -95,38 +95,28 @@ const Reflectores = () => {
 };
 
 export const IntroView: React.FC = () => {
-  const [stage, setStage] = useState<"plasma" | "orb" | "circus" | "domadora">(
-    "plasma",
-  );
+  const [stage, setStage] = useState<"plasma" | "orb" | "welcome">("plasma");
   const [orbState, setOrbState] = useState<OrbState>("imposing");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Stage 1: Plasma
-    const t1 = setTimeout(() => setStage("orb"), 2500);
-
-    // Stage 2: Orbe cambiando colores (Azul, Verde, Amarillo, Rojo)
+    const t1 = setTimeout(() => setStage("orb"), 1200);
     const t2 = setTimeout(() => {
       const colors: OrbState[] = ["imposing", "stable", "alert", "critical"];
       let i = 0;
       const interval = setInterval(() => {
         setOrbState(colors[i % colors.length]);
         i++;
-        if (i >= 12) clearInterval(interval);
-      }, 600);
-    }, 2600);
-
-    // Stage 3: Emerge carpa
-    const t3 = setTimeout(() => setStage("circus"), 7000);
-
-    // Stage 4: Domadora
-    const t4 = setTimeout(() => setStage("domadora"), 9500);
+        if (i >= 6) {
+          clearInterval(interval);
+          setStage("welcome");
+        }
+      }, 400);
+    }, 1300);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
     };
   }, []);
 
@@ -134,199 +124,120 @@ export const IntroView: React.FC = () => {
     <div
       className="intro-root"
       style={{
-        width: "100vw",
-        height: "100vh",
-        background: "#020617",
+        width: "100%",
+        minHeight: "100dvh",
+        background: "#000",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
+        overflowX: "hidden",
+        overflowY: "auto",
         position: "fixed",
         top: 0,
         left: 0,
         color: "white",
+        padding: "env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px",
         zIndex: 9999,
+        boxSizing: "border-box"
       }}
     >
       <Confetti />
       <Reflectores />
 
-      {/* Plasma Background */}
-      <AnimatePresence>
-        {stage === "plasma" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "radial-gradient(circle, rgba(14, 165, 233, 0.4) 0%, transparent 70%)",
-              filter: "blur(40px)",
-              zIndex: 1,
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Circus Tent */}
-      <AnimatePresence>
-        {(stage === "circus" || stage === "domadora") && (
-          <motion.div
-            initial={{ y: 500, opacity: 0, scale: 0.8 }}
-            animate={{
-              y: stage === "domadora" ? -40 : 0,
-              opacity: 0.8,
-              scale: 1.6,
-            }}
-            style={{
-              position: "absolute",
-              bottom: "15%",
-              fontSize: "220px",
-              zIndex: 1,
-              filter: "drop-shadow(0 0 50px rgba(211, 47, 47, 0.6)) blur(2px)",
-            }}
-          >
-            🎪
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* IA-SASE */}
-      <div style={{ zIndex: 10, position: "relative" }}>
+      {/* IA-SASE & Welcome Content */}
+      <div style={{ 
+        zIndex: 10, 
+        position: "relative", 
+        width: "100%", 
+        maxWidth: "450px", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
         <AnimatePresence mode="wait">
-          {stage !== "domadora" ? (
+          {stage !== "welcome" ? (
             <motion.div
               key="orb"
               initial={{ scale: 0, opacity: 0 }}
-              animate={{
-                scale: stage === "plasma" ? [0, 1.2, 1] : 1,
-                opacity: 1,
-              }}
-              exit={{ scale: 0, opacity: 0, rotate: 360 }}
-              transition={{ duration: 1.5, type: "spring" }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              <SaseIdentityOrb
-                state={orbState}
-                size={stage === "plasma" ? 180 : 320}
-              />
+              <SaseIdentityOrb state={orbState} size={200} />
             </motion.div>
           ) : (
             <motion.div
-              key="domadora"
-              initial={{ scale: 0.5, rotate: -20, opacity: 0 }}
-              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              key="welcome"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                width: "100%",
                 gap: "20px",
               }}
             >
-              <div style={{ position: "relative" }}>
-                <SaseIdentityOrb
-                  state="imposing"
-                  size={300}
-                  showAccessories={true}
-                />
+              <SaseIdentityOrb state="imposing" size={180} />
 
-                {/* Látigo animado */}
-                <motion.div
-                  animate={{ rotate: [0, -30, 20, 0] }}
-                  transition={{ repeat: Infinity, duration: 1 }}
-                  style={{
-                    position: "absolute",
-                    right: "-90px",
-                    top: "30%",
-                    fontSize: "80px",
-                    zIndex: 20,
-                  }}
-                >
-                  ➰
-                </motion.div>
-              </div>
-
-              {/* Welcome Card Premium */}
               <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ 
-                  delay: 1,
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 15
-                }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className="glass-circus-quantum circus-glow"
                 style={{
                   textAlign: "center",
-                  padding: "40px 32px",
-                  borderRadius: "40px",
-                  maxWidth: "400px",
-                  marginTop: "20px",
-                  position: "relative",
-                  overflow: "hidden"
+                  padding: "24px",
+                  borderRadius: "28px",
+                  width: "100%",
+                  boxSizing: "border-box"
                 }}
               >
-                {/* Decorative Shine Effect */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-50%',
-                  left: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  background: 'radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%)',
-                  pointerEvents: 'none'
-                }} />
-
                 <h2
                   className="title-glow"
                   style={{
                     color: "var(--gold)",
-                    marginBottom: "16px",
-                    fontSize: "32px",
-                    lineHeight: "1.1",
+                    marginBottom: "12px",
+                    fontSize: "clamp(20px, 6vw, 28px)",
+                    lineHeight: "1.2",
                     textTransform: "uppercase"
                   }}
                 >
-                  ¡EL ESPECTÁCULO COMIENZA!
+                  ¡Bienvenido a la Feria de Ciencias!
                 </h2>
                 <p
                   style={{ 
-                    fontSize: "17px", 
-                    lineHeight: "1.6", 
-                    color: "rgba(255,255,255,0.9)",
-                    marginBottom: "32px",
-                    fontWeight: 500
+                    fontSize: "clamp(14px, 4vw, 16px)", 
+                    lineHeight: "1.5", 
+                    color: "rgba(255,255,255,0.85)",
+                    marginBottom: "24px",
                   }}
                 >
-                  Soy la <span style={{ color: 'var(--gold)', fontWeight: 700 }}>IA-SASE</span>, tu guía en este <span style={{ color: 'var(--crimson)', fontWeight: 700 }}>Circo de la Ciencia</span>. ¡Entra ahora y descubre los secretos del saber!
+                  Soy <span style={{ color: 'var(--gold)', fontWeight: 700 }}>IA-SASE</span>, tu guía inteligente. 
+                  Explora los proyectos y descubre el futuro hoy mismo.
                 </p>
                 
                 <motion.button
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 15px 30px rgba(211, 47, 47, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => navigate("/login")}
                   style={{
-                    padding: "18px 48px",
+                    padding: "16px",
                     background: "var(--crimson)",
                     border: "none",
-                    borderRadius: "100px",
+                    borderRadius: "14px",
                     color: "white",
-                    fontWeight: "900",
-                    fontSize: "18px",
+                    fontWeight: "800",
+                    fontSize: "16px",
                     cursor: "pointer",
                     textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    boxShadow: "0 10px 20px rgba(211, 47, 47, 0.3)",
-                    width: "100%"
+                    letterSpacing: "0.05em",
+                    width: "100%",
+                    boxShadow: "0 8px 20px rgba(211, 47, 47, 0.3)"
                   }}
                 >
-                  Entrar a la Función
+                  Entrar al Sistema
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -337,7 +248,10 @@ export const IntroView: React.FC = () => {
       <style>{`
         .intro-root {
           user-select: none;
-          touch-action: none;
+          background: radial-gradient(circle at center, #020617 0%, #000 100%);
+        }
+        @media (max-width: 480px) {
+          .intro-root { padding: 15px; }
         }
       `}</style>
     </div>
