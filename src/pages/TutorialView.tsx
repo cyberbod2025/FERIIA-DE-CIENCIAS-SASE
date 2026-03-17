@@ -3,7 +3,7 @@ import { Layout } from "../components/Layout";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Target, ChevronRight } from "lucide-react";
-import { SaseIdentityOrb } from "../components/SaseIdentityOrb";
+import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,7 +33,7 @@ export const TutorialView: React.FC = () => {
   const userName = localStorage.getItem("user_name") || "Artista";
 
   return (
-    <Layout title="📘 Objetivo de la App">
+    <Layout title="📘 Manual de Misión">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -63,7 +63,7 @@ export const TutorialView: React.FC = () => {
               marginBottom: "15px",
             }}
           >
-            <SaseIdentityOrb state="stable" size={140} showAccessories={true} />
+            <FeriaIdentityOrb state="stable" size={140} showAccessories={true} />
           </div>
           <h2
             style={{
@@ -81,8 +81,8 @@ export const TutorialView: React.FC = () => {
               color: "rgba(255,255,255,0.8)",
             }}
           >
-            Estás a punto de entrar al <strong>Circo de la Ciencia 310</strong>,
-            una experiencia donde la magia y el conocimiento se unen.
+            Estás a punto de entrar a la <strong>FERIA DE CIENCIAS 2026 ESD-310</strong>,
+            una experiencia donde el conocimiento y la innovación se unen.
           </p>
         </motion.div>
 

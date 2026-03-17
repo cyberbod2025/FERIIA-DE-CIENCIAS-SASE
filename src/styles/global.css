@@ -1,13 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600;700&display=swap");
 
 :root {
-  --crimson: #d32f2f;
-  --gold: #ffd700;
-  --gold-dark: #b8860b;
-  --midnight: #0d1b4b;
-  --midnight-light: #1a2f7a;
-  --deep-blue: #0a1035;
-  --cream: #fff8e1;
+  --primary: #FFD700; /* Oro Original Feria */
+  --primary-dark: #B8860B;
+  --accent: #06B6D4; /* Cyan Digital Moderno */
+  --accent-glow: rgba(6, 182, 212, 0.4);
+  --bg-deep: #020617; /* Negro Obsidiana */
+  --bg-card: rgba(255, 255, 255, 0.02);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --glass: rgba(255, 255, 255, 0.03);
   --white: #ffffff;
   --safe-area-bottom: env(safe-area-inset-bottom, 20px);
 }
@@ -34,24 +35,14 @@ body {
   width: 100%;
   max-width: 430px; /* Tamaño iPhone Pro Max */
   height: 100vh;
-  background: var(--deep-blue);
+  background: var(--bg-deep);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-image:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(211, 47, 47, 0.15) 0%,
-      transparent 50%
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 30px,
-      rgba(255, 215, 0, 0.02) 30px,
-      rgba(255, 215, 0, 0.02) 60px
-    );
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
 }
 
 @media (min-width: 450px) {
@@ -67,7 +58,7 @@ body {
     box-shadow:
       0 50px 100px -20px rgba(0, 0, 0, 0.8),
       0 30px 60px -30px rgba(0, 0, 0, 0.9),
-      0 0 0 2px rgba(255, 215, 0, 0.1);
+      0 0 0 1px var(--border-light);
   }
 }
 
@@ -85,8 +76,10 @@ body {
 h1,
 h2,
 h3 {
-  font-family: "Playfair Display", serif;
-  letter-spacing: -0.02em;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
 button {

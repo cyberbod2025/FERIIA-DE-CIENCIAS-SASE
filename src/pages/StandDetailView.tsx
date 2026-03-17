@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   CheckCircle,
   XCircle,
+  FlaskConical,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
@@ -169,7 +170,7 @@ export const StandDetailView: React.FC = () => {
     return (
       <Layout title="Cargando Stand...">
         <div style={{ padding: "40px", textAlign: "center", color: "white" }}>
-          Buscando información de la función...
+          Buscando información del proyecto...
         </div>
       </Layout>
     );
@@ -351,7 +352,7 @@ export const StandDetailView: React.FC = () => {
               opacity: 0.1,
             }}
           >
-            <Tent size={120} />
+            <FlaskConical size={120} />
           </div>
 
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -631,20 +632,3 @@ export const StandDetailView: React.FC = () => {
     </Layout>
   );
 };
-
-const Tent: React.FC<{ size: number }> = ({ size }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M3.5 21 12 3l8.5 18" />
-    <path d="M12 3v18" />
-    <path d="M2.5 21h19" />
-  </svg>
-);

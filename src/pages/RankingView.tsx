@@ -53,12 +53,13 @@ export const RankingView: React.FC = () => {
   }, []);
 
   return (
-    <Layout title="🏆 Líderes de la Función">
+    <Layout title="🏆 Líderes de la Ciencia">
       <div
         style={{
-          background: "linear-gradient(135deg, #1a2f7a 0%, #0d1b4b 100%)",
-          padding: "24px",
+          background: "rgba(255,255,255,0.03)",
+          padding: "32px 24px",
           textAlign: "center",
+          borderBottom: "1px solid rgba(255,255,255,0.05)"
         }}
       >
         <div
@@ -88,7 +89,7 @@ export const RankingView: React.FC = () => {
           Tabla de Honor
         </h1>
         <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.6)" }}>
-          ¡Los malabaristas del conocimiento!
+          ¡Los pioneros de la innovación!
         </p>
       </div>
 

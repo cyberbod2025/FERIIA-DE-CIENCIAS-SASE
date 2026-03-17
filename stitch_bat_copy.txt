@@ -1,0 +1,11 @@
+@echo off
+set "PATH=C:\Program Files\nodejs;C:\Users\cyber\.stitch-mcp\google-cloud-sdk\bin;%PATH%"
+set "CLOUDSDK_CONFIG=C:\Users\cyber\.stitch-mcp\config"
+set "GOOGLE_APPLICATION_CREDENTIALS=C:\Users\cyber\.stitch-mcp\config\application_default_credentials.json"
+set "GOOGLE_CLOUD_PROJECT=sase-310-mx"
+set CLOUDSDK_CORE_DISABLE_PROMPTS=1
+set CLOUDSDK_CORE_DISABLE_USAGE_REPORTING=true
+
+:: Ejecutamos el wrapper de Node en lugar del comando directo
+:: El wrapper se encarga de filtrar la salida "sucia"
+node "C:\Users\cyber\stitch_wrapper.js"

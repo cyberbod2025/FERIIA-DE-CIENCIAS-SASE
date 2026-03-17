@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Compass, Users, CheckCircle, Lock, XCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
-import { SaseIdentityOrb } from "../components/SaseIdentityOrb";
+import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
 
 interface Estacion {
   id: string;
@@ -44,11 +44,11 @@ interface ProgresoItem {
 }
 
 const MATERIA_COLORS: Record<string, string> = {
-  Matemáticas: "#9b59b6", // Púrpura
-  Biología: "#27ae60",    // Verde
-  Geografía: "#3498db",   // Azul
-  Física: "#e74c3c",      // Rojo
-  Química: "#f39c12",     // Naranja
+  Matemáticas: "var(--chemistry-purple)", 
+  Biología: "var(--biology-green)",
+  Geografía: "var(--physics-blue)",
+  Física: "var(--crimson)",
+  Química: "var(--robotics-orange)",
 };
 
 const MATERIA_EMOJI: Record<string, string> = {
@@ -96,7 +96,28 @@ export const MapView: React.FC = () => {
       }
     };
 
+    const channel = supabase
+      .channel("realtime-estaciones")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "estaciones" },
+        (payload) => {
+          setEstaciones((prev) =>
+            prev.map((est) =>
+              est.id === payload.new.id
+                ? { ...est, visitantes_activos: payload.new.visitantes_activos }
+                : est
+            )
+          );
+        }
+      )
+      .subscribe();
+
     fetchData();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [studentId]);
 
   const getStandStatus = (estacionId: string) => {
@@ -140,8 +161,9 @@ export const MapView: React.FC = () => {
     )[0];
 
   return (
-    <Layout title="📍 Mapa de la Función">
+    <Layout title="🧭 Brújula del Tesoro">
       <div
+        className="treasure-map-container"
         style={{
           padding: "16px",
           display: "flex",
@@ -149,6 +171,7 @@ export const MapView: React.FC = () => {
           gap: "16px",
           flex: 1,
           overflowY: "auto",
+          background: "radial-gradient(circle at 50% 50%, rgba(236,182,19,0.03) 0%, transparent 70%)"
         }}
       >
         {/* Header con grupo */}
@@ -216,7 +239,7 @@ export const MapView: React.FC = () => {
               opacity: 1, 
               y: 0,
             }}
-            className="glass-circus-quantum circus-glow"
+            className="glass-science-quantum science-glow"
             style={{
               padding: "24px",
               borderRadius: "32px",
@@ -254,10 +277,9 @@ export const MapView: React.FC = () => {
               }}
             >
               <div style={{ flexShrink: 0 }}>
-                <SaseIdentityOrb
+                <FeriaIdentityOrb
                   state="stable"
                   size={70}
-                  showAccessories={true}
                 />
               </div>
               <div style={{ flex: 1 }}>
@@ -268,7 +290,7 @@ export const MapView: React.FC = () => {
                     fontSize: "15px",
                   }}
                 >
-                  {MATERIA_EMOJI[standSugerido.materia] || "🎪"}{" "}
+                  {MATERIA_EMOJI[standSugerido.materia] || "🔬"}{" "}
                   {standSugerido.nombre}
                 </h4>
                 <div
@@ -325,98 +347,131 @@ export const MapView: React.FC = () => {
             animate="visible"
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            {estaciones.map((estacion) => {
+            {estaciones.map((estacion, i) => {
               const status = getStandStatus(estacion.id);
               const badge = getStatusBadge(status);
               const color = MATERIA_COLORS[estacion.materia] || "var(--gold)";
               const isBlocked = status !== "disponible";
 
               return (
-                <motion.div
-                  key={estacion.id}
-                  variants={itemVariants}
-                  whileTap={!isBlocked ? { scale: 0.97 } : {}}
-                  onClick={() => {
-                    if (!isBlocked) {
-                      navigate(`/stand/${estacion.id}`);
-                    }
-                  }}
-                  className={isBlocked ? "glass-circus-quantum opacity-60" : "glass-circus-quantum"}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "14px",
-                    padding: "16px",
-                    borderRadius: "24px",
-                    cursor: isBlocked ? "not-allowed" : "pointer",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    border: isBlocked ? "1px solid rgba(255,255,255,0.05)" : `1px solid ${color}33`,
-                  }}
-                  whileHover={!isBlocked ? { 
-                    backgroundColor: "rgba(255,255,255,0.08)",
-                    borderColor: `${color}66`,
-                    x: 8,
-                    boxShadow: `0 10px 30px -10px ${color}33`
-                  } : {}}
-                >
-                  {/* Icono de materia */}
-                  <div
+                <div key={estacion.id} style={{ position: "relative" }}>
+                  {/* Línea conectora (Camino del tesoro) */}
+                  {i < estaciones.length - 1 && (
+                    <div style={{
+                      position: "absolute",
+                      left: "38px",
+                      top: "60px",
+                      width: "2px",
+                      height: "20px",
+                      background: "linear-gradient(to bottom, var(--gold-glow), transparent)",
+                      zIndex: 0
+                    }} />
+                  )}
+                  
+                  <motion.div
+                    key={estacion.id}
+                    variants={itemVariants}
+                    whileTap={!isBlocked ? { scale: 0.97 } : {}}
+                    onClick={() => {
+                      if (!isBlocked) {
+                        navigate(`/stand/${estacion.id}`);
+                      }
+                    }}
+                    className={isBlocked ? "glass-science-quantum opacity-60" : "glass-science-quantum"}
                     style={{
-                      width: "44px",
-                      height: "44px",
-                      borderRadius: "12px",
-                      background: `${color}22`,
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "22px",
-                      flexShrink: 0,
+                      gap: "14px",
+                      padding: "16px",
+                      borderRadius: "24px",
+                      cursor: isBlocked ? "not-allowed" : "pointer",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      border: isBlocked ? "1px solid rgba(255,255,255,0.05)" : `1px solid ${color}33`,
+                      position: "relative",
+                      zIndex: 1,
                     }}
+                    whileHover={!isBlocked ? { 
+                      backgroundColor: "rgba(255,255,255,0.08)",
+                      borderColor: `${color}66`,
+                      x: 8,
+                      boxShadow: `0 10px 30px -10px ${color}33`
+                    } : {}}
                   >
-                    {MATERIA_EMOJI[estacion.materia] || "🎪"}
-                  </div>
-
-                  {/* Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <h4
+                    {/* Icono de materia */}
+                    <div
                       style={{
-                        color: isBlocked ? "rgba(255,255,255,0.5)" : "white",
-                        margin: "0 0 4px 0",
-                        fontSize: "14px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        width: "44px",
+                        height: "44px",
+                        borderRadius: "12px",
+                        background: `${color}22`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "22px",
+                        flexShrink: 0,
                       }}
                     >
-                      {estacion.nombre}
-                    </h4>
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        color: color,
-                        fontWeight: "600",
-                      }}
-                    >
-                      {estacion.materia}
-                    </span>
-                  </div>
+                      {MATERIA_EMOJI[estacion.materia] || "🔬"}
+                    </div>
 
-                  {/* Badge de estado */}
-                  <div
-                    style={{
-                      padding: "4px 10px",
-                      borderRadius: "20px",
-                      background: badge.bg,
-                      color: badge.color,
-                      fontSize: "10px",
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {badge.text}
-                  </div>
-                </motion.div>
+                    {/* Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4
+                        style={{
+                          color: isBlocked ? "rgba(255,255,255,0.5)" : "white",
+                          margin: "0 0 4px 0",
+                          fontSize: "14px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {estacion.nombre}
+                      </h4>
+                      <span
+                        style={{
+                          fontSize: "11px",
+                          color: color,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {estacion.materia}
+                      </span>
+                    </div>
+
+                    {/* Badge de estado & Ocupación */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                      <div
+                        style={{
+                          padding: "4px 10px",
+                          borderRadius: "20px",
+                          background: badge.bg,
+                          color: badge.color,
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                          whiteSpace: "nowrap",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {badge.text}
+                      </div>
+                      {status === 'disponible' && (
+                        <div style={{ 
+                          fontSize: '9px', 
+                          color: 'rgba(255,255,255,0.4)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '4px',
+                          background: 'rgba(0,0,0,0.2)',
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          <Users size={8} /> {estacion.visitantes_activos} activos
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                </div>
               );
             })}
           </motion.div>

@@ -1,124 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { SaseIdentityOrb, OrbState } from "../components/SaseIdentityOrb";
+import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
 
-const Confetti = () => {
-  return (
-    <div
+const SpaceBackground = () => (
+  <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
+    <motion.div
+      animate={{ 
+        scale: [1, 1.1, 1],
+        opacity: [0.2, 0.4, 0.2]
+      }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       style={{
         position: "absolute",
-        inset: 0,
-        pointerEvents: "none",
-        overflow: "hidden",
+        width: "100%",
+        height: "100%",
+        background: "radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 70%)",
+        filter: "blur(40px)",
       }}
-    >
-      {[...Array(30)].map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{
-            y: -20,
-            x: Math.random() * 100 + "%",
-            rotate: 0,
-            opacity: 1,
-          }}
-          animate={{
-            y: "110vh",
-            rotate: 360,
-            opacity: 0,
-          }}
-          transition={{
-            duration: Math.random() * 2 + 3,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-          }}
-          style={{
-            position: "absolute",
-            width: "10px",
-            height: "10px",
-            background: ["#FFD700", "#D32F2F", "#0EA5E9", "#00C853"][
-              Math.floor(Math.random() * 4)
-            ],
-            borderRadius: Math.random() > 0.5 ? "50%" : "2px",
-            zIndex: 5,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-const Reflectores = () => {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        pointerEvents: "none",
-        zIndex: 2,
-      }}
-    >
+    />
+    {[...Array(40)].map((_, i) => (
       <motion.div
-        animate={{ rotate: [-20, 20, -20] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        key={i}
+        initial={{ opacity: Math.random() }}
+        animate={{ opacity: [0.1, 0.6, 0.1], scale: [1, 1.2, 1] }}
+        transition={{ duration: Math.random() * 5 + 3, repeat: Infinity }}
         style={{
           position: "absolute",
-          top: -100,
-          left: "10%",
-          width: "200px",
-          height: "800px",
-          background:
-            "linear-gradient(to bottom, rgba(255,255,255,0.2), transparent)",
-          clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-          filter: "blur(40px)",
-          transformOrigin: "top",
+          width: "2px",
+          height: "2px",
+          background: i % 2 === 0 ? "var(--primary)" : "var(--accent)",
+          left: Math.random() * 100 + "%",
+          top: Math.random() * 100 + "%",
+          borderRadius: "50%",
+          boxShadow: `0 0 10px ${i % 2 === 0 ? "var(--primary)" : "var(--accent)"}`,
         }}
       />
-      <motion.div
-        animate={{ rotate: [20, -20, 20] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute",
-          top: -100,
-          right: "10%",
-          width: "200px",
-          height: "800px",
-          background:
-            "linear-gradient(to bottom, rgba(255,255,255,0.2), transparent)",
-          clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-          filter: "blur(40px)",
-          transformOrigin: "top",
-        }}
-      />
-    </div>
-  );
-};
+    ))}
+  </div>
+);
 
 export const IntroView: React.FC = () => {
-  const [stage, setStage] = useState<"plasma" | "orb" | "welcome">("plasma");
-  const [orbState, setOrbState] = useState<OrbState>("imposing");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setStage("orb"), 1200);
-    const t2 = setTimeout(() => {
-      const colors: OrbState[] = ["imposing", "stable", "alert", "critical"];
-      let i = 0;
-      const interval = setInterval(() => {
-        setOrbState(colors[i % colors.length]);
-        i++;
-        if (i >= 6) {
-          clearInterval(interval);
-          setStage("welcome");
-        }
-      }, 400);
-    }, 1300);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, []);
 
   return (
     <div
@@ -126,134 +49,94 @@ export const IntroView: React.FC = () => {
       style={{
         width: "100%",
         minHeight: "100dvh",
-        background: "#000",
+        background: "#020617",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        overflowX: "hidden",
-        overflowY: "auto",
         position: "fixed",
-        top: 0,
-        left: 0,
-        color: "white",
-        padding: "env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px",
+        inset: 0,
         zIndex: 9999,
-        boxSizing: "border-box"
+        color: "white",
+        overflow: "hidden"
       }}
     >
-      <Confetti />
-      <Reflectores />
+      <SpaceBackground />
+      
+      <div style={{ zIndex: 10, textAlign: "center", padding: "20px" }}>
+        <motion.div
+          key="content"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            maxWidth: "400px"
+          }}
+        >
+          <FeriaIdentityOrb state="stable" size={200} />
+          
+          <h1 style={{
+            marginTop: "40px",
+            fontSize: "30px",
+            fontFamily: "'Outfit', sans-serif",
+            background: "linear-gradient(180deg, #FFFFFF 0%, var(--primary) 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            marginBottom: "5px",
+            fontWeight: 800,
+            letterSpacing: "-0.02em",
+            textTransform: "uppercase"
+          }}>
+            FERIA DE CIENCIAS 2026 ESD-310
+          </h1>
+          <p style={{
+            fontSize: "13px",
+            color: "var(--accent)",
+            letterSpacing: "0.3em",
+            marginBottom: "60px",
+            fontWeight: 700,
+            textTransform: "uppercase"
+          }}>
+            Innovación Educativa Sec. 310
+          </p>
 
-      {/* IA-SASE & Welcome Content */}
-      <div style={{ 
-        zIndex: 10, 
-        position: "relative", 
-        width: "100%", 
-        maxWidth: "450px", 
-        display: "flex", 
-        flexDirection: "column", 
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
-        <AnimatePresence mode="wait">
-          {stage !== "welcome" ? (
-            <motion.div
-              key="orb"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <SaseIdentityOrb state={orbState} size={200} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="welcome"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                gap: "20px",
-              }}
-            >
-              <SaseIdentityOrb state="imposing" size={180} />
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="glass-circus-quantum circus-glow"
-                style={{
-                  textAlign: "center",
-                  padding: "24px",
-                  borderRadius: "28px",
-                  width: "100%",
-                  boxSizing: "border-box"
-                }}
-              >
-                <h2
-                  className="title-glow"
-                  style={{
-                    color: "var(--gold)",
-                    marginBottom: "12px",
-                    fontSize: "clamp(20px, 6vw, 28px)",
-                    lineHeight: "1.2",
-                    textTransform: "uppercase"
-                  }}
-                >
-                  ¡Bienvenido a la Feria de Ciencias!
-                </h2>
-                <p
-                  style={{ 
-                    fontSize: "clamp(14px, 4vw, 16px)", 
-                    lineHeight: "1.5", 
-                    color: "rgba(255,255,255,0.85)",
-                    marginBottom: "24px",
-                  }}
-                >
-                  Soy <span style={{ color: 'var(--gold)', fontWeight: 700 }}>IA-SASE</span>, tu guía inteligente. 
-                  Explora los proyectos y descubre el futuro hoy mismo.
-                </p>
-                
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate("/login")}
-                  style={{
-                    padding: "16px",
-                    background: "var(--crimson)",
-                    border: "none",
-                    borderRadius: "14px",
-                    color: "white",
-                    fontWeight: "800",
-                    fontSize: "16px",
-                    cursor: "pointer",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    width: "100%",
-                    boxShadow: "0 8px 20px rgba(211, 47, 47, 0.3)"
-                  }}
-                >
-                  Entrar al Sistema
-                </motion.button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate("/login")}
+            style={{
+              padding: "22px 56px",
+              background: "rgba(2, 6, 23, 0.8)",
+              border: "1px solid var(--accent)",
+              borderRadius: "16px",
+              color: "white",
+              fontSize: "15px",
+              fontWeight: "700",
+              letterSpacing: "0.15em",
+              cursor: "pointer",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(6, 182, 212, 0.2)"
+            }}
+          >
+            INICIAR EXPLORACIÓN
+          </motion.button>
+        </motion.div>
       </div>
 
-      <style>{`
-        .intro-root {
-          user-select: none;
-          background: radial-gradient(circle at center, #020617 0%, #000 100%);
-        }
-        @media (max-width: 480px) {
-          .intro-root { padding: 15px; }
-        }
-      `}</style>
+      <div style={{
+        position: "absolute",
+        bottom: "40px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "10px",
+        color: "rgba(255,255,255,0.2)",
+        letterSpacing: "0.1em"
+      }}>
+        © 2026 CIENCIA DIGITAL | ESD-310
+      </div>
     </div>
   );
 };

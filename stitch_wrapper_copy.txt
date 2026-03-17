@@ -1,0 +1,41 @@
+const { spawn } = require("child_process");
+const readline = require("readline");
+
+// Ruta al ejecutable original de Stitch
+const command =
+  "C:\\AtemiMX_Workspace\\sase-310_-sistema-escolar\\node_modules\\.bin\\stitch-mcp.cmd";
+const args = ["proxy"];
+
+// Lanzar el proceso heredando las variables de entorno
+const child = spawn(command, args, {
+  shell: true,
+  env: process.env,
+  stdio: ["inherit", "pipe", "inherit"], // Capturamos stdout, heredamos stdin/stderr
+});
+
+// Usar readline para procesar línea por línea y filtrar basura
+const rl = readline.createInterface({
+  input: child.stdout,
+  terminal: false,
+});
+
+rl.on("line", (line) => {
+  const trimmed = line.trim();
+  // LA REGLA DE ORO: Solo permitimos líneas que empiecen con '{' (JSON válido)
+  // Esto elimina '[dotenv...]', warning logs, y cualquier texto plano.
+  if (trimmed.startsWith("{")) {
+    console.log(line);
+  } else {
+    // Opcional: ver qué estamos filtrando en stderr (no rompe el protocolo)
+    // process.stderr.write(`[FILTERED]: ${line}\n`);
+  }
+});
+
+child.on("close", (code) => {
+  process.exit(code);
+});
+
+child.on("error", (err) => {
+  process.stderr.write(`Wrapper Error: ${err}\n`);
+  process.exit(1);
+});

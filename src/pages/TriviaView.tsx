@@ -260,7 +260,7 @@ export const TriviaView: React.FC = () => {
     return (
       <Layout title="Cargando Trivia...">
         <div style={{ padding: "40px", textAlign: "center", color: "white" }}>
-          Preparando preguntas de la función...
+          Preparando preguntas del proyecto...
         </div>
       </Layout>
     );
@@ -494,7 +494,7 @@ export const TriviaView: React.FC = () => {
                 marginBottom: "10px",
               }}
             >
-              {puntos > 0 ? "¡Función Terminada!" : "Trivia Finalizada"}
+              {puntos > 0 ? "¡Misión Terminada!" : "Trivia Finalizada"}
             </h2>
             <p style={{ color: "rgba(255,255,255,0.7)", marginBottom: "30px" }}>
               {puntos > 0 ? (
