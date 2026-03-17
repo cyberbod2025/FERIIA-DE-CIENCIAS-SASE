@@ -47,18 +47,19 @@ body {
 
 @media (min-width: 450px) {
   body {
-    background: #050505;
-    padding: 20px;
+    background: #020617; /* Fondo obsidiana */
+    padding: 0;
   }
   .phone-frame {
-    height: 92vh;
-    max-height: 932px;
-    border-radius: 48px;
-    border: 8px solid #1a1a1a; /* Simulación de bisel físico */
-    box-shadow:
-      0 50px 100px -20px rgba(0, 0, 0, 0.8),
-      0 30px 60px -30px rgba(0, 0, 0, 0.9),
-      0 0 0 1px var(--border-light);
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    max-width: 500px; /* Mantener proporción pero sin el 'aparato' */
+    margin: 0 auto;
+    border-left: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
   }
 }
 

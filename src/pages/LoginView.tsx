@@ -96,13 +96,13 @@ export const LoginView: React.FC = () => {
 
   return (
     <Layout title="Acceso al Núcleo">
-      <div className="flex flex-col items-center justify-start min-h-full p-6 pt-12 space-y-8">
-        <div className="w-full max-w-sm space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-400 uppercase">
+      <div className="flex flex-col items-center justify-start min-h-full p-6 pt-6 space-y-6">
+        <div className="w-full max-w-sm space-y-4">
+          <div className="text-center space-y-1">
+            <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-400 uppercase leading-none">
               FERIA DE CIENCIAS 2026 ESD-310
             </h1>
-            <p className="text-sm font-bold tracking-[0.3em] uppercase text-cyan-500 opacity-80">
+            <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-cyan-500 opacity-80">
               Registro de Investigadores
             </p>
           </div>
@@ -116,7 +116,7 @@ export const LoginView: React.FC = () => {
             justifyContent: "center",
           }}
         >
-          <FeriaIdentityOrb state="imposing" size={200} />
+          <FeriaIdentityOrb state="imposing" size={180} />
         </motion.div>
 
         <div className="w-full max-w-sm space-y-6" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
