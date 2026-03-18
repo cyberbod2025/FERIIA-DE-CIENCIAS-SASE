@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 /**
  * SASE NEURAL CORE - Versión de Identidad Pura
  * Un orbe iridiscente 3D con ojos interactivos y HUD táctico.
+ * Refactorizado para máxima estabilidad sin depender de clases externas de layout.
  */
 type Props = {
   size?: number;
@@ -27,15 +28,24 @@ export const SaseNeuralCore: React.FC<Props> = ({
     return () => window.removeEventListener("mousemove", handleMove);
   }, []);
 
+  const orbSize = size * 0.75;
+
   return (
     <div 
-      className="relative flex items-center justify-center select-none"
-      style={{ width: size, height: size }}
+      style={{ 
+        width: size, 
+        height: size, 
+        position: 'relative', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        userSelect: 'none'
+      }}
     >
       {/* 1. HUD EXTERNO (Anillos de precisión dorados) */}
       {showAccessories && (
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
-          <svg className="w-full h-full" viewBox="0 0 200 200">
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', opacity: 0.6 }}>
+          <svg style={{ width: '100%', height: '100%' }} viewBox="0 0 200 200">
             <circle cx="100" cy="100" r="95" fill="none" stroke="#fbbf24" strokeWidth="0.5" strokeDasharray="4 12" />
             <circle cx="100" cy="100" r="88" fill="none" stroke="#fbbf24" strokeWidth="1" strokeDasharray="80 120" opacity="0.3" />
             <motion.path 
@@ -60,16 +70,26 @@ export const SaseNeuralCore: React.FC<Props> = ({
           rotate: { duration: 25, repeat: Infinity, ease: "linear" },
           scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
         }}
-        className="absolute inset-4 rounded-full blur-[60px] opacity-40"
         style={{
+          position: 'absolute',
+          inset: '16px',
+          borderRadius: '9999px',
+          filter: 'blur(60px)',
+          opacity: 0.4,
           background: "conic-gradient(from 0deg, #3b82f6, #06b6d4, #8b5cf6, #ec4899, #f59e0b, #3b82f6)"
         }}
       />
 
       {/* 3. EL ORBE (Esfera de Cristal Irradiante) */}
       <div 
-        className="relative w-[75%] h-[75%] rounded-full overflow-hidden border border-white/20 shadow-2xl"
         style={{
+          position: 'relative',
+          width: orbSize,
+          height: orbSize,
+          borderRadius: '9999px',
+          overflow: 'hidden',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
           background: "radial-gradient(circle at 30% 30%, #fff 0%, #3b82f6 20%, #8b5cf6 50%, #1e1b4b 100%)",
         }}
       >
@@ -81,8 +101,11 @@ export const SaseNeuralCore: React.FC<Props> = ({
             scale: [1, 1.2, 0.9, 1]
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 opacity-60 blur-2xl"
           style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.6,
+            filter: 'blur(24px)',
             background: "radial-gradient(circle at center, #ec4899 0%, #f59e0b 50%, transparent 100%)",
             mixBlendMode: "screen"
           }}
@@ -94,28 +117,51 @@ export const SaseNeuralCore: React.FC<Props> = ({
             y: [0, 30, -30, 0]
           }}
           transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 opacity-50 blur-3xl"
           style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.5,
+            filter: 'blur(32px)',
             background: "radial-gradient(circle at center, #06b6d4 0%, #3b82f6 60%, transparent 100%)",
             mixBlendMode: "overlay"
           }}
         />
 
         {/* 4. ROSTRO (Ojos Verticales Blancos) */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div 
-            className="flex gap-6 transition-transform duration-300 ease-out"
             style={{
-              transform: `translate(${mousePos.x * 15}px, ${mousePos.y * 15}px)`
+              display: 'flex',
+              gap: orbSize * 0.1, // Distancia proporcional entre ojos
+              transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              transform: `translate(${mousePos.x * (orbSize * 0.05)}px, ${mousePos.y * (orbSize * 0.05)}px)`
             }}
           >
-            <div className="w-2 h-7 bg-white rounded-full shadow-[0_0_20px_white] animate-sase-blink" />
-            <div className="w-2 h-7 bg-white rounded-full shadow-[0_0_20px_white] animate-sase-blink-delayed" />
+            <div 
+              style={{
+                width: orbSize * 0.03,
+                height: orbSize * 0.1,
+                backgroundColor: 'white',
+                borderRadius: '9999px',
+                boxShadow: '0 0 20px white'
+              }}
+              className="animate-sase-blink" 
+            />
+            <div 
+              style={{
+                width: orbSize * 0.03,
+                height: orbSize * 0.1,
+                backgroundColor: 'white',
+                borderRadius: '9999px',
+                boxShadow: '0 0 20px white'
+              }}
+              className="animate-sase-blink-delayed" 
+            />
           </div>
         </div>
 
         {/* Brillo de Superficie */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/40 pointer-events-none" />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%, rgba(0,0,0,0.4) 100%)', pointerEvents: 'none' }} />
       </div>
 
       {/* 5. ESCANEO (Línea Pulsante) */}
@@ -123,7 +169,16 @@ export const SaseNeuralCore: React.FC<Props> = ({
         <motion.div 
           animate={{ top: ["20%", "80%", "20%"], opacity: [0, 0.3, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-[20%] right-[20%] h-[1px] bg-white z-10 blur-[1px] pointer-events-none"
+          style={{
+            position: 'absolute',
+            left: '20%',
+            right: '20%',
+            height: '1px',
+            backgroundColor: 'white',
+            zIndex: 10,
+            filter: 'blur(1px)',
+            pointerEvents: 'none'
+          }}
         />
       )}
 
