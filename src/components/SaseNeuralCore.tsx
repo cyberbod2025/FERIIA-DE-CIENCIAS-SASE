@@ -5,7 +5,15 @@ import { motion } from "framer-motion";
  * SASE NEURAL CORE - Versión de Identidad Pura
  * Un orbe iridiscente 3D con ojos interactivos y HUD táctico.
  */
-export const SaseNeuralCore: React.FC<{ size?: number }> = ({ size = 300 }) => {
+type Props = {
+  size?: number;
+  showAccessories?: boolean;
+};
+
+export const SaseNeuralCore: React.FC<Props> = ({
+  size = 300,
+  showAccessories = true,
+}) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // Seguimiento del cursor para que el "rostro" te mire
@@ -25,20 +33,22 @@ export const SaseNeuralCore: React.FC<{ size?: number }> = ({ size = 300 }) => {
       style={{ width: size, height: size }}
     >
       {/* 1. HUD EXTERNO (Anillos de precisión dorados) */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
-        <svg className="w-full h-full" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="95" fill="none" stroke="#fbbf24" strokeWidth="0.5" strokeDasharray="4 12" />
-          <circle cx="100" cy="100" r="88" fill="none" stroke="#fbbf24" strokeWidth="1" strokeDasharray="80 120" opacity="0.3" />
-          <motion.path 
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            style={{ originX: "100px", originY: "100px" }}
-            d="M50 20 A90 90 0 0 1 150 20" 
-            fill="none" stroke="#fbbf24" strokeWidth="0.8" 
-          />
-          <path d="M100 5 L100 15 M195 100 L185 100 M100 195 L100 185 M5 100 L15 100" stroke="#fbbf24" strokeWidth="1" />
-        </svg>
-      </div>
+      {showAccessories && (
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
+          <svg className="w-full h-full" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="95" fill="none" stroke="#fbbf24" strokeWidth="0.5" strokeDasharray="4 12" />
+            <circle cx="100" cy="100" r="88" fill="none" stroke="#fbbf24" strokeWidth="1" strokeDasharray="80 120" opacity="0.3" />
+            <motion.path 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              style={{ originX: "100px", originY: "100px" }}
+              d="M50 20 A90 90 0 0 1 150 20" 
+              fill="none" stroke="#fbbf24" strokeWidth="0.8" 
+            />
+            <path d="M100 5 L100 15 M195 100 L185 100 M100 195 L100 185 M5 100 L15 100" stroke="#fbbf24" strokeWidth="1" />
+          </svg>
+        </div>
+      )}
 
       {/* 2. ATMÓSFERA IRIDISCENTE (Efecto de aura multicolor) */}
       <motion.div
@@ -109,11 +119,13 @@ export const SaseNeuralCore: React.FC<{ size?: number }> = ({ size = 300 }) => {
       </div>
 
       {/* 5. ESCANEO (Línea Pulsante) */}
-      <motion.div 
-        animate={{ top: ["20%", "80%", "20%"], opacity: [0, 0.3, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute left-[20%] right-[20%] h-[1px] bg-white z-10 blur-[1px] pointer-events-none"
-      />
+      {showAccessories && (
+        <motion.div 
+          animate={{ top: ["20%", "80%", "20%"], opacity: [0, 0.3, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute left-[20%] right-[20%] h-[1px] bg-white z-10 blur-[1px] pointer-events-none"
+        />
+      )}
 
       <style>{`
         @keyframes sase-blink {
