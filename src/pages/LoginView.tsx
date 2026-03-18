@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { User, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
+import { SaseNeuralCore } from "../components/SaseNeuralCore";
 
 const GRUPOS = [
   "1°A", "1°B", "1°C", "1°D",
@@ -116,7 +116,7 @@ export const LoginView: React.FC = () => {
             justifyContent: "center",
           }}
         >
-          <FeriaIdentityOrb state="imposing" size={180} />
+          <SaseNeuralCore size={180} />
         </motion.div>
 
         <div className="w-full max-w-sm space-y-6" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>

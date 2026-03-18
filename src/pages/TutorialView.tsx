@@ -3,7 +3,7 @@ import { Layout } from "../components/Layout";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Target, ChevronRight } from "lucide-react";
-import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
+import { SaseNeuralCore } from "../components/SaseNeuralCore";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -63,7 +63,7 @@ export const TutorialView: React.FC = () => {
               marginBottom: "15px",
             }}
           >
-            <FeriaIdentityOrb state="stable" size={140} showAccessories={true} />
+            <SaseNeuralCore size={140} />
           </div>
           <h2
             style={{

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Compass, Users, CheckCircle, Lock, XCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
-import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
+import { SaseNeuralCore } from "../components/SaseNeuralCore";
 
 interface Estacion {
   id: string;
@@ -277,8 +277,7 @@ export const MapView: React.FC = () => {
               }}
             >
               <div style={{ flexShrink: 0 }}>
-                <FeriaIdentityOrb
-                  state="stable"
+                <SaseNeuralCore
                   size={70}
                 />
               </div>

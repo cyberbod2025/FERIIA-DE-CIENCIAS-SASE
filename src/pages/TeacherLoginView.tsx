@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
+import { SaseNeuralCore } from "../components/SaseNeuralCore";
 
 export const TeacherLoginView: React.FC = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export const TeacherLoginView: React.FC = () => {
 
       if (signInError) throw signInError;
       navigate("/panel");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error en acceso maestros:", err);
       setError("Acceso no autorizado. Verifica tus datos.");
     } finally {
@@ -56,7 +56,7 @@ export const TeacherLoginView: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="flex justify-center"
         >
-          <FeriaIdentityOrb state="scanning" size={160} />
+          <SaseNeuralCore size={160} />
         </motion.div>
 
         <div className="w-full max-w-sm space-y-5 flex flex-col">

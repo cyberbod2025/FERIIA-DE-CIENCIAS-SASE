@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { FeriaIdentityOrb } from "../components/SaseIdentityOrb";
+import { SaseNeuralCore } from "../components/SaseNeuralCore";
 
 const SpaceBackground = () => (
   <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
@@ -76,7 +76,7 @@ export const IntroView: React.FC = () => {
             maxWidth: "400px"
           }}
         >
-          <FeriaIdentityOrb state="stable" size={200} />
+          <SaseNeuralCore size={200} />
           
           <h1 style={{
             marginTop: "40px",
