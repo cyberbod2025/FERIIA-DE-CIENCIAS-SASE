@@ -11,6 +11,7 @@ import {
   Lock,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { getStudentSession } from "../lib/studentSession";
 
 interface Trivia {
   id: string;
@@ -36,25 +37,25 @@ export const TriviaView: React.FC = () => {
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
   const [currentExplanation, setCurrentExplanation] = useState("");
 
-  const studentId = localStorage.getItem("student_id") || "";
+  const { studentId, sessionToken } = getStudentSession();
 
   useEffect(() => {
     const checkAccessAndFetch = async () => {
       setLoading(true);
 
       // VERIFICACIÓN 1: ¿Viene del check-in?
-      const hasAccess = sessionStorage.getItem(`trivia_access_${id}`);
-      if (!hasAccess) {
-        // Verificar si tiene progreso (quizá recargó la página)
-        if (studentId && id) {
-          const { data: progreso } = await supabase
-            .from("progreso_recorrido")
-            .select("trivia_respondida_correctamente, puntos_ganados")
-            .eq("estudiante_id", studentId)
-            .eq("estacion_id", id)
-            .single();
+        const hasAccess = sessionStorage.getItem(`trivia_access_${id}`);
+        if (!hasAccess) {
+          // Verificar si tiene progreso (quizá recargó la página)
+        if (studentId && sessionToken && id) {
+          const { data: progreso } = await supabase.rpc("obtener_progreso_estudiante_v1", {
+            p_estudiante_id: studentId,
+            p_session_token: sessionToken,
+          });
 
-          if (!progreso) {
+          const progresoActual = progreso?.find((item: { estacion_id: string }) => item.estacion_id === id);
+
+          if (!progresoActual) {
             // No tiene check-in
             setBlocked(true);
             setBlockReason(
@@ -65,8 +66,8 @@ export const TriviaView: React.FC = () => {
           }
 
           if (
-            progreso.trivia_respondida_correctamente ||
-            progreso.puntos_ganados > 0
+            progresoActual.trivia_respondida_correctamente ||
+            progresoActual.puntos_ganados > 0
           ) {
             // Ya respondió
             setBlocked(true);
@@ -90,7 +91,7 @@ export const TriviaView: React.FC = () => {
     };
 
     checkAccessAndFetch();
-  }, [id, studentId]);
+  }, [id, sessionToken, studentId]);
 
   const handleFinish = useCallback(
     async (finalPuntos: number) => {
@@ -100,33 +101,25 @@ export const TriviaView: React.FC = () => {
       sessionStorage.removeItem(`trivia_access_${id}`);
 
       // Guardar resultado de forma atómica usando RPC
-      if (studentId && id) {
+      if (studentId && sessionToken && id) {
         try {
-          const { error: rpcError } = await supabase.rpc("finalizar_trivia_v2", {
+          const { data, error: rpcError } = await supabase.rpc("finalizar_trivia_v2", {
             p_estudiante_id: studentId,
             p_estacion_id: id,
             p_puntos_adicionales: finalPuntos,
+            p_session_token: sessionToken,
           });
 
-          if (rpcError) {
-            console.error("Error en finalizar_trivia_v2:", rpcError);
-            // Fallback manual si el RPC falla
-            await supabase
-              .from("progreso_recorrido")
-              .update({
-                trivia_respondida_correctamente: finalPuntos > 0,
-                puntos_ganados: finalPuntos,
-                completado_at: new Date().toISOString(),
-              })
-              .eq("estudiante_id", studentId)
-              .eq("estacion_id", id);
+          if (rpcError || !data?.success) {
+            console.error("Error en finalizar_trivia_v2:", rpcError || data?.message);
+            throw new Error(data?.message || "No se pudo guardar la trivia.");
           }
         } catch (err) {
           console.error("Error guardando resultado:", err);
         }
       }
     },
-    [id, studentId],
+    [id, sessionToken, studentId],
   );
 
   useEffect(() => {
@@ -312,11 +305,11 @@ export const TriviaView: React.FC = () => {
           <>
             {/* Timer bar */}
             <div
+              className="surface-card"
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "rgba(255,255,255,0.05)",
                 padding: "15px 20px",
                 borderRadius: "50px",
                 border: `1px solid ${timeLeft < 10 ? "var(--crimson)" : "rgba(255,215,0,0.3)"}`,
@@ -429,11 +422,10 @@ export const TriviaView: React.FC = () => {
                     <button
                       key={key}
                       onClick={() => handleAnswer(key)}
+                      className="surface-card"
                       style={{
                         padding: "18px 20px",
-                        background: "rgba(26, 47, 122, 0.4)",
                         border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: "16px",
                         color: "white",
                         textAlign: "left",
                         fontSize: "15px",
@@ -507,10 +499,9 @@ export const TriviaView: React.FC = () => {
             </p>
 
             <div
+              className="surface-card"
               style={{
-                background: "rgba(255,255,255,0.05)",
                 padding: "20px",
-                borderRadius: "20px",
                 width: "100%",
                 marginBottom: "30px",
               }}
@@ -538,11 +529,10 @@ export const TriviaView: React.FC = () => {
 
             <button
               onClick={() => navigate("/mapa")}
+              className="crimson-action"
               style={{
                 width: "100%",
                 padding: "18px",
-                background: "var(--crimson)",
-                color: "white",
                 borderRadius: "50px",
                 border: "none",
                 fontWeight: "bold",

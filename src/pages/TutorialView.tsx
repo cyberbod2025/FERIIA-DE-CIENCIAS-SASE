@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Target, ChevronRight } from "lucide-react";
 import { SaseNeuralCore } from "../components/SaseNeuralCore";
+import { getStudentSession } from "../lib/studentSession";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,7 +31,8 @@ const sectionVariants = {
 
 export const TutorialView: React.FC = () => {
   const navigate = useNavigate();
-  const userName = localStorage.getItem("user_name") || "Artista";
+  const { studentName } = getStudentSession();
+  const userName = studentName || "Artista";
 
   return (
     <Layout title="📘 Manual de Misión">
@@ -48,11 +50,9 @@ export const TutorialView: React.FC = () => {
       >
         <motion.div
           variants={sectionVariants}
+          className="surface-card-strong"
           style={{
-            background: "rgba(255, 215, 0, 0.05)",
             padding: "20px",
-            borderRadius: "16px",
-            border: "1px solid rgba(255, 215, 0, 0.15)",
             textAlign: "center",
           }}
         >
@@ -91,7 +91,8 @@ export const TutorialView: React.FC = () => {
           style={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
           <div
-            style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}
+            className="surface-card"
+            style={{ display: "flex", gap: "16px", alignItems: "flex-start", padding: "16px" }}
           >
             <div
               style={{
@@ -128,7 +129,8 @@ export const TutorialView: React.FC = () => {
           </div>
 
           <div
-            style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}
+            className="surface-card"
+            style={{ display: "flex", gap: "16px", alignItems: "flex-start", padding: "16px" }}
           >
             <div
               style={{
@@ -177,13 +179,11 @@ export const TutorialView: React.FC = () => {
           variants={sectionVariants}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/mapa")}
+          className="crimson-action"
           style={{
             marginTop: "auto",
             padding: "18px",
-            background: "linear-gradient(to right, var(--crimson), #8b0000)",
-            border: "1px solid rgba(255,215,0,0.3)",
             borderRadius: "50px",
-            color: "white",
             fontSize: "16px",
             fontWeight: "bold",
             display: "flex",

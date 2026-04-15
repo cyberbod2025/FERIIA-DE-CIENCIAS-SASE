@@ -24,6 +24,7 @@ interface GrupoPanel {
   total_checkins: number;
   correctas: number;
   precision: number | null;
+  puntos_grupo?: number | null;
 }
 
 interface InactividadPanel {
@@ -83,10 +84,8 @@ export const TeacherPanelView: React.FC = () => {
       supabase
         .from("estaciones")
         .select("id,nombre,materia,grupo,visitantes_activos,estado"),
-      supabase.from("panel_grupos").select("grupo,total_checkins,correctas,precision"),
-      supabase
-        .from("panel_inactividad")
-        .select("estudiante_id,nickname,grupo,ultima_actividad,minutos_inactivo"),
+      supabase.rpc("obtener_panel_grupos_v1"),
+      supabase.rpc("obtener_panel_inactividad_v1"),
     ]);
 
     if (estacionesRes.error || gruposRes.error || inactividadRes.error) {
@@ -223,25 +222,25 @@ export const TeacherPanelView: React.FC = () => {
         )}
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-          <div style={{ background: "rgba(255,255,255,0.05)", padding: "12px", borderRadius: "12px" }}>
+          <div className="metric-card" style={{ padding: "12px" }}>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Asistencia</div>
             <div style={{ fontSize: "18px", fontWeight: 800 }}>{totalCheckins}</div>
           </div>
-          <div style={{ background: "rgba(255,255,255,0.05)", padding: "12px", borderRadius: "12px" }}>
+          <div className="metric-card" style={{ padding: "12px" }}>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Precision global</div>
             <div style={{ fontSize: "18px", fontWeight: 800 }}>{precisionGlobal}%</div>
           </div>
-          <div style={{ background: "rgba(255,255,255,0.05)", padding: "12px", borderRadius: "12px" }}>
+          <div className="metric-card" style={{ padding: "12px" }}>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Stands activos</div>
             <div style={{ fontSize: "18px", fontWeight: 800 }}>{standsActivos.length}</div>
           </div>
-          <div style={{ background: "rgba(255,255,255,0.05)", padding: "12px", borderRadius: "12px" }}>
+          <div className="metric-card" style={{ padding: "12px" }}>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Stands vacios</div>
             <div style={{ fontSize: "18px", fontWeight: 800 }}>{standsVacios.length}</div>
           </div>
         </div>
 
-        <div style={{ background: "rgba(255,255,255,0.04)", padding: "14px", borderRadius: "14px" }}>
+        <div className="surface-card" style={{ padding: "14px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
             <MapPin size={16} color="var(--gold)" />
             <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--gold)" }}>
@@ -282,7 +281,7 @@ export const TeacherPanelView: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ background: "rgba(255,255,255,0.04)", padding: "14px", borderRadius: "14px" }}>
+        <div className="surface-card" style={{ padding: "14px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
             <AlertTriangle size={16} color="var(--crimson)" />
             <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--crimson)" }}>
@@ -323,7 +322,7 @@ export const TeacherPanelView: React.FC = () => {
           )}
         </div>
 
-        <div style={{ background: "rgba(255,255,255,0.04)", padding: "14px", borderRadius: "14px" }}>
+        <div className="surface-card" style={{ padding: "14px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
             <Users size={16} color="var(--gold)" />
             <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--gold)" }}>

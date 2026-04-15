@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { User, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { SaseNeuralCore } from "../components/SaseNeuralCore";
+import { saveStudentSession } from "../lib/studentSession";
 
 const GRUPOS = [
   "1°A", "1°B", "1°C", "1°D",
@@ -49,41 +50,23 @@ export const LoginView: React.FC = () => {
     try {
       const grado = parseInt(grupo.charAt(0));
 
-      const { data: existing } = await supabase
-        .from("estudiantes")
-        .select("id")
-        .eq("nickname", nombre.trim())
-        .eq("grupo", grupo)
-        .single();
+      const { data, error } = await supabase.rpc("issue_student_session", {
+        p_nickname: nombre.trim(),
+        p_grupo: grupo,
+        p_grado: grado,
+      });
 
-      let studentId: string;
-
-      if (existing) {
-        studentId = existing.id;
-        await supabase
-          .from("estudiantes")
-          .update({ ultimo_acceso: new Date().toISOString() })
-          .eq("id", studentId);
-      } else {
-        const { data: newStudent, error: insertError } = await supabase
-          .from("estudiantes")
-          .insert({
-            nickname: nombre.trim(),
-            grado: grado,
-            grupo: grupo,
-            total_puntos: 0,
-            escaneos_realizados: 0,
-          })
-          .select("id")
-          .single();
-
-        if (insertError) throw insertError;
-        studentId = newStudent.id;
+      if (error) throw error;
+      if (!data?.success || !data.student_id || !data.session_token) {
+        throw new Error(data?.message || "No se pudo iniciar la sesion del alumno.");
       }
 
-      localStorage.setItem("user_name", nombre.trim());
-      localStorage.setItem("user_group", grupo);
-      localStorage.setItem("student_id", studentId);
+      saveStudentSession({
+        studentId: data.student_id,
+        studentName: nombre.trim(),
+        studentGroup: grupo,
+        sessionToken: data.session_token,
+      });
 
       navigate("/tutorial");
     } catch (err) {
@@ -96,13 +79,45 @@ export const LoginView: React.FC = () => {
 
   return (
     <Layout title="Acceso al Núcleo">
-      <div className="flex flex-col items-center justify-start min-h-full p-6 pt-6 space-y-6">
-        <div className="w-full max-w-sm space-y-4">
-          <div className="text-center space-y-1">
-            <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-400 uppercase leading-none">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          minHeight: "100%",
+          padding: "24px",
+          paddingTop: "24px",
+          gap: "24px",
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: "360px" }}>
+          <div style={{ textAlign: "center" }}>
+            <h1
+              style={{
+                fontSize: "32px",
+                fontWeight: 900,
+                lineHeight: 0.95,
+                textTransform: "uppercase",
+                letterSpacing: "-0.03em",
+                background: "linear-gradient(180deg, #ffffff 0%, #fbbf24 100%)",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+              }}
+            >
               FERIA DE CIENCIAS 2026 ESD-310
             </h1>
-            <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-cyan-500 opacity-80">
+            <p
+              style={{
+                marginTop: "6px",
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.4em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+                opacity: 0.8,
+              }}
+            >
               Registro de Investigadores
             </p>
           </div>
@@ -119,9 +134,21 @@ export const LoginView: React.FC = () => {
           <SaseNeuralCore size={180} />
         </motion.div>
 
-        <div className="w-full max-w-sm space-y-6" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div style={{ width: "100%", maxWidth: "360px", display: "flex", flexDirection: "column", gap: "20px" }}>
           <div>
-            <label className="flex items-center gap-2 mb-2 text-xs font-black uppercase text-amber-400 tracking-widest">
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
+                fontSize: "12px",
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+                color: "#fbbf24",
+              }}
+            >
               <User size={14} /> Nombre y Apellido
             </label>
             <input
@@ -146,7 +173,19 @@ export const LoginView: React.FC = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 mb-2 text-xs font-black uppercase text-amber-400 tracking-widest">
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
+                fontSize: "12px",
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+                color: "#fbbf24",
+              }}
+            >
               <Users size={14} /> Grupo
             </label>
             <select
@@ -178,7 +217,15 @@ export const LoginView: React.FC = () => {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center text-red-500 text-xs font-bold bg-red-500/10 py-2 rounded-lg"
+              style={{
+                textAlign: "center",
+                color: "#ef4444",
+                fontSize: "12px",
+                fontWeight: 700,
+                background: "rgba(239, 68, 68, 0.1)",
+                padding: "10px 12px",
+                borderRadius: "12px",
+              }}
             >
               ⚠️ {error}
             </motion.p>
@@ -187,20 +234,38 @@ export const LoginView: React.FC = () => {
           <button
             onClick={handleLogin}
             disabled={isLoading}
-            className={`
-                w-full py-5 rounded-2xl font-black uppercase tracking-[0.15em] transition-all duration-300
-                ${isLoading
-                ? 'bg-white/5 text-white/20 cursor-not-allowed'
-                : 'bg-black/40 border border-cyan-500/50 text-white hover:bg-cyan-500/10 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] active:scale-[0.98]'
-              }
-              `}
+            style={{
+              width: "100%",
+              padding: "20px",
+              borderRadius: "18px",
+              fontWeight: 900,
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              border: isLoading ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(6, 182, 212, 0.5)",
+              background: isLoading ? "rgba(255,255,255,0.05)" : "rgba(0, 0, 0, 0.4)",
+              color: isLoading ? "rgba(255,255,255,0.25)" : "white",
+              cursor: isLoading ? "not-allowed" : "pointer",
+              boxShadow: isLoading ? "none" : "0 0 30px rgba(6, 182, 212, 0.15)",
+            }}
           >
             {isLoading ? 'Iniciando Protocolo...' : 'Sincronizar Acceso'}
           </button>
           
           <button
             onClick={() => navigate("/panel/login")}
-            className="w-full py-3 bg-transparent border border-white/10 rounded-xl text-[10px] font-bold text-white/40 uppercase tracking-[0.3em] hover:text-white/60 transition-colors"
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "12px",
+              fontSize: "10px",
+              fontWeight: 700,
+              color: "rgba(255,255,255,0.45)",
+              textTransform: "uppercase",
+              letterSpacing: "0.3em",
+              cursor: "pointer",
+            }}
           >
             Acceso Maestros
           </button>

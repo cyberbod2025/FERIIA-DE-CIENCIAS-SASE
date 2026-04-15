@@ -55,11 +55,13 @@ export const RankingView: React.FC = () => {
   return (
     <Layout title="🏆 Líderes de la Ciencia">
       <div
+        className="surface-card-strong"
         style={{
-          background: "rgba(255,255,255,0.03)",
           padding: "32px 24px",
           textAlign: "center",
-          borderBottom: "1px solid rgba(255,255,255,0.05)"
+          margin: "0 20px",
+          borderTopLeftRadius: "0",
+          borderTopRightRadius: "0",
         }}
       >
         <div
@@ -109,13 +111,12 @@ export const RankingView: React.FC = () => {
               <motion.div
                 key={user.nickname}
                 variants={itemVariants}
+                className={i < 3 ? "surface-card-strong" : "surface-card"}
                 style={{
-                  background: "rgba(255, 255, 255, 0.05)",
                   border:
                     i < 3
                       ? "1px solid rgba(255, 215, 0, 0.3)"
                       : "1px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "16px",
                   padding: "16px",
                   display: "flex",
                   alignItems: "center",

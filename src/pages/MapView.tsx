@@ -6,6 +6,7 @@ import { Compass, Users, CheckCircle, Lock, XCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
 import { SaseNeuralCore } from "../components/SaseNeuralCore";
+import { getStudentSession } from "../lib/studentSession";
 
 interface Estacion {
   id: string;
@@ -64,8 +65,7 @@ export const MapView: React.FC = () => {
   const [estaciones, setEstaciones] = useState<Estacion[]>([]);
   const [progreso, setProgreso] = useState<ProgresoItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const userGroup = localStorage.getItem("user_group") || "";
-  const studentId = localStorage.getItem("student_id") || "";
+  const { studentGroup: userGroup, studentId, sessionToken } = getStudentSession();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,11 +81,14 @@ export const MapView: React.FC = () => {
         setEstaciones(stands || []);
 
         // Obtener progreso del estudiante actual
-        if (studentId) {
-          const { data: prog, error: progErr } = await supabase
-            .from("progreso_recorrido")
-            .select("estacion_id, trivia_respondida_correctamente")
-            .eq("estudiante_id", studentId);
+        if (studentId && sessionToken) {
+          const { data: prog, error: progErr } = await supabase.rpc(
+            "obtener_progreso_estudiante_v1",
+            {
+              p_estudiante_id: studentId,
+              p_session_token: sessionToken,
+            },
+          );
 
           if (!progErr) setProgreso(prog || []);
         }
@@ -118,7 +121,7 @@ export const MapView: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [studentId]);
+  }, [sessionToken, studentId]);
 
   const getStandStatus = (estacionId: string) => {
     const p = progreso.find((pr) => pr.estacion_id === estacionId);

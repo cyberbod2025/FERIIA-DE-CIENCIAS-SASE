@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
+import { getStudentSession } from "../lib/studentSession";
 
 interface Estacion {
   id: string;
@@ -65,7 +66,7 @@ export const StandDetailView: React.FC = () => {
   const [isSendingQuestion, setIsSendingQuestion] = useState(false);
   const [questionSent, setQuestionSent] = useState(false);
   const [loading, setLoading] = useState(true);
-  const studentId = localStorage.getItem("student_id") || "";
+  const { studentId, sessionToken } = getStudentSession();
 
   useEffect(() => {
     const fetchStand = async () => {
@@ -81,18 +82,18 @@ export const StandDetailView: React.FC = () => {
       if (!error) setStand(data);
 
       // Verificar si ya visitó este stand (ANTI-TRAMPA)
-      if (studentId && id) {
-        const { data: progreso } = await supabase
-          .from("progreso_recorrido")
-          .select("trivia_respondida_correctamente")
-          .eq("estudiante_id", studentId)
-          .eq("estacion_id", id)
-          .single();
+      if (studentId && sessionToken && id) {
+        const { data: progreso } = await supabase.rpc("obtener_progreso_estudiante_v1", {
+          p_estudiante_id: studentId,
+          p_session_token: sessionToken,
+        });
 
-        if (progreso) {
+        const progresoActual = progreso?.find((item: { estacion_id: string }) => item.estacion_id === id);
+
+        if (progresoActual) {
           setAlreadyVisited(true);
           setVisitResult(
-            progreso.trivia_respondida_correctamente ? "correct" : "incorrect",
+            progresoActual.trivia_respondida_correctamente ? "correct" : "incorrect",
           );
         }
       }
@@ -100,29 +101,24 @@ export const StandDetailView: React.FC = () => {
       setLoading(false);
     };
     fetchStand();
-  }, [id, studentId]);
+  }, [id, sessionToken, studentId]);
 
   const handleCheckIn = async () => {
     setShowQRModal(true);
 
     try {
-      if (studentId && id) {
+      if (studentId && sessionToken && id) {
         // Usar la función RPC atómica para registrar check-in y actualizar visitantes
-        const { error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
+        const { data, error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
           p_estudiante_id: studentId,
           p_estacion_id: id,
-          p_puntos_ganados: 0
+          p_puntos_ganados: 0,
+          p_session_token: sessionToken,
         });
 
-        if (rpcError) {
-          console.error("Error en RPC registrar_progreso_v2:", rpcError);
-          // Fallback a lógica manual si el RPC falla (por compatibilidad)
-          await supabase.from("progreso_recorrido").insert({
-            estudiante_id: studentId,
-            estacion_id: id,
-            trivia_respondida_correctamente: false,
-            puntos_ganados: 0,
-          });
+        if (rpcError || !data?.success) {
+          console.error("Error en RPC registrar_progreso_v2:", rpcError || data?.message);
+          throw new Error(data?.message || "No se pudo registrar el check-in.");
         }
       }
     } catch (err) {
@@ -136,7 +132,7 @@ export const StandDetailView: React.FC = () => {
   };
 
   const handleSendQuestion = async () => {
-    if (!question.trim() || !studentId || !id) return;
+    if (!question.trim() || !studentId || !sessionToken || !id) return;
     
     setIsSendingQuestion(true);
     try {
@@ -144,7 +140,7 @@ export const StandDetailView: React.FC = () => {
         estudiante_id: studentId,
         estacion_id: id,
         pregunta: question.trim(),
-        estado: "pendiente"
+        moderacion_estado: "pendiente"
       });
 
       if (error) {
@@ -334,10 +330,8 @@ export const StandDetailView: React.FC = () => {
       >
         <motion.div
           variants={itemVariants}
+          className="surface-card-strong"
           style={{
-            background:
-              "linear-gradient(135deg, var(--midnight-light) 0%, var(--deep-blue) 100%)",
-            borderRadius: "24px",
             padding: "24px",
             border: "1px solid rgba(255, 215, 0, 0.1)",
             position: "relative",
@@ -443,10 +437,10 @@ export const StandDetailView: React.FC = () => {
             </p>
             <button
               onClick={handleCheckIn}
+              className="gold-action"
               style={{
                 width: "100%",
                 padding: "16px",
-                background: "white",
                 color: "var(--deep-blue)",
                 borderRadius: "14px",
                 border: "none",
@@ -498,10 +492,9 @@ export const StandDetailView: React.FC = () => {
             </div>
 
             <div
+              className="surface-card"
               style={{
-                background: "rgba(255,255,255,0.03)",
                 padding: "20px",
-                borderRadius: "16px",
                 border: "1px solid rgba(255,215,0,0.1)",
               }}
             >
@@ -574,10 +567,10 @@ export const StandDetailView: React.FC = () => {
                   sessionStorage.setItem(`trivia_access_${id}`, "true");
                   navigate(`/trivia/${id}`);
                 }}
+                className="gold-action"
                 style={{
                   width: "100%",
                   padding: "20px",
-                  background: "var(--gold)",
                   color: "black",
                   borderRadius: "14px",
                   border: "none",

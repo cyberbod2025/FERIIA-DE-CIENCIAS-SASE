@@ -39,13 +39,44 @@ export const TeacherLoginView: React.FC = () => {
 
   return (
     <Layout title="Acceso de Maestros">
-      <div className="flex flex-col items-center justify-start min-h-full p-6 pt-12 space-y-8">
-        <div className="w-full max-w-sm space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-400 uppercase">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          minHeight: "100%",
+          padding: "24px",
+          paddingTop: "48px",
+          gap: "32px",
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: "360px" }}>
+          <div style={{ textAlign: "center" }}>
+            <h1
+              style={{
+                fontSize: "32px",
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "-0.03em",
+                background: "linear-gradient(180deg, #ffffff 0%, #fbbf24 100%)",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+              }}
+            >
               Panel de Control
             </h1>
-            <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-cyan-500 opacity-80">
+            <p
+              style={{
+                marginTop: "8px",
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+                opacity: 0.8,
+              }}
+            >
               Solo personal autorizado
             </p>
           </div>
@@ -54,14 +85,26 @@ export const TeacherLoginView: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex justify-center"
+          style={{ display: "flex", justifyContent: "center" }}
         >
           <SaseNeuralCore size={160} />
         </motion.div>
 
-        <div className="w-full max-w-sm space-y-5 flex flex-col">
+        <div style={{ width: "100%", maxWidth: "360px", display: "flex", flexDirection: "column", gap: "20px" }}>
           <div>
-            <label className="flex items-center gap-2 mb-2 text-[10px] font-black uppercase text-amber-400 tracking-widest">
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
+                fontSize: "10px",
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+                color: "#fbbf24",
+              }}
+            >
               <Mail size={12} /> Correo Institucional
             </label>
             <input
@@ -72,12 +115,33 @@ export const TeacherLoginView: React.FC = () => {
                 setError("");
               }}
               placeholder="docente@escuela.mx"
-              className="w-full p-4 bg-white/5 border border-amber-400/20 rounded-xl text-white text-sm outline-none focus:border-cyan-500/50 transition-colors"
+              style={{
+                width: "100%",
+                padding: "16px",
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(251, 191, 36, 0.2)",
+                borderRadius: "12px",
+                color: "white",
+                fontSize: "14px",
+                outline: "none",
+              }}
             />
           </div>
 
           <div>
-            <label className="flex items-center gap-2 mb-2 text-[10px] font-black uppercase text-amber-400 tracking-widest">
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
+                fontSize: "10px",
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+                color: "#fbbf24",
+              }}
+            >
               <Lock size={12} /> Contraseña
             </label>
             <input
@@ -88,7 +152,16 @@ export const TeacherLoginView: React.FC = () => {
                 setError("");
               }}
               placeholder="********"
-              className="w-full p-4 bg-white/5 border border-amber-400/20 rounded-xl text-white text-sm outline-none focus:border-cyan-500/50 transition-colors"
+              style={{
+                width: "100%",
+                padding: "16px",
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(251, 191, 36, 0.2)",
+                borderRadius: "12px",
+                color: "white",
+                fontSize: "14px",
+                outline: "none",
+              }}
             />
           </div>
 
@@ -96,7 +169,15 @@ export const TeacherLoginView: React.FC = () => {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center text-red-500 text-[10px] font-bold bg-red-500/10 py-2 rounded-lg"
+              style={{
+                textAlign: "center",
+                color: "#ef4444",
+                fontSize: "10px",
+                fontWeight: 700,
+                background: "rgba(239, 68, 68, 0.1)",
+                padding: "10px 12px",
+                borderRadius: "12px",
+              }}
             >
               ⚠️ {error}
             </motion.p>
@@ -105,13 +186,21 @@ export const TeacherLoginView: React.FC = () => {
           <button
             onClick={handleLogin}
             disabled={loading}
-            className={`
-              w-full py-4 mt-2 rounded-xl font-black uppercase tracking-[0.15em] text-sm transition-all duration-300
-              ${loading
-                ? 'bg-white/5 text-white/20 cursor-not-allowed'
-                : 'bg-black/40 border border-cyan-500/50 text-white hover:bg-cyan-500/10 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] active:scale-[0.98]'
-              }
-            `}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "16px",
+              borderRadius: "12px",
+              fontWeight: 900,
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              fontSize: "14px",
+              border: loading ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(6, 182, 212, 0.5)",
+              background: loading ? "rgba(255,255,255,0.05)" : "rgba(0, 0, 0, 0.4)",
+              color: loading ? "rgba(255,255,255,0.25)" : "white",
+              cursor: loading ? "not-allowed" : "pointer",
+              boxShadow: loading ? "none" : "0 0 30px rgba(6, 182, 212, 0.15)",
+            }}
           >
             {loading ? "Iniciando Sesión..." : "Entrar al Sistema"}
           </button>
@@ -119,15 +208,35 @@ export const TeacherLoginView: React.FC = () => {
           <button
             onClick={() => navigate("/")}
             disabled={loading}
-            className="w-full py-3 bg-transparent border border-white/5 rounded-xl text-[10px] font-bold text-white/30 uppercase tracking-[0.3em] hover:text-white/50 transition-colors"
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "12px",
+              fontSize: "10px",
+              fontWeight: 700,
+              color: loading ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.35)",
+              textTransform: "uppercase",
+              letterSpacing: "0.3em",
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
           >
             Volver al Inicio
           </button>
         </div>
         
-        <div className="pt-4 text-center">
-          <p className="text-[9px] text-white/20 uppercase tracking-widest font-bold">
-            Protocolo de Seguridad <span className="text-cyan-500/40">ESD-310-SASE</span>
+        <div style={{ paddingTop: "16px", textAlign: "center" }}>
+          <p
+            style={{
+              fontSize: "9px",
+              color: "rgba(255,255,255,0.2)",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              fontWeight: 700,
+            }}
+          >
+            Protocolo de Seguridad <span style={{ color: "rgba(6, 182, 212, 0.4)" }}>ESD-310-SASE</span>
           </p>
         </div>
       </div>

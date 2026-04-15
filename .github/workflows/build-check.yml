@@ -27,4 +27,4 @@ jobs:
         run: npm run build
 
       - name: Run lint
-        run: npm run lint || echo "No lint script found"
+        run: npm run lint
