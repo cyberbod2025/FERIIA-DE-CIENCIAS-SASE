@@ -58,6 +58,31 @@ Si la prosa contradice al codigo o la configuracion ejecutable, manda lo ejecuta
 - El detalle verificable vive en `memory/feria-de-ciencias-2026-canon.md` y en el expediente activo.
 - La documentacion heredada que contradiga config vigente queda deprecada por canon, aunque no se reescriba de inmediato.
 
+## Articulo VIII. Flujo de ramas y revisions
+
+- Todo cambio funcional, de infra o de datos se trabaja en rama y se revisa via PR antes de integrar en `master`.
+- No se sube directo a `master` a menos que sea hotfix trivial confirmado.
+- Para cambios de auth, permisos, migraciones SQL, CI, despliegue o seguridad, abrir expediente en `specs/` antes de empezar.
+- Plantilla de PR en `.github/pull_request_template.md`.
+- Gate de verificacion obligatorio antes de merge: `npm run build` y `npm run lint`.
+
+## Articulo IX. Convenciones de ramas y commits
+
+Ramas:
+
+- `feature/<tema-corto>`
+- `fix/<tema-corto>`
+- `docs/<tema-corto>`
+- `infra/<tema-corto>`
+- `supabase/<tema-corto>`
+
+Commits:
+
+- verb + contexto corto
+- ejemplo: `Harden student session validation in Supabase`
+
+No mezclar cambios de distinta naturaleza en el mismo commit.
+
 ## Enmiendas
 
 - Toda enmienda a esta constitucion requiere justificacion explicita en un expediente bajo `specs/`.

@@ -52,3 +52,37 @@
 ## Scope Guardrails
 - Manten la arquitectura actual: `src/` para frontend y `supabase/` para base de datos, como pide `RULES.md`.
 - Evita refactors amplios si no son necesarios para el cambio pedido; este repo ya mezcla UI, estado local y llamadas directas a Supabase por vista.
+
+## Workflow de ramas y PRs
+
+**Regla principal**: todo cambio funcional, de infra o de datos va en rama y se revisa via PR antes de integrar en `master`. No hacer push directo a `master`.
+
+**Prefijos de rama**:
+- `feature/<tema>` - comportamiento nuevo
+- `fix/<tema>` - correccion funcional o visual
+- `docs/<tema>` - canon, specs, AGENTS, documentacion operativa
+- `infra/<tema>` - CI, GitHub, Vercel, tooling
+- `supabase/<tema>` - migraciones, RLS, RPCs, permisos
+
+**Flujo**:
+1. `git checkout -b feature/nombre`
+2. abrir expediente en `specs/001-nombre/` si toca auth, permisos, CI o migraciones
+3. hacer cambios
+4. `npm run build`
+5. `npm run lint`
+6. commit con mensaje corto: verbo + contexto
+7. `git push -u origin feature/nombre`
+8. abrir PR contra `master` usando `.github/pull_request_template.md`
+
+**Gates obligatorios**:
+- `npm run build` pasa
+- `npm run lint` pasa
+
+**Cuando abrir expediente primero**:
+- auth, permisos o validacion de acceso
+- migraciones SQL o cambios en tablas/vistas/RPCs de Supabase
+- CI/CD, workflows o configuracion de despliegue
+- cambios en el flujo de alumno o panel maestro
+- artefactos de agente o scripts de automatizacion
+
+**Expedientes activos**: `specs/001-gobernanza-brownfield/`, `specs/002-auditoria-hardening/`

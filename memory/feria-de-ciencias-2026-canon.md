@@ -9,7 +9,8 @@ Objetivo: concentrar reglas verificadas del repo para futuros cambios sin mezcla
 - `package.json`, `package-lock.json`
 - `vite.config.ts`, `eslint.config.js`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`
 - `.github/workflows/build-check.yml`, `.github/workflows/security-audit.yml`, `.github/workflows/claude.yml`
-- `src/main.tsx`, `src/App.tsx`, `src/lib/supabase.ts`
+- `.github/pull_request_template.md`
+- `src/main.tsx`, `src/App.tsx`, `src/lib/supabase.ts`, `src/lib/studentSession.ts`
 - vistas activas en `src/pages/*`
 - `supabase/migrations/*`
 - `vercel.json`, `netlify.toml`
@@ -31,14 +32,15 @@ Objetivo: concentrar reglas verificadas del repo para futuros cambios sin mezcla
 ## 3. Estado, datos y contratos fragiles
 
 - El flujo alumno depende de:
-  - `localStorage`: `user_name`, `user_group`, `student_id`
+  - `localStorage`: `user_name`, `user_group`, `student_id`, `student_session_token`
   - `sessionStorage`: `trivia_access_<standId>`
-- `LoginView` registra o actualiza `estudiantes`.
-- `MapView` lee `estaciones` y `progreso_recorrido`, y abre un canal realtime sobre `estaciones`.
-- `StandDetailView` usa RPC `registrar_progreso_v2` con fallback manual a `progreso_recorrido`, y escribe en `preguntometro`.
-- `TriviaView` usa RPC `finalizar_trivia_v2` con fallback manual a `progreso_recorrido`.
-- `TeacherPanelView` depende de auth Supabase y de `usuarios`, `panel_grupos` y `panel_inactividad`.
+- `LoginView` obtiene sesion via RPC `issue_student_session` y guarda `student_session_token` en localStorage.
+- `MapView` lee progreso via RPC `obtener_progreso_estudiante_v1`, validado por `session_token`.
+- `StandDetailView` usa RPC `registrar_progreso_v2` con `session_token`; ya no hay fallback manual.
+- `TriviaView` usa RPC `finalizar_trivia_v2` con `session_token`; ya no hay fallback manual.
+- `TeacherPanelView` lee metricas via RPCs `obtener_panel_grupos_v1` y `obtener_panel_inactividad_v1`, validados por `is_staff()`.
 - `RankingView` consulta `estudiantes`.
+- La tabla `estudiantes` tiene columnas `student_session_token` y `student_session_issued_at` (migracion `09_rpc_and_ui_hardening.sql`).
 
 ## 4. Build y verificacion
 
@@ -54,6 +56,8 @@ Objetivo: concentrar reglas verificadas del repo para futuros cambios sin mezcla
 ## 5. Seguridad y limites sensibles
 
 - `.github/workflows/security-audit.yml` escanea secretos y falla si aparece `supabase.auth.admin` dentro de `src/`.
+- Los RPCs criticos validan `student_session_token` emitido por la base; ya no confian en `student_id` manipulable desde cliente.
+- `TeacherPanelView` lee metricas via RPCs con validacion `is_staff()`.
 - `RULES.md` exige no subir secretos ni artefactos locales accidentales.
 - `scripts/generate_qrs.js` usa rutas absolutas fuera del workspace y una URL hospedada hardcodeada; no debe tocarse incidentalmente durante otros cambios.
 - `public/qrs/*` y `public/QRs_Feria_Ciencias.pdf` son artefactos generados.
