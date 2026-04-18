@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { Layout } from "../components/Layout";
 import { Star, Map as MapIcon, Tent, User, Info, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
 export const StandView: React.FC = () => {
   const [comment, setComment] = useState("");
-  const navigate = useNavigate();
 
   return (
     <Layout title="Interacción con Stand">

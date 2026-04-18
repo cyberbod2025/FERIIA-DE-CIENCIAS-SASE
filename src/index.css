@@ -1,26 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --background: #faf8fe;
   --primary: #68519d;
   --secondary: #83478c;
+  --on-surface: #1a1b1f;
+  --surface-container: rgba(255, 255, 255, 0.1);
+  --font-body: 'Inter', sans-serif;
+  --font-headline: 'Space Grotesk', sans-serif;
 }
 
 @layer base {
   body {
-    @apply font-body text-on-surface mesh-gradient min-h-screen;
+    font-family: var(--font-body);
+    color: var(--on-surface);
+    min-height: 100vh;
     background-color: var(--background);
+    margin: 0;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply backdrop-blur-[40px] border border-white/20 shadow-2xl;
-    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    background: var(--surface-container);
   }
 
   .mesh-gradient {
@@ -40,7 +45,15 @@
   .liquid-button {
     background: linear-gradient(135deg, #68519d, #af96e8);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 10px 20px -10px rgba(104, 81, 157, 0.3);
-    @apply hover:scale-[1.05] active:scale-[0.95] transition-all duration-300;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .liquid-button:hover {
+    transform: scale(1.05);
+  }
+
+  .liquid-button:active {
+    transform: scale(0.95);
   }
 }
 
@@ -50,7 +63,9 @@
 
 .no-scrollbar {
   -ms-overflow-style: none;
-  scrollbar-width: none;
+  @supports (scrollbar-width: none) {
+    scrollbar-width: none;
+  }
 }
 
 @keyframes float {
