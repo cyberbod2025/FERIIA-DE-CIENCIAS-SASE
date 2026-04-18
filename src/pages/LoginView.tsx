@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Users, ArrowRight, Loader2, Sparkles, School, ShieldCheck, Microscope } from "lucide-react";
+import { User, Users, ArrowRight, Loader2, Sparkles, School, Microscope } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { saveStudentSession } from "../lib/studentSession";
 import { motion, AnimatePresence } from "framer-motion";

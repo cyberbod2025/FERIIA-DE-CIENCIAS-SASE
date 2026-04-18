@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "vercel-plugin-install": "npx plugins add vercel/vercel-plugin",
+    "vercel:deploy": "npx vercel",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed"
   },

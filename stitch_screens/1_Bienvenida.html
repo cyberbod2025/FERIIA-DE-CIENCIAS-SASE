@@ -3,11 +3,14 @@
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<title>Bienvenida - Feria de Ciencias 2026</title>
+    <meta name="description" content="Bienvenido a la Feria de Ciencias 2026 de la Secundaria Diurna 310. Explora proyectos innovadores, participa en trivias y sigue tu progreso.">
+    <link rel="canonical" href="https://feria-de-ciencias-2026.example.com/bienvenida">
+    <link rel="stylesheet" href="common.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -77,30 +80,20 @@
         }
     </script>
 <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(40px);
-            border: 0.5px solid rgba(203, 196, 209, 0.2);
-        }
         .mesh-gradient {
             background: radial-gradient(at 0% 0%, #eaddff 0px, transparent 50%),
                         radial-gradient(at 100% 0%, #f8b1ff 0px, transparent 50%),
                         radial-gradient(at 100% 100%, #d1bcff 0px, transparent 50%),
                         radial-gradient(at 0% 100%, #faf8fe 0px, transparent 50%);
         }
+        body { min-height: max(884px, 100dvh); }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
   </head>
 <body class="bg-surface text-on-surface min-h-screen selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+<button id="theme-toggle" class="fixed top-4 right-4 z-[60] p-3 bg-white/20 dark:bg-black/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg hover:scale-110 transition-all active:scale-95" aria-label="Cambiar tema de color" onclick="document.documentElement.classList.toggle('dark')">
+  <span class="material-symbols-outlined text-purple-700 dark:text-purple-300">dark_mode</span>
+</button>
 <!-- BACKGROUND MESH -->
 <div class="fixed inset-0 mesh-gradient opacity-60 pointer-events-none -z-10"></div>
 <div class="fixed top-1/4 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none"></div>
@@ -118,7 +111,7 @@
 <!-- MAIN CANVAS (The Crystal Architecture) -->
 <main class="pt-24 pb-32 px-4 md:px-8 max-w-6xl mx-auto flex flex-col items-center">
 <!-- CENTRAL CRYSTAL PANEL -->
-<div class="glass-panel rounded-[2.5rem] p-8 md:p-16 w-full shadow-2xl relative overflow-hidden">
+<div class="glass-panel animate-crystal rounded-[2.5rem] p-8 md:p-16 w-full shadow-2xl relative overflow-hidden">
 <!-- Decorative accent inside crystal -->
 <div class="absolute -top-10 -right-10 w-40 h-40 bg-tertiary/10 rounded-full blur-3xl"></div>
 <div class="relative z-10 flex flex-col md:flex-row gap-12 items-center">
@@ -154,11 +147,11 @@
 <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
 </div>
 <div class="aspect-square glass-panel rounded-3xl flex flex-col items-center justify-center p-4 border border-white/30 shadow-sm">
-<span class="material-symbols-outlined text-4xl text-primary mb-2" data-icon="qr_code_2" data-weight="fill" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="material-symbols-outlined text-4xl text-primary mb-2 fill-icon" data-icon="qr_code_2" data-weight="fill">qr_code_2</span>
 <span class="text-sm font-bold text-on-surface">Validar QR</span>
 </div>
 <div class="aspect-square glass-panel rounded-3xl flex flex-col items-center justify-center p-4 border border-white/30 shadow-sm">
-<span class="material-symbols-outlined text-4xl text-tertiary mb-2" data-icon="emoji_events" data-weight="fill" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+<span class="material-symbols-outlined text-4xl text-tertiary mb-2 fill-icon" data-icon="emoji_events" data-weight="fill">emoji_events</span>
 <span class="text-sm font-bold text-on-surface">Ranking</span>
 </div>
 </div>

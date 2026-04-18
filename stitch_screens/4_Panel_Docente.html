@@ -4,35 +4,13 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Panel de Control - Secundaria Diurna 310</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 0% 0%, #f4f3f8 0%, #eaddff 50%, #faf8fe 100%);
-            min-height: 100vh;
-        }
-        .headline-font { font-family: 'Space Grotesk', sans-serif; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 0.5px solid rgba(203, 196, 209, 0.3);
-        }
-        .heatmap-cell {
-            transition: all 0.3s ease;
-        }
-        .heatmap-cell:hover {
-            transform: scale(1.05);
-            z-index: 10;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
-<script id="tailwind-config">
+    <meta name="description" content="Panel de Control Docente - Feria de Ciencias 2026. Monitoreo de módulos y estadísticas en tiempo real.">
+    <link rel="canonical" href="https://feria-de-ciencias-2026.example.com/docente">
+    <link rel="stylesheet" href="common.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -95,6 +73,26 @@
         }
       }
     </script>
+<style>
+        body {
+            background: radial-gradient(circle at 0% 0%, #f4f3f8 0%, #eaddff 50%, #faf8fe 100%);
+            min-height: 100vh;
+        }
+        .heatmap-cell {
+            transition: all 0.3s ease;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        body { min-height: max(884px, 100dvh); }
+    </style>
+  </head>
+<body class="text-on-surface">
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+<button id="theme-toggle" class="fixed top-4 right-4 z-[60] p-3 bg-white/20 dark:bg-black/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg hover:scale-110 transition-all active:scale-95" aria-label="Cambiar tema de color" onclick="document.documentElement.classList.toggle('dark')">
+  <span class="material-symbols-outlined text-purple-700 dark:text-purple-300">dark_mode</span>
+</button>
 <style>
     body {
       min-height: max(884px, 100dvh);
@@ -299,7 +297,7 @@
 <div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
-<img class="w-full h-full object-cover" data-alt="close-up portrait of a teenage student smiling confidently in a modern bright school setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPVlavxMU8qC_RPX4RydKHWIOY13JSmr_eiHivq6GYq1LfgxV61bSygvEQgZRFMwj_vCl0DCeaOCMdqhyhRHXqK1ZuQXAjIyUwxp0CabGdjRX47k7931RGouhS8XZcDkFY5VlGxTGkRdv8-DmwVHB1K0JF-IDvwP88lQhzyrHn8YkGCd2f5hpMt5XDjOyznWCwAjW5rPyPNEnkNfkJwwIvULCl1xJX5OJQC_xeBPyIpKns2rPyqJ6VO3GOdWLqshgVKONyUgtnacvW"/>
+<img alt="Estudiante Mateo G." class="w-full h-full object-cover" data-alt="close-up portrait of a teenage student smiling confidently in a modern bright school setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPVlavxMU8qC_RPX4RydKHWIOY13JSmr_eiHivq6GYq1LfgxV61bSygvEQgZRFMwj_vCl0DCeaOCMdqhyhRHXqK1ZuQXAjIyUwxp0CabGdjRX47k7931RGouhS8XZcDkFY5VlGxTGkRdv8-DmwVHB1K0JF-IDvwP88lQhzyrHn8YkGCd2f5hpMt5XDjOyznWCwAjW5rPyPNEnkNfkJwwIvULCl1xJX5OJQC_xeBPyIpKns2rPyqJ6VO3GOdWLqshgVKONyUgtnacvW"/>
 </div>
 <div>
 <p class="text-sm font-bold text-on-surface">Mateo G.</p>
@@ -320,7 +318,7 @@
 <div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
-<img class="w-full h-full object-cover" data-alt="portrait of a young girl student with glasses in a soft lit indoor environment with subtle bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEI6GawI7cIpcYZV3Ua1SizSh52cx3y8BRR2j41ycr5l4obhhphCEKUBUyBMUeD6yBZlDrIyxeV2szJHxF2899VPv9il1LNO-80QSB5eeQ37v6FzDzvVjJJAKMAyWq0prFuaSBFgGN_tw-20QpdsqsSE7VTjfqarpoh6Ja885uwqA8llCsP0fVNT62YIPXWJx2I-_uo4VlwqRvQyQr13xD_zkghxwQoaz890O1Oz2c9n5PKse47RG-3D3x2UrsPjlojr0YVvBCVRoZ"/>
+<img alt="Estudiante Valeria R." class="w-full h-full object-cover" data-alt="portrait of a young girl student with glasses in a soft lit indoor environment with subtle bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEI6GawI7cIpcYZV3Ua1SizSh52cx3y8BRR2j41ycr5l4obhhphCEKUBUyBMUeD6yBZlDrIyxeV2szJHxF2899VPv9il1LNO-80QSB5eeQ37v6FzDzvVjJJAKMAyWq0prFuaSBFgGN_tw-20QpdsqsSE7VTjfqarpoh6Ja885uwqA8llCsP0fVNT62YIPXWJx2I-_uo4VlwqRvQyQr13xD_zkghxwQoaz890O1Oz2c9n5PKse47RG-3D3x2UrsPjlojr0YVvBCVRoZ"/>
 </div>
 <div>
 <p class="text-sm font-bold text-on-surface">Valeria R.</p>
@@ -341,7 +339,7 @@
 <div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
-<img class="w-full h-full object-cover" data-alt="professional headshot of a student with a neutral expression in natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1HFnHVVKzt12e6E_IKQ6junmNWu_De4Kb4iqbiuj9_CBJNhYe7VgJbK--b3axHggIK08kVITCRx_7MhbfSES9ISRYoBHuW-IqI0crQ7MuKBeWEevXaZls2Dq-Kn_nthfBnbVlHOx5jRNh4F8FIbiQLjHGbChNE1LaCkrvPAPvaosvt10Cr6ZwhApbHdT1PK-dOERp64W1imzvQg9DPPGBuEdAekrz7MsWRFqBo2H1Hz_7fIvVXW125uEY1TXmwYC6w5h7Rumutt3i"/>
+<img alt="Estudiante Diego H." class="w-full h-full object-cover" data-alt="professional headshot of a student with a neutral expression in natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1HFnHVVKzt12e6E_IKQ6junmNWu_De4Kb4iqbiuj9_CBJNhYe7VgJbK--b3axHggIK08kVITCRx_7MhbfSES9ISRYoBHuW-IqI0crQ7MuKBeWEevXaZls2Dq-Kn_nthfBnbVlHOx5jRNh4F8FIbiQLjHGbChNE1LaCkrvPAPvaosvt10Cr6ZwhApbHdT1PK-dOERp64W1imzvQg9DPPGBuEdAekrz7MsWRFqBo2H1Hz_7fIvVXW125uEY1TXmwYC6w5h7Rumutt3i"/>
 </div>
 <div>
 <p class="text-sm font-bold text-on-surface">Diego H.</p>
@@ -362,7 +360,7 @@
 <div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
-<img class="w-full h-full object-cover" data-alt="smiling teenage boy student with short hair in a bright educational space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2J6xgRUWqGYrR1AJLXCPMfPwKOT0mfvrxYGwtWxa0Dk265dudjBWQmGLKI_A8YRPDZr_4uqlgCZymvUFMkBrPEAKQ66cyFw_byrJrSDVmOQtTI7gIjnEoWtBHouiUuy9roeCgjiKXdfXb3115TFmxazY46f9uYftoKhwqS3brrixjSrgsfO8HE5Z_mzwH-9KjLz6XEwS1mmfoW8Hd35B6mXht-7zgKAymgQwA15isGRo_vyg1IeiBymJL419hSkf3bYsYZ1SIo8hI"/>
+<img alt="Estudiante Camila S." class="w-full h-full object-cover" data-alt="smiling teenage boy student with short hair in a bright educational space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2J6xgRUWqGYrR1AJLXCPMfPwKOT0mfvrxYGwtWxa0Dk265dudjBWQmGLKI_A8YRPDZr_4uqlgCZymvUFMkBrPEAKQ66cyFw_byrJrSDVmOQtTI7gIjnEoWtBHouiUuy9roeCgjiKXdfXb3115TFmxazY46f9uYftoKhwqS3brrixjSrgsfO8HE5Z_mzwH-9KjLz6XEwS1mmfoW8Hd35B6mXht-7zgKAymgQwA15isGRo_vyg1IeiBymJL419hSkf3bYsYZ1SIo8hI"/>
 </div>
 <div>
 <p class="text-sm font-bold text-on-surface">Camila S.</p>
