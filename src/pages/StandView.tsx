@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Layout } from "../components/Layout";
-import { Star, Map as MapIcon, Tent, User, Info } from "lucide-react";
+import { Star, Map as MapIcon, Tent, User, Info, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -9,174 +9,60 @@ export const StandView: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Layout title="📱 Pantalla 4 — Interacción con Stand">
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg, var(--crimson) 0%, #8b0000 100%)",
-          padding: "20px 24px 24px",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginBottom: "12px",
-          }}
-        >
-          <span
-            style={{
-              padding: "4px 14px",
-              borderRadius: "20px",
-              fontSize: "11px",
-              fontWeight: 700,
-              background: "rgba(255, 215, 0, 0.2)",
-              border: "1px solid var(--gold)",
-              color: "var(--gold)",
-              textTransform: "uppercase",
-            }}
-          >
+    <Layout title="Interacción con Stand">
+      <div className="bg-gradient-to-br from-primary to-primary-dim px-6 py-8 relative overflow-hidden">
+        <div className="flex gap-2 mb-4 relative z-10">
+          <span className="badge-tag badge-tag-physics">
             🔭 FÍSICA
           </span>
-          <span
-            style={{
-              padding: "4px 14px",
-              borderRadius: "20px",
-              fontSize: "11px",
-              fontWeight: 700,
-              background: "rgba(255, 255, 255, 0.15)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              textTransform: "uppercase",
-            }}
-          >
+          <span className="badge-tag badge-tag-secondary">
             3° Grupo B
           </span>
         </div>
-        <h1
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: "22px",
-            fontWeight: 900,
-            color: "var(--gold)",
-            textShadow: "0 2px 10px rgba(255, 215, 0, 0.4)",
-            lineHeight: 1.2,
-            marginBottom: "4px",
-          }}
-        >
+        <h1 className="font-display font-black text-3xl text-primary-fixed leading-tight mb-2 relative z-10">
           La Magia de la Gravedad
         </h1>
-        <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.7)" }}>
+        <p className="text-sm text-on-primary/70 relative z-10">
           ¡El Espectáculo Continúa!
         </p>
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl" />
       </div>
 
-      <div
-        style={{
-          padding: "16px 24px",
-          background: "rgba(255, 215, 0, 0.05)",
-          borderBottom: "1px solid rgba(255, 215, 0, 0.1)",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "11px",
-            color: "rgba(255, 255, 255, 0.5)",
-            marginBottom: "6px",
-          }}
-        >
+      <div className="px-6 py-4 bg-surface-container-low/30 border-b border-outline-variant/20">
+        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60 mb-2">
           TU PROGRESO EN LA FUNCIÓN
         </p>
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.1)",
-            borderRadius: "10px",
-            height: "6px",
-          }}
-        >
+        <div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: "60%" }}
-            transition={{ duration: 1 }}
-            style={{
-              background: "linear-gradient(90deg, var(--gold), #ffa500)",
-              borderRadius: "10px",
-              height: "100%",
-              boxShadow: "0 0 10px rgba(255, 215, 0, 0.5)",
-            }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="dynamic-progress-fill progress-fill-premium"
+            style={{ "--progress-width": "60%" } as React.CSSProperties}
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "6px",
-            fontSize: "11px",
-          }}
-        >
-          <span style={{ color: "var(--gold)", fontWeight: 700 }}>
-            ⭐ 350 puntos
+        <div className="flex justify-between items-center mt-3 text-[10px] font-bold">
+          <span className="text-primary flex items-center gap-1">
+             ⭐ 350 puntos
           </span>
-          <span style={{ color: "rgba(255, 255, 255, 0.4)" }}>
+          <span className="text-on-surface-variant opacity-60">
             3 de 5 stands visitados
           </span>
         </div>
       </div>
 
-      <div
-        style={{
-          padding: "20px 24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          overflowY: "auto",
-          flex: 1,
-        }}
-      >
+      <div className="flex-1 px-6 py-8 space-y-6 overflow-y-auto">
         {/* TRIVIA CARD */}
-        <div
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(13, 27, 75, 0.9), rgba(26, 47, 122, 0.6))",
-            border: "1px solid rgba(255, 215, 0, 0.3)",
-            borderRadius: "20px",
-            padding: "20px",
-            position: "relative",
-          }}
-        >
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              background: "linear-gradient(135deg, var(--gold), #ffa500)",
-              color: "#000",
-              fontSize: "10px",
-              fontWeight: 800,
-              padding: "4px 12px",
-              borderRadius: "20px",
-              marginBottom: "12px",
-              textTransform: "uppercase",
-            }}
-          >
-            🎩 DESAFÍO DEL MAGO
-          </span>
-          <p
-            style={{
-              fontSize: "15px",
-              lineHeight: 1.5,
-              color: "var(--cream)",
-              marginBottom: "16px",
-            }}
-          >
-            ¿Cuál es la fuerza invisible que mantiene a los planetas en órbita
-            alrededor del sol?
+        <div className="science-card-gradient">
+          <div className="flex items-center gap-2 mb-4">
+             <span className="px-3 py-1 bg-primary-fixed text-on-primary-fixed text-[10px] font-black rounded-full uppercase tracking-widest inline-flex items-center gap-2">
+                <Sparkles size={12} /> Desafío del Mago
+             </span>
+          </div>
+          <p className="text-lg font-medium text-white mb-6 leading-relaxed">
+            ¿Cuál es la fuerza invisible que mantiene a los planetas en órbita alrededor del sol?
           </p>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-          >
+          <div className="grid grid-cols-1 gap-3">
             {[
               "Fuerza Electromagnética",
               "Fuerza Gravitacional",
@@ -185,187 +71,59 @@ export const StandView: React.FC = () => {
             ].map((opt, i) => (
               <button
                 key={i}
-                style={{
-                  background:
-                    opt === "Fuerza Gravitacional"
-                      ? "rgba(255, 215, 0, 0.12)"
-                      : "rgba(255, 255, 255, 0.06)",
-                  border:
-                    opt === "Fuerza Gravitacional"
-                      ? "1px solid rgba(255, 215, 0, 0.5)"
-                      : "1px solid rgba(255, 255, 255, 0.15)",
-                  borderRadius: "12px",
-                  padding: "12px 16px",
-                  color: "white",
-                  fontSize: "14px",
-                  textAlign: "left",
-                  cursor: "pointer",
-                }}
+                className={`text-left p-4 rounded-xl border transition-all text-sm font-medium ${
+                  opt === "Fuerza Gravitacional" 
+                  ? "bg-primary/20 border-primary text-white" 
+                  : "bg-white/5 border-white/10 text-white/70"
+                }`}
               >
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "22px",
-                    height: "22px",
-                    border: "1px solid rgba(255, 215, 0, 0.5)",
-                    borderRadius: "50%",
-                    textAlign: "center",
-                    lineHeight: "21px",
-                    fontSize: "11px",
-                    color: "var(--gold)",
-                    marginRight: "10px",
-                    fontWeight: 700,
-                    background:
-                      opt === "Fuerza Gravitacional"
-                        ? "rgba(255, 215, 0, 0.2)"
-                        : "transparent",
-                  }}
-                >
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-current mr-3 text-[10px] font-black">
                   {String.fromCharCode(65 + i)}
                 </span>
-                {opt} {opt === "Fuerza Gravitacional" && "✓"}
+                {opt}
               </button>
             ))}
           </div>
         </div>
 
         {/* CURIOSITY CARD */}
-        <div
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(211, 47, 47, 0.2))",
-            border: "1px solid rgba(211, 47, 47, 0.4)",
-            borderRadius: "20px",
-            padding: "18px",
-            display: "flex",
-            gap: "12px",
-          }}
-        >
-          <Info size={28} color="var(--gold)" />
-          <div>
-            <div
-              style={{
-                fontSize: "10px",
-                fontWeight: 800,
-                color: "var(--gold)",
-                textTransform: "uppercase",
-                marginBottom: "6px",
-              }}
-            >
-              Dato Curioso
-            </div>
-            <p
-              style={{
-                fontSize: "13px",
-                color: "rgba(255, 255, 255, 0.85)",
-                lineHeight: 1.5,
-              }}
-            >
+        <div className="curiosity-card">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <Info size={20} />
+          </div>
+          <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase tracking-widest text-primary opacity-60">Dato Curioso</p>
+            <p className="text-sm text-on-surface leading-relaxed font-medium">
               Si pudieras saltar en la Luna, ¡tu salto sería 6 veces más alto!
             </p>
           </div>
         </div>
 
         {/* COMMENTS */}
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.04)",
-            border: "1px dashed rgba(255, 215, 0, 0.25)",
-            borderRadius: "20px",
-            padding: "18px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "10px",
-              fontWeight: 800,
-              color: "var(--gold)",
-              textTransform: "uppercase",
-              marginBottom: "10px",
-            }}
-          >
-            🎟️ PREGUNTÓMETRO
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60">🎟️ Preguntómetro</span>
           </div>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="¡Escribe tu pregunta anónima al expositor!"
-            style={{
-              width: "100%",
-              background: "rgba(255, 255, 255, 0.07)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              borderRadius: "12px",
-              padding: "12px",
-              color: "white",
-              fontSize: "13px",
-              resize: "none",
-              height: "70px",
-              outline: "none",
-            }}
-          />
+          <div className="space-y-3">
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="¡Escribe tu pregunta anónima al expositor!"
+              className="comment-input-area min-h-[100px]"
+            />
+            <button className="interactive-button-full shadow-lg">
+              🌟 ¡Enviar Pregunta!
+            </button>
+          </div>
         </div>
-
-        <button
-          style={{
-            background: "linear-gradient(135deg, var(--gold) 0%, #ffa500 100%)",
-            color: "#1a0a00",
-            border: "none",
-            borderRadius: "16px",
-            padding: "16px",
-            width: "100%",
-            fontSize: "15px",
-            fontWeight: 800,
-            cursor: "pointer",
-            boxShadow: "0 4px 20px rgba(255, 215, 0, 0.35)",
-          }}
-        >
-          🌟 ¡Enviar Pregunta!
-        </button>
       </div>
-
-      <nav
-        style={{
-          background: "rgba(10, 16, 53, 0.95)",
-          borderTop: "1px solid rgba(255, 215, 0, 0.15)",
-          padding: "12px 30px 20px",
-          display: "flex",
-          justifyContent: "space-around",
-        }}
-      >
-        {[
-          { icon: <Star />, label: "Inicio", path: "/" },
-          { icon: <MapIcon />, label: "Mapa", path: "/stand" },
-          { icon: <Tent />, label: "Stands", active: true, path: "/stand" },
-          { icon: <User />, label: "Perfil", path: "/ranking" },
-        ].map((item, i) => (
-          <div
-            key={i}
-            onClick={() => navigate(item.path)}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "4px",
-              cursor: "pointer",
-            }}
-          >
-            <span
-              style={{
-                color: item.active ? "var(--gold)" : "rgba(255, 255, 255, 0.4)",
-              }}
-            >
-              {item.icon}
-            </span>
-            <span
-              style={{
-                fontSize: "10px",
-                color: item.active ? "var(--gold)" : "rgba(255, 255, 255, 0.4)",
-              }}
-            >
-              {item.label}
-            </span>
-          </div>
-        ))}
+      
+      {/* Fake Navigation for preview */}
+      <nav className="fixed bottom-0 w-full max-w-md mx-auto bg-surface-container-highest/80 backdrop-blur-xl border-t border-outline-variant/20 px-8 py-4 flex justify-around items-center">
+          <Star className="text-primary" />
+          <MapIcon className="text-on-surface-variant opacity-40" />
+          <Tent className="text-on-surface-variant opacity-40" />
+          <User className="text-on-surface-variant opacity-40" />
       </nav>
     </Layout>
   );

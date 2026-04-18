@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DIURNA 310 - Scanner &amp; Trivia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#422b75",
+                    "on-secondary-container": "#783d81",
+                    "surface": "#faf8fe",
+                    "primary": "#68519d",
+                    "surface-container-low": "#f4f3f8",
+                    "outline": "#7a7581",
+                    "surface-bright": "#faf8fe",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e3e2e7",
+                    "on-secondary-fixed-variant": "#692f73",
+                    "surface-dim": "#dbd9de",
+                    "on-surface": "#1a1b1f",
+                    "surface-container-high": "#e9e7ec",
+                    "secondary-fixed": "#ffd6ff",
+                    "secondary": "#83478c",
+                    "on-tertiary-container": "#00423e",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#eaddff",
+                    "on-primary-fixed-variant": "#503983",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#68519d",
+                    "primary-fixed-dim": "#d1bcff",
+                    "inverse-surface": "#2f3034",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#006a65",
+                    "outline-variant": "#cbc4d1",
+                    "on-surface-variant": "#494550",
+                    "background": "#faf8fe",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#f2f0f5",
+                    "surface-container": "#efedf2",
+                    "primary-container": "#af96e8",
+                    "on-primary-fixed": "#230456",
+                    "tertiary-fixed": "#6af8ee",
+                    "tertiary-container": "#00b7ae",
+                    "surface-variant": "#e3e2e7",
+                    "on-tertiary-fixed-variant": "#00504c",
+                    "on-secondary-fixed": "#350040",
+                    "on-tertiary-fixed": "#00201e",
+                    "tertiary-fixed-dim": "#46dbd1",
+                    "secondary-container": "#f8b1ff",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#f5aefc",
+                    "on-background": "#1a1b1f",
+                    "inverse-primary": "#d1bcff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .glass-panel {
+        backdrop-filter: blur(40px);
+        background: rgba(250, 248, 254, 0.1);
+        border: 0.5px solid rgba(203, 196, 209, 0.2);
+      }
+      .liquid-button {
+        background: linear-gradient(135deg, #68519d 0%, #af96e8 100%);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 4px 15px rgba(104, 81, 157, 0.2);
+      }
+      .scan-line {
+        background: linear-gradient(to bottom, transparent, #00b7ae, transparent);
+        height: 40px;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        animation: scan 3s linear infinite;
+      }
+      @keyframes scan {
+        0% { top: 0; }
+        100% { top: 100%; }
+      }
+      .mesh-bg {
+        background: radial-gradient(at 0% 0%, #eaddff 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, #f8b1ff 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, #ffd6ff 0px, transparent 50%),
+                    radial-gradient(at 0% 100%, #e3e2e7 0px, transparent 50%);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen mesh-bg selection:bg-primary-container/30">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-stone-50/10 backdrop-blur-3xl border-b border-white/20 flex justify-between items-center px-6 h-16 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-purple-600" data-icon="science">science</span>
+<span class="font-['Space_Grotesk'] tracking-tight text-lg font-bold text-purple-700">DIURNA 310</span>
+</div>
+<div class="h-10 w-10 rounded-full border border-white/40 overflow-hidden shadow-sm">
+<img alt="Usuario Escolar" data-alt="profile avatar of a student for a school management application in a modern circular frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCucUcjG64-tAC6YWmeUNUpwi6r53VQEWGPl2Xvwp1bS2qMm3uSHFkF20fiQFC8cJPclEjlBFhKDMPaqF80TABfyCxYzJ_i5o9HcSJ-cT3Vqh0deXGAwzguIKLjoOZS6P_EqDntGitj-5HEQHsmcimY4GEebUsvLG_cV2WtfD4w8SUL9o3dMGkAuNyQVCE6wGAGUGy92bj_qOhep22PP47tEsduGHXPtXBWdkZmV-9JcCArHp816MdhVe-17eDBNu4w431-g8X3tDyy"/>
+</div>
+</nav>
+<main class="pt-24 pb-32 px-4 max-w-2xl mx-auto space-y-8">
+<!-- Header Section -->
+<header class="space-y-2">
+<h1 class="font-headline text-4xl font-bold tracking-tight text-on-surface">Módulos de Ciencia</h1>
+<p class="text-on-surface-variant text-sm">Escanea el código QR en tu mesa de laboratorio para comenzar.</p>
+</header>
+<!-- Progress Section -->
+<section class="glass-panel rounded-3xl p-6 space-y-4 shadow-sm">
+<div class="flex justify-between items-end">
+<div>
+<span class="text-xs font-bold text-tertiary uppercase tracking-widest">Progreso Total</span>
+<p class="text-2xl font-headline font-semibold">12 de 28</p>
+</div>
+<div class="text-right">
+<span class="text-xs font-medium text-on-surface-variant">42% completado</span>
+</div>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full w-[42%] relative shadow-[0_0_10px_rgba(0,183,174,0.3)]"></div>
+</div>
+</section>
+<!-- Scanner Viewport -->
+<section class="relative aspect-square w-full max-w-sm mx-auto overflow-hidden rounded-[2.5rem] border-4 border-white/30 shadow-2xl">
+<img class="absolute inset-0 w-full h-full object-cover grayscale-[0.2]" data-alt="close-up of a laboratory desk with science equipment and a digital qr code placard in soft focus lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_mLHGKrJKsU-4BFUvVsFs2q3MjCFM6s3xoi3QTwObpt8rM6lcU5VyKpSHdSVwmieUAR5-fFwRLcNGYxcBfRcWlE1ZVTq3bvTuIuR_gqcC60O0G1VVv7SGYcqyLFEYCkRfcFqL3jTLmCVDJZHcwXlgHZDDYaLNDmYoZC3EMXDhqszyxjIyAbMwa6oI5vHmBQ3MpeJWrIy4MxFYtYJeBYiTm1OHbknmoqG4o3xnqzFxgWZtBxezKnganMtUaHfxgKGkjIj8eSjZ3HZE"/>
+<!-- Technical Overlay -->
+<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+<!-- Viewfinder Corners -->
+<div class="absolute inset-12 border-2 border-white/40 rounded-3xl">
+<div class="absolute -top-1 -left-1 w-8 h-8 border-t-4 border-l-4 border-tertiary rounded-tl-lg"></div>
+<div class="absolute -top-1 -right-1 w-8 h-8 border-t-4 border-r-4 border-tertiary rounded-tr-lg"></div>
+<div class="absolute -bottom-1 -left-1 w-8 h-8 border-b-4 border-l-4 border-tertiary rounded-bl-lg"></div>
+<div class="absolute -bottom-1 -right-1 w-8 h-8 border-b-4 border-r-4 border-tertiary rounded-br-lg"></div>
+<div class="scan-line"></div>
+</div>
+<!-- Status Badge -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-xl border border-white/30 px-6 py-2 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 bg-tertiary rounded-full animate-pulse"></span>
+<span class="text-white text-sm font-medium tracking-wide">Escaneando módulo...</span>
+</div>
+</section>
+<!-- Trivia Section (Appears after scan) -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<div class="bg-primary-container/30 p-2 rounded-xl">
+<span class="material-symbols-outlined text-primary" data-icon="biotech">biotech</span>
+</div>
+<div>
+<h2 class="text-xl font-headline font-bold text-on-surface">Biología 1A</h2>
+<p class="text-xs text-on-surface-variant font-medium">Módulo: Estructura Celular</p>
+</div>
+</div>
+<div class="glass-panel rounded-[2rem] p-8 shadow-sm space-y-8">
+<p class="text-lg font-medium leading-relaxed text-on-surface">¿Cuál es la función principal de las mitocondrias dentro de una célula eucariota?</p>
+<div class="grid gap-4">
+<!-- Option 1 -->
+<label class="group cursor-pointer">
+<input class="hidden peer" name="trivia" type="radio"/>
+<div class="p-5 rounded-2xl border border-outline-variant/30 bg-white/5 peer-checked:bg-primary/10 peer-checked:border-primary transition-all duration-300 flex items-center gap-4 group-hover:bg-white/10">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center shrink-0">
+<div class="w-2.5 h-2.5 bg-primary rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-on-surface-variant peer-checked:text-on-surface font-medium">Síntesis de proteínas ribosomales.</span>
+</div>
+</label>
+<!-- Option 2 (Active state simulation) -->
+<label class="group cursor-pointer">
+<input checked="" class="hidden peer" name="trivia" type="radio"/>
+<div class="p-5 rounded-2xl border border-outline-variant/30 bg-white/5 peer-checked:bg-primary/10 peer-checked:border-primary transition-all duration-300 flex items-center gap-4 group-hover:bg-white/10">
+<div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center shrink-0">
+<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+</div>
+<span class="text-on-surface font-medium">Producción de energía a través de ATP.</span>
+</div>
+</label>
+<!-- Option 3 -->
+<label class="group cursor-pointer">
+<input class="hidden peer" name="trivia" type="radio"/>
+<div class="p-5 rounded-2xl border border-outline-variant/30 bg-white/5 peer-checked:bg-primary/10 peer-checked:border-primary transition-all duration-300 flex items-center gap-4 group-hover:bg-white/10">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center shrink-0">
+<div class="w-2.5 h-2.5 bg-primary rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-on-surface-variant peer-checked:text-on-surface font-medium">Almacenamiento de material genético.</span>
+</div>
+</label>
+</div>
+<button class="liquid-button w-full py-5 rounded-2xl text-white font-bold text-lg tracking-wide transform transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2">
+                    Enviar respuesta
+                    <span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-stone-50/20 backdrop-blur-2xl border-t border-white/30 flex justify-around items-center px-4 h-20 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5 hover:bg-white/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[11px] font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5 hover:bg-white/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] text-[11px] font-medium">Módulos</span>
+</a>
+<!-- Active Tab: Escanear -->
+<a class="flex flex-col items-center justify-center bg-purple-500/20 text-purple-900 rounded-xl px-4 py-1.5 transition-all scale-105" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
+<span class="font-['Inter'] text-[11px] font-bold">Escanear</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5 hover:bg-white/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[11px] font-medium">Ranking</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5 hover:bg-white/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] text-[11px] font-medium">Perfil</span>
+</a>
+</nav>
+</body></html>

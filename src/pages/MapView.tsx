@@ -2,521 +2,194 @@ import React, { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Compass, Users, CheckCircle, Lock, XCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Navigation } from "../components/Navigation";
-import { SaseNeuralCore } from "../components/SaseNeuralCore";
 import { getStudentSession } from "../lib/studentSession";
+import { ScienceCore } from "../components/ScienceCore";
+import { MapPin, Search, CheckCircle, Lock, XCircle, ArrowRight } from "lucide-react";
 
 interface Estacion {
   id: string;
   nombre: string;
   materia: string;
   categoria: string;
-  visitantes_activos: number;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -10 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24,
-    },
-  },
-};
-
-interface ProgresoItem {
+interface Progreso {
   estacion_id: string;
   trivia_respondida_correctamente: boolean;
+  visitado_en: string;
 }
 
-const MATERIA_COLORS: Record<string, string> = {
-  Matemáticas: "var(--chemistry-purple)", 
-  Biología: "var(--biology-green)",
-  Geografía: "var(--physics-blue)",
-  Física: "var(--crimson)",
-  Química: "var(--robotics-orange)",
-};
-
-const MATERIA_EMOJI: Record<string, string> = {
-  Matemáticas: "📐",
-  Biología: "🧬",
-  Geografía: "🌎",
-  Física: "⚡",
-  Química: "🧪",
-};
-
 export const MapView: React.FC = () => {
-  const navigate = useNavigate();
   const [estaciones, setEstaciones] = useState<Estacion[]>([]);
-  const [progreso, setProgreso] = useState<ProgresoItem[]>([]);
+  const [progreso, setProgreso] = useState<Progreso[]>([]);
   const [loading, setLoading] = useState(true);
-  const { studentGroup: userGroup, studentId, sessionToken } = getStudentSession();
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const { studentId, sessionToken } = getStudentSession();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      try {
-        // Obtener todas las estaciones disponibles
-        const { data: stands, error: standsErr } = await supabase
-          .from("estaciones")
-          .select("id, nombre, materia, categoria, visitantes_activos")
-          .eq("estado", "disponible");
+      const { data: estData } = await supabase.from("estaciones").select("*");
+      setEstaciones(estData || []);
 
-        if (standsErr) throw standsErr;
-        setEstaciones(stands || []);
-
-        // Obtener progreso del estudiante actual
-        if (studentId && sessionToken) {
-          const { data: prog, error: progErr } = await supabase.rpc(
-            "obtener_progreso_estudiante_v1",
-            {
-              p_estudiante_id: studentId,
-              p_session_token: sessionToken,
-            },
-          );
-
-          if (!progErr) setProgreso(prog || []);
-        }
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
+      if (studentId && sessionToken) {
+        const { data: progData } = await supabase.rpc("obtener_progreso_estudiante_v1", {
+          p_estudiante_id: studentId,
+          p_session_token: sessionToken,
+        });
+        setProgreso(progData || []);
       }
+      setLoading(false);
     };
-
-    const channel = supabase
-      .channel("realtime-estaciones")
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "estaciones" },
-        (payload) => {
-          setEstaciones((prev) =>
-            prev.map((est) =>
-              est.id === payload.new.id
-                ? { ...est, visitantes_activos: payload.new.visitantes_activos }
-                : est
-            )
-          );
-        }
-      )
-      .subscribe();
-
     fetchData();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [sessionToken, studentId]);
+  }, [studentId, sessionToken]);
 
   const getStandStatus = (estacionId: string) => {
     const p = progreso.find((pr) => pr.estacion_id === estacionId);
     if (!p) return "disponible";
     if (p.trivia_respondida_correctamente) return "completado";
-    return "visitado"; // Ya fue pero no respondió bien
+    return "visitado";
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusInfo = (status: string) => {
     switch (status) {
       case "completado":
         return {
           icon: <CheckCircle size={14} />,
-          text: "✅ ¡Éxito!",
-          color: "#00ff88",
-          bg: "rgba(0,255,136,0.15)",
+          text: "VERIFICADO",
+          color: "var(--secondary)",
+          bg: "var(--secondary-container)",
+          onBg: "var(--on-secondary-container)"
         };
       case "visitado":
         return {
           icon: <XCircle size={14} />,
-          text: "❌ Reintentar",
-          color: "#ff4d4d",
-          bg: "rgba(255,77,77,0.15)",
+          text: "FINALIZADO",
+          color: "var(--error)",
+          bg: "var(--error-container)",
+          onBg: "var(--on-error-container)"
         };
       default:
         return {
           icon: <Lock size={14} />,
-          text: "🔓 Explorar",
-          color: "var(--gold)",
-          bg: "rgba(255,215,0,0.1)",
+          text: "PENDIENTE",
+          color: "var(--primary)",
+          bg: "var(--primary-container)",
+          onBg: "var(--on-primary-container)"
         };
     }
   };
 
-  // Stand sugerido: el que no ha visitado y tiene menos gente
-  const standSugerido = estaciones
-    .filter((e) => getStandStatus(e.id) === "disponible")
-    .sort(
-      (a, b) => (a.visitantes_activos || 0) - (b.visitantes_activos || 0),
-    )[0];
+  const filteredEstaciones = estaciones.filter((e) =>
+    e.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.materia.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return (
+    <Layout>
+      <div className="flex-1 flex flex-col items-center justify-center p-12 space-y-6">
+        <ScienceCore size={140} />
+        <div className="text-center space-y-2">
+          <p className="text-[10px] font-black tracking-[0.4em] uppercase text-[var(--primary)] animate-pulse">Cargando mapa...</p>
+          <div className="w-32 h-1 bg-[var(--surface-container-high)] rounded-full overflow-hidden">
+            <motion.div initial={{ x: "-100%" }} animate={{ x: "100%" }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} className="h-full bg-[var(--primary)] w-1/2" />
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 
   return (
-    <Layout title="🧭 Brújula del Tesoro">
-      <div
-        className="treasure-map-container"
-        style={{
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          flex: 1,
-          overflowY: "auto",
-          background: "radial-gradient(circle at 50% 50%, rgba(236,182,19,0.03) 0%, transparent 70%)"
-        }}
-      >
-        {/* Header con grupo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Compass size={18} color="var(--gold)" />
-            <span
-              style={{
-                color: "var(--gold)",
-                fontWeight: "bold",
-                fontSize: "13px",
-              }}
-            >
-              Grupo {userGroup}
-            </span>
+    <Layout title="Mapa de la feria">
+      <div className="flex flex-col gap-6 px-6 py-8 pb-40">
+        
+        {/* Search & Stats Module */}
+        <div className="space-y-4">
+          <div className="premium-card p-4 flex items-center gap-4 bg-white/50 border-[var(--outline-variant)]/40 shadow-sm">
+            <Search size={20} className="text-[var(--primary)] opacity-40" />
+            <input
+              type="text"
+              placeholder="Buscar estación o materia..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 bg-transparent text-sm font-bold text-[var(--on-background)] placeholder:text-[var(--on-surface-variant)]/20 focus:outline-none"
+            />
           </div>
-          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px" }}>
-            {progreso.filter((p) => p.trivia_respondida_correctamente).length}/
-            {estaciones.length} completados
-          </span>
+
+          <div className="flex items-center justify-between px-2">
+             <div className="flex items-center gap-2">
+               <MapPin size={14} className="text-[var(--primary)]" />
+               <span className="text-[10px] font-black uppercase tracking-widest text-[var(--on-surface-variant)] opacity-40">Stands disponibles: {filteredEstaciones.length}</span>
+             </div>
+             <div className="flex items-center gap-1">
+                <div className="size-2 rounded-full bg-[var(--secondary)] animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--secondary)]">Online</span>
+             </div>
+          </div>
         </div>
 
-        {/* Barra de progreso */}
-        <div
-          style={{
-            width: "100%",
-            height: "6px",
-            background: "rgba(255,255,255,0.1)",
-            borderRadius: "3px",
-            overflow: "hidden",
-          }}
-        >
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{
-              width: `${
-                estaciones.length > 0
-                  ? (progreso.filter((p) => p.trivia_respondida_correctamente)
-                      .length /
-                      estaciones.length) *
-                    100
-                  : 0
-              }%`,
-            }}
-            transition={{ duration: 0.8 }}
-            style={{
-              height: "100%",
-              background: "linear-gradient(90deg, var(--gold), #27ae60)",
-              borderRadius: "3px",
-            }}
-          />
-        </div>
+        {/* Grid Stations */}
+        <div className="grid grid-cols-1 gap-4">
+          {filteredEstaciones.map((est) => {
+            const status = getStandStatus(est.id);
+            const info = getStatusInfo(status);
 
-        {/* Stand sugerido */}
-        {standSugerido && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ 
-              opacity: 1, 
-              y: 0,
-            }}
-            className="glass-science-quantum science-glow"
-            style={{
-              padding: "24px",
-              borderRadius: "32px",
-              position: "relative",
-              border: "1px solid rgba(255,215,0,0.4)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "10px",
-              }}
-            >
-              <Compass size={16} color="var(--gold)" />
-              <span
-                style={{
-                  color: "var(--gold)",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                }}
+            return (
+              <motion.div
+                key={est.id}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate(`/stand/${est.id}`)}
+                className="premium-card p-5 group cursor-pointer border-[var(--outline-variant)]/20"
               >
-                Sugerencia del Sistema
-              </span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "15px",
-              }}
-            >
-              <div style={{ flexShrink: 0 }}>
-                <SaseNeuralCore
-                  size={70}
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <h4
-                  style={{
-                    color: "white",
-                    margin: "0 0 4px 0",
-                    fontSize: "15px",
-                  }}
-                >
-                  {MATERIA_EMOJI[standSugerido.materia] || "🔬"}{" "}
-                  {standSugerido.nombre}
-                </h4>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: "11px",
-                  }}
-                >
-                  <Users size={11} /> {standSugerido.visitantes_activos || 0}{" "}
-                  personas
-                </div>
-              </div>
-              <button
-                onClick={() => navigate(`/stand/${standSugerido.id}`)}
-                style={{
-                  background: "var(--gold)",
-                  border: "none",
-                  padding: "10px 18px",
-                  borderRadius: "10px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                  cursor: "pointer",
-                  color: "black",
-                }}
-              >
-                Ir al Stand
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Lista de todos los stands */}
-        <h3 style={{ color: "white", fontSize: "14px", margin: "4px 0 0 0" }}>
-          Todos los Stands
-        </h3>
-
-        {loading ? (
-          <p
-            style={{
-              color: "rgba(255,255,255,0.5)",
-              textAlign: "center",
-              padding: "20px",
-            }}
-          >
-            Cargando estaciones...
-          </p>
-        ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-          >
-            {estaciones.map((estacion, i) => {
-              const status = getStandStatus(estacion.id);
-              const badge = getStatusBadge(status);
-              const color = MATERIA_COLORS[estacion.materia] || "var(--gold)";
-              const isBlocked = status !== "disponible";
-
-              return (
-                <div key={estacion.id} style={{ position: "relative" }}>
-                  {/* Línea conectora (Camino del tesoro) */}
-                  {i < estaciones.length - 1 && (
-                    <div style={{
-                      position: "absolute",
-                      left: "38px",
-                      top: "60px",
-                      width: "2px",
-                      height: "20px",
-                      background: "linear-gradient(to bottom, var(--gold-glow), transparent)",
-                      zIndex: 0
-                    }} />
-                  )}
-                  
-                  <motion.div
-                    key={estacion.id}
-                    variants={itemVariants}
-                    whileTap={!isBlocked ? { scale: 0.97 } : {}}
-                    onClick={() => {
-                      if (!isBlocked) {
-                        navigate(`/stand/${estacion.id}`);
-                      }
-                    }}
-                    className={isBlocked ? "glass-science-quantum opacity-60" : "glass-science-quantum"}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "14px",
-                      padding: "16px",
-                      borderRadius: "24px",
-                      cursor: isBlocked ? "not-allowed" : "pointer",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      border: isBlocked ? "1px solid rgba(255,255,255,0.05)" : `1px solid ${color}33`,
-                      position: "relative",
-                      zIndex: 1,
-                    }}
-                    whileHover={!isBlocked ? { 
-                      backgroundColor: "rgba(255,255,255,0.08)",
-                      borderColor: `${color}66`,
-                      x: 8,
-                      boxShadow: `0 10px 30px -10px ${color}33`
-                    } : {}}
+                <div className="flex justify-between items-start mb-4">
+                  <div 
+                    style={{ "--badge-bg": info.bg, "--badge-color": info.color } as React.CSSProperties}
+                    className="dynamic-badge flex items-center gap-2 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase opacity-60"
                   >
-                    {/* Icono de materia */}
-                    <div
-                      style={{
-                        width: "44px",
-                        height: "44px",
-                        borderRadius: "12px",
-                        background: `${color}22`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "22px",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {MATERIA_EMOJI[estacion.materia] || "🔬"}
-                    </div>
-
-                    {/* Info */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h4
-                        style={{
-                          color: isBlocked ? "rgba(255,255,255,0.5)" : "white",
-                          margin: "0 0 4px 0",
-                          fontSize: "14px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {estacion.nombre}
-                      </h4>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: color,
-                          fontWeight: "600",
-                        }}
-                      >
-                        {estacion.materia}
-                      </span>
-                    </div>
-
-                    {/* Badge de estado & Ocupación */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                      <div
-                        style={{
-                          padding: "4px 10px",
-                          borderRadius: "20px",
-                          background: badge.bg,
-                          color: badge.color,
-                          fontSize: "10px",
-                          fontWeight: "bold",
-                          whiteSpace: "nowrap",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {badge.text}
-                      </div>
-                      {status === 'disponible' && (
-                        <div style={{ 
-                          fontSize: '9px', 
-                          color: 'rgba(255,255,255,0.4)', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '4px',
-                          background: 'rgba(0,0,0,0.2)',
-                          padding: '2px 6px',
-                          borderRadius: '4px'
-                        }}>
-                          <Users size={8} /> {estacion.visitantes_activos} activos
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
+                    {info.icon}
+                    {info.text}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tighter opacity-20 group-hover:opacity-100 group-hover:text-[var(--primary)] transition-all">
+                    ID-{est.id.slice(0,4)}
+                  </span>
                 </div>
-              );
-            })}
-          </motion.div>
-        )}
 
-        {/* Mensaje si completó todo */}
-        {!loading && estaciones.length > 0 && !standSugerido && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{
-              textAlign: "center",
-              padding: "20px",
-              background: "rgba(39,174,96,0.1)",
-              borderRadius: "16px",
-              border: "1px solid rgba(39,174,96,0.3)",
-            }}
-          >
-            <h3 style={{ color: "#27ae60", marginBottom: "8px" }}>
-              🏆 ¡Recorrido Completo!
-            </h3>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px" }}>
-              Ya visitaste todos los stands. Revisa tu posición en el ranking.
-            </p>
-            <button
-              onClick={() => navigate("/ranking")}
-              style={{
-                marginTop: "12px",
-                background: "#27ae60",
-                border: "none",
-                padding: "10px 24px",
-                borderRadius: "10px",
-                color: "white",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              Ver Ranking
-            </button>
-          </motion.div>
+                <div className="space-y-1">
+                  <h3 className="text-xl font-[var(--font-display)] font-black uppercase tracking-tight text-[var(--on-surface)] group-hover:text-[var(--primary)] transition-colors">
+                    {est.nombre}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                     <span className="text-[10px] font-bold text-[var(--on-surface-variant)] opacity-40 uppercase tracking-widest">{est.materia}</span>
+                     <div className="size-1 rounded-full bg-[var(--surface-container-highest)]" />
+                     <span className="text-[10px] font-bold text-[var(--primary)] uppercase opacity-60 tracking-widest">{est.categoria}</span>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end">
+                   <div className="size-10 rounded-2xl bg-[var(--surface-container-low)] flex items-center justify-center text-[var(--on-surface-variant)] group-hover:bg-[var(--primary)] group-hover:text-white transition-all">
+                      <ArrowRight size={18} strokeWidth={3} />
+                   </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {filteredEstaciones.length === 0 && (
+          <div className="py-20 text-center space-y-4">
+             <div className="size-16 rounded-full bg-[var(--surface-container)] mx-auto flex items-center justify-center opacity-20">
+                <Search size={32} />
+             </div>
+             <p className="text-[10px] font-black uppercase tracking-widest opacity-30">No se encontraron stands con ese criterio</p>
+          </div>
         )}
       </div>
       <Navigation />
     </Layout>
   );
 };
+
+

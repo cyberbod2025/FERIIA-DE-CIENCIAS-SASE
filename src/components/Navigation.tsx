@@ -1,63 +1,43 @@
 import React from "react";
-import { Star, Map as MapIcon, Trophy } from "lucide-react";
+import { House, Map as MapIcon, Trophy } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export const Navigation: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
-    { icon: <Star />, label: "Inicio", path: "/tutorial" },
-    { icon: <MapIcon />, label: "Mapa", path: "/mapa" },
-    { icon: <Trophy />, label: "Ranking", path: "/ranking" },
+    { icon: <House size={20} />, label: "Progreso", path: "/" },
+    { icon: <MapIcon size={20} />, label: "Mapa", path: "/mapa" },
+    { icon: <Trophy size={20} />, label: "Ranking", path: "/ranking" },
   ];
 
   return (
-    <nav
-      style={{
-        background: "rgba(10, 16, 53, 0.98)",
-        borderTop: "1px solid rgba(255, 215, 0, 0.15)",
-        padding: `12px 20px var(--safe-area-bottom)`,
-        display: "flex",
-        justifyContent: "space-around",
-        backdropFilter: "blur(10px)",
-      }}
-    >
-      {navItems.map((item) => {
-        const isActive = location.pathname === item.path;
-        return (
-          <div
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "4px",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-            }}
-          >
-            <span
-              style={{
-                color: isActive ? "var(--gold)" : "rgba(255, 255, 255, 0.35)",
-                transform: isActive ? "scale(1.1)" : "scale(1)",
-              }}
+    <nav className="fixed bottom-0 left-0 w-full rounded-t-[2rem] z-50 pb-safe bg-white/60 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-white/30">
+      <div className="flex justify-around items-end px-4 pb-4 pt-3 w-full h-20 max-w-md mx-auto">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
+            <motion.button
+              key={item.path}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => navigate(item.path)}
+              className={`flex flex-col items-center justify-center p-2 transition-all duration-300 ${
+                isActive
+                  ? "bg-gradient-to-br from-[var(--primary)] to-[var(--secondary-fixed-dim)] text-white rounded-full px-4 py-3 mb-1 scale-110 shadow-lg shadow-[var(--primary)]/30"
+                  : "text-slate-400 hover:text-[var(--primary)]"
+              }`}
             >
               {item.icon}
-            </span>
-            <span
-              style={{
-                fontSize: "10px",
-                fontWeight: isActive ? "bold" : "normal",
-                color: isActive ? "var(--gold)" : "rgba(255, 255, 255, 0.35)",
-              }}
-            >
-              {item.label}
-            </span>
-          </div>
-        );
-      })}
+              <span className={`text-[10px] font-semibold uppercase tracking-wider ${isActive ? "mt-1" : "mt-1 opacity-80"}`}>
+                {item.label}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
     </nav>
   );
 };

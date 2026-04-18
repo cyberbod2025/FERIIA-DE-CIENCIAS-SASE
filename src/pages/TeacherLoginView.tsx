@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Layout } from "../components/Layout";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, ShieldAlert, ArrowLeft, Terminal } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { SaseNeuralCore } from "../components/SaseNeuralCore";
+import { ScienceCore } from "../components/ScienceCore";
 
 export const TeacherLoginView: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export const TeacherLoginView: React.FC = () => {
   const handleLogin = async () => {
     setError("");
     if (!email.trim() || !password) {
-      setError("Completa correo y contraseña.");
+      setError("Se requieren credenciales de mando.");
       return;
     }
 
@@ -31,216 +31,111 @@ export const TeacherLoginView: React.FC = () => {
       navigate("/panel");
     } catch (err: unknown) {
       console.error("Error en acceso maestros:", err);
-      setError("Acceso no autorizado. Verifica tus datos.");
+      setError("Acceso denegado: Credenciales no válidas.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Layout title="Acceso de Maestros">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          minHeight: "100%",
-          padding: "24px",
-          paddingTop: "48px",
-          gap: "32px",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "360px" }}>
-          <div style={{ textAlign: "center" }}>
-            <h1
-              style={{
-                fontSize: "32px",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "-0.03em",
-                background: "linear-gradient(180deg, #ffffff 0%, #fbbf24 100%)",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              Panel de Control
+    <Layout>
+      <div className="flex flex-col items-center px-6 py-12 gap-10 max-w-md mx-auto w-full flex-1">
+        
+        {/* Security Header */}
+        <div className="w-full text-center space-y-2">
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--error-container)]/10 border border-[var(--error-container)]/20 rounded-full mb-3">
+              <ShieldAlert size={12} className="text-[var(--error)]" />
+              <span className="text-[10px] font-black tracking-[0.2em] uppercase text-[var(--error)]">
+                Acceso limitado
+              </span>
+            </div>
+            <h1 className="text-4xl font-[var(--font-display)] font-black leading-none tracking-tighter">
+              PANEL DE <span className="text-[var(--primary)]">CONTROL</span>
             </h1>
-            <p
-              style={{
-                marginTop: "8px",
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                color: "var(--accent)",
-                opacity: 0.8,
-              }}
-            >
-              Solo personal autorizado
+            <p className="text-[10px] font-black tracking-[0.3em] uppercase opacity-40 mt-2">
+              Panel docente • ESD-310
             </p>
-          </div>
+          </motion.div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <SaseNeuralCore size={160} />
-        </motion.div>
+        {/* Neural Core Security Agent */}
+        <div className="relative">
+          <ScienceCore size={180} />
+          <div className="absolute inset-0 bg-transparent rounded-full shadow-[inset_0_0_30px_rgba(255,180,171,0.05)]" />
+        </div>
 
-        <div style={{ width: "100%", maxWidth: "360px", display: "flex", flexDirection: "column", gap: "20px" }}>
-          <div>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "8px",
-                fontSize: "10px",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "#fbbf24",
-              }}
-            >
-              <Mail size={12} /> Correo Institucional
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError("");
-              }}
-              placeholder="docente@escuela.mx"
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(251, 191, 36, 0.2)",
-                borderRadius: "12px",
-                color: "white",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+        {/* Auth Form */}
+        <div className="w-full space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--outline)]">
+                <Mail size={12} /> Correo institucional
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                placeholder="docente@esd310.edu.mx"
+                className="w-full h-14 px-5 bg-[var(--surface-container-low)] border border-[var(--outline-variant)]/20 rounded-xl text-[var(--on-background)] font-[var(--font-body)] focus:outline-none focus:border-[var(--primary)]/50 transition-all placeholder:opacity-20"
+              />
+            </div>
 
-          <div>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "8px",
-                fontSize: "10px",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "#fbbf24",
-              }}
-            >
-              <Lock size={12} /> Contraseña
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError("");
-              }}
-              placeholder="********"
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(251, 191, 36, 0.2)",
-                borderRadius: "12px",
-                color: "white",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--outline)]">
+                <Lock size={12} /> Contraseña
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                placeholder="••••••••"
+                className="w-full h-14 px-5 bg-[var(--surface-container-low)] border border-[var(--outline-variant)]/20 rounded-xl text-[var(--on-background)] font-[var(--font-body)] focus:outline-none focus:border-[var(--primary)]/50 transition-all placeholder:opacity-20"
+              />
+            </div>
           </div>
 
           {error && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              style={{
-                textAlign: "center",
-                color: "#ef4444",
-                fontSize: "10px",
-                fontWeight: 700,
-                background: "rgba(239, 68, 68, 0.1)",
-                padding: "10px 12px",
-                borderRadius: "12px",
-              }}
-            >
-              ⚠️ {error}
-            </motion.p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 bg-[var(--error-container)]/10 border border-[var(--error-container)]/30 rounded-xl flex items-center gap-3">
+              <div className="size-1.5 rounded-full bg-[var(--error)] animate-pulse" />
+              <p className="text-[10px] font-bold text-[var(--error)] uppercase">{error}</p>
+            </motion.div>
           )}
 
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            style={{
-              width: "100%",
-              marginTop: "8px",
-              padding: "16px",
-              borderRadius: "12px",
-              fontWeight: 900,
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              fontSize: "14px",
-              border: loading ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(6, 182, 212, 0.5)",
-              background: loading ? "rgba(255,255,255,0.05)" : "rgba(0, 0, 0, 0.4)",
-              color: loading ? "rgba(255,255,255,0.25)" : "white",
-              cursor: loading ? "not-allowed" : "pointer",
-              boxShadow: loading ? "none" : "0 0 30px rgba(6, 182, 212, 0.15)",
-            }}
-          >
-            {loading ? "Iniciando Sesión..." : "Entrar al Sistema"}
-          </button>
-
-          <button
-            onClick={() => navigate("/")}
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "12px",
-              fontSize: "10px",
-              fontWeight: 700,
-              color: loading ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.35)",
-              textTransform: "uppercase",
-              letterSpacing: "0.3em",
-              cursor: loading ? "not-allowed" : "pointer",
-            }}
-          >
-            Volver al Inicio
-          </button>
+          <div className="space-y-3 pt-2">
+            <button
+              onClick={handleLogin}
+              disabled={loading}
+              className={`w-full h-16 rounded-2xl font-black uppercase tracking-[0.3em] text-sm flex items-center justify-center transition-all ${
+                loading 
+                ? "bg-[var(--surface-container-high)] text-opacity-30 cursor-not-allowed"
+                : "bg-[var(--primary)] text-[var(--on-primary)] hover:scale-[1.02] active:scale-[0.98] action-glow"
+              }`}
+            >
+              {loading ? "Verificando..." : "Entrar al Sistema"}
+            </button>
+            
+            <button
+              onClick={() => navigate("/")}
+              className="w-full py-4 text-[9px] font-black uppercase tracking-[0.4em] text-[var(--on-surface-variant)] opacity-40 hover:opacity-100 transition-all flex items-center justify-center gap-2"
+            >
+              <ArrowLeft size={12} /> Volver al acceso principal
+            </button>
+          </div>
         </div>
-        
-        <div style={{ paddingTop: "16px", textAlign: "center" }}>
-          <p
-            style={{
-              fontSize: "9px",
-              color: "rgba(255,255,255,0.2)",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              fontWeight: 700,
-            }}
-          >
-            Protocolo de Seguridad <span style={{ color: "rgba(6, 182, 212, 0.4)" }}>ESD-310-SASE</span>
-          </p>
+
+        {/* HUD Footer */}
+        <div className="mt-8 pt-8 border-t border-white/5 w-full flex justify-between items-center opacity-20">
+          <div className="flex items-center gap-2">
+            <Terminal size={12} />
+            <span className="text-[8px] font-mono tracking-tighter">SECURE_BOOT_v4.0</span>
+          </div>
+          <span className="text-[8px] font-mono tracking-tighter">AES-256_ENCRYPTED</span>
         </div>
       </div>
     </Layout>
   );
 };
+
+
 

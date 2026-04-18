@@ -1,142 +1,135 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { SaseNeuralCore } from "../components/SaseNeuralCore";
-
-const SpaceBackground = () => (
-  <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
-    <motion.div
-      animate={{ 
-        scale: [1, 1.1, 1],
-        opacity: [0.2, 0.4, 0.2]
-      }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      style={{
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        background: "radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 70%)",
-        filter: "blur(40px)",
-      }}
-    />
-    {[...Array(40)].map((_, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: Math.random() }}
-        animate={{ opacity: [0.1, 0.6, 0.1], scale: [1, 1.2, 1] }}
-        transition={{ duration: Math.random() * 5 + 3, repeat: Infinity }}
-        style={{
-          position: "absolute",
-          width: "2px",
-          height: "2px",
-          background: i % 2 === 0 ? "var(--primary)" : "var(--accent)",
-          left: Math.random() * 100 + "%",
-          top: Math.random() * 100 + "%",
-          borderRadius: "50%",
-          boxShadow: `0 0 10px ${i % 2 === 0 ? "var(--primary)" : "var(--accent)"}`,
-        }}
-      />
-    ))}
-  </div>
-);
+import { Sparkles, ArrowRight, Smartphone, Microscope, Trophy } from "lucide-react";
+import { ScienceCore } from "../components/ScienceCore";
 
 export const IntroView: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div
-      className="intro-root"
-      style={{
-        width: "100%",
-        minHeight: "100dvh",
-        background: "#020617",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        color: "white",
-        overflow: "hidden"
-      }}
-    >
-      <SpaceBackground />
-      
-      <div style={{ zIndex: 10, textAlign: "center", padding: "20px" }}>
+    <div className="relative min-h-screen w-full bg-[var(--background)] overflow-hidden flex flex-col items-center selection:bg-primary/20">
+      {/* DECORACIÓN DINÁMICA DE FONDO */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          animate={{ opacity: [0.05, 0.15, 0.05] }}
+          transition={{ duration: 4, repeat: Infinity }}
+          className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ opacity: [0.05, 0.15, 0.05] }}
+          transition={{ duration: 4, repeat: Infinity, delay: 2 }}
+          className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[120px]" 
+        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]" />
+      </div>
+
+      <main className="relative z-10 w-full max-w-4xl flex flex-col items-center px-6 pt-20 pb-32">
+        
+        {/* HERO SECTION: NÚCLEO CIENTÍFICO */}
         <motion.div
-          key="content"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            maxWidth: "400px"
-          }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="relative mb-12"
         >
-          <SaseNeuralCore size={200} />
-          
-          <h1 style={{
-            marginTop: "40px",
-            fontSize: "30px",
-            fontFamily: "'Outfit', sans-serif",
-            background: "linear-gradient(180deg, #FFFFFF 0%, var(--primary) 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            marginBottom: "5px",
-            fontWeight: 800,
-            letterSpacing: "-0.02em",
-            textTransform: "uppercase"
-          }}>
-            FERIA DE CIENCIAS 2026 ESD-310
-          </h1>
-          <p style={{
-            fontSize: "13px",
-            color: "var(--accent)",
-            letterSpacing: "0.3em",
-            marginBottom: "60px",
-            fontWeight: 700,
-            textTransform: "uppercase"
-          }}>
-            Innovación Educativa Sec. 310
-          </p>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/login")}
-            style={{
-              padding: "22px 56px",
-              background: "rgba(2, 6, 23, 0.8)",
-              border: "1px solid var(--accent)",
-              borderRadius: "16px",
-              color: "white",
-              fontSize: "15px",
-              fontWeight: "700",
-              letterSpacing: "0.15em",
-              cursor: "pointer",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(6, 182, 212, 0.2)"
-            }}
-          >
-            INICIAR EXPLORACIÓN
-          </motion.button>
+          <div className="absolute inset-0 bg-primary/20 rounded-full blur-[80px] animate-pulse" />
+          <ScienceCore size={240} />
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-[-20px] border border-dashed border-primary/20 rounded-full"
+          />
         </motion.div>
-      </div>
 
-      <div style={{
-        position: "absolute",
-        bottom: "40px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        fontSize: "10px",
-        color: "rgba(255,255,255,0.2)",
-        letterSpacing: "0.1em"
-      }}>
-        © 2026 CIENCIA DIGITAL | ESD-310
-      </div>
+        {/* TEXTO DE BIENVENIDA */}
+        <div className="text-center space-y-6 max-w-2xl">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-full text-primary"
+          >
+            <Sparkles size={16} fill="currentColor" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em]">Diurna 310 • Institucional</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-5xl md:text-7xl font-headline font-bold text-on-background leading-[0.95] tracking-tighter uppercase"
+          >
+             Feria de <br />
+            <span className="text-primary">Ciencias 2026</span>
+          </motion.h1>
+
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="space-y-8 mt-12"
+          >
+            {/* SECCIÓN DE OBJETIVOS */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="glass-panel p-6 rounded-3xl border border-white/30 text-left space-y-3 bg-white/40 backdrop-blur-xl">
+                <div className="size-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/10">
+                  <Microscope size={20} />
+                </div>
+                <h3 className="font-headline font-bold text-sm uppercase">La Feria</h3>
+                <p className="text-[11px] leading-relaxed text-on-surface-variant uppercase opacity-70">
+                  Un espacio para investigar, experimentar y descubrir el impacto de la ciencia en nuestro entorno diario.
+                </p>
+              </div>
+
+              <div className="glass-panel p-6 rounded-3xl border border-white/30 text-left space-y-3 bg-white/40 backdrop-blur-xl">
+                <div className="size-10 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/10">
+                  <Smartphone size={20} />
+                </div>
+                <h3 className="font-headline font-bold text-sm uppercase">La App</h3>
+                <p className="text-[11px] leading-relaxed text-on-surface-variant uppercase opacity-70">
+                  Tu portal interactivo para escanear stands, resolver trivias y optimizar tu recorrido científico.
+                </p>
+              </div>
+
+              <div className="glass-panel p-6 rounded-3xl border border-white/30 text-left space-y-3 bg-white/40 backdrop-blur-xl">
+                <div className="size-10 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary border border-tertiary/10">
+                  <Trophy size={20} />
+                </div>
+                <h3 className="font-headline font-bold text-sm uppercase">Rally</h3>
+                <p className="text-[11px] leading-relaxed text-on-surface-variant uppercase opacity-70">
+                  Acumula puntos de ciencia, compite contra otros grupos y gana tu diploma de honor científico.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-on-surface-variant text-sm font-medium leading-relaxed max-w-lg mx-auto uppercase opacity-50 tracking-wide">
+              Misión: Impulsar la innovación y el talento de los Presidentes de México a través de la tecnología.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* ACCIÓN PRINCIPAL */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          className="w-full max-w-xs mt-12"
+        >
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full py-6 rounded-3xl bg-primary text-white font-black text-xs uppercase tracking-[0.4em] shadow-2xl shadow-primary/40 hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center justify-center gap-4 group"
+          >
+            Comenzar aventura
+            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </motion.div>
+      </main>
+
+      {/* FOOTER DISCRETO */}
+      <footer className="fixed bottom-0 w-full h-20 bg-gradient-to-t from-[var(--background)] to-transparent flex items-center justify-center z-20 pointer-events-none">
+        <p className="text-[9px] font-black text-outline/30 uppercase tracking-[0.5em]">Escuela Secundaria Diurna 310 • 2026</p>
+      </footer>
     </div>
   );
 };

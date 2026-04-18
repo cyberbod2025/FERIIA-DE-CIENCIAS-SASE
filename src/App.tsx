@@ -2,6 +2,8 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Lazy loading de vistas para optimización
+const IntroView = lazy(() => import("./pages/IntroView").then(m => ({ default: m.IntroView })));
+const BienvenidaProView = lazy(() => import("./pages/BienvenidaProView").then(m => ({ default: m.BienvenidaProView })));
 const LoginView = lazy(() => import("./pages/LoginView").then(m => ({ default: m.LoginView })));
 const TeacherLoginView = lazy(() => import("./pages/TeacherLoginView").then(m => ({ default: m.TeacherLoginView })));
 const TeacherPanelView = lazy(() => import("./pages/TeacherPanelView").then(m => ({ default: m.TeacherPanelView })));
@@ -13,20 +15,22 @@ const RankingView = lazy(() => import("./pages/RankingView").then(m => ({ defaul
 
 // Componente de carga elegante
 const ViewLoader = () => (
-  <div className="h-screen w-full flex items-center justify-center bg-[#05070a]">
+  <div className="h-screen w-full flex items-center justify-center bg-[var(--background)]">
     <div className="relative size-12">
-      <div className="absolute inset-0 rounded-full border-2 border-white/5"></div>
-      <div className="absolute inset-0 rounded-full border-t-2 border-blue-500 animate-spin"></div>
+      <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] opacity-10"></div>
+      <div className="absolute inset-0 rounded-full border-t-2 border-[var(--primary)] animate-spin"></div>
     </div>
   </div>
 );
 
 function App() {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Suspense fallback={<ViewLoader />}>
         <Routes>
-          <Route path="/" element={<LoginView />} />
+          <Route path="/" element={<IntroView />} />
+          <Route path="/login" element={<LoginView />} />
+          <Route path="/dashboard" element={<BienvenidaProView />} />
           <Route path="/panel/login" element={<TeacherLoginView />} />
           <Route path="/panel" element={<TeacherPanelView />} />
           <Route path="/tutorial" element={<TutorialView />} />

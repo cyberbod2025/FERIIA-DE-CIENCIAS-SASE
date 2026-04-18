@@ -1,6 +1,6 @@
-# DOCUMENTO MAESTRO SASE 2026
+# DOCUMENTO MAESTRO FERIA DE CIENCIAS 2026
 
-Proyecto: SISTEMA SASE-310 (Feria de Ciencias)
+Proyecto: FERIA DE CIENCIAS 2026 ESD-310
 Escuela: Secundaria Diurna 310 "Presidentes de Mexico"
 
 ## Proposito
@@ -9,12 +9,12 @@ Transformar la app actual en una base solida para crear un cuaderno en NotebookL
 
 ## Concepto Central
 
-SASE (Sistema de Asignacion y Seguimiento de Estaciones) es el cerebro de la feria: observa el flujo, sugiere rutas y garantiza que cada alumno viva la experiencia completa sin aglomeraciones.
+La plataforma de la feria coordina el flujo de estudiantes, sugiere rutas y ayuda a que cada alumno viva la experiencia completa sin aglomeraciones.
 
 ## Mecanica: La Brujula del Tesoro
 
 1. El alumno entra al Mapa del Tesoro.
-2. SASE sugiere un stand con menor afluencia.
+2. El sistema sugiere un stand con menor afluencia.
 3. El alumno hace check-in en el stand (QR).
 4. Se activa el desafio de Trivia por tiempo.
 5. Al finalizar, el sistema otorga puntos y actualiza el ranking.
@@ -30,9 +30,9 @@ SASE (Sistema de Asignacion y Seguimiento de Estaciones) es el cerebro de la fer
 
 Mapa del Tesoro -> Desafio (Trivia) -> Recompensa (Puntos/Ranking)
 
-## Narrativa SASE 2026
+## Narrativa 2026
 
-SASE no es solo una app: es el protocolo que sincroniza el conocimiento. La feria se vuelve un circuito vivo donde cada alumno completa su ruta y suma al equilibrio de toda la escuela.
+La app sincroniza el recorrido de la feria. Cada alumno completa su ruta, suma puntos y contribuye a un flujo ordenado para toda la escuela.
 
 ## Requisitos de Verificacion (Vision Alignment)
 
@@ -61,8 +61,8 @@ Nota: reemplazar cada placeholder con descripcion real de la captura tomada.
 
 ## Guion Audio Overview - Maestros (tono institucional)
 
-En la Secundaria Diurna 310 "Presidentes de Mexico", el protocolo SASE 2026 organiza la Feria de Ciencias con precision. Cada alumno entra al Mapa del Tesoro, recibe una sugerencia de stand y realiza check-in con QR. La trivia final registra el aprendizaje, otorga puntos y actualiza el ranking en tiempo real. El resultado es un flujo ordenado, menos filas y datos claros para reportar el impacto academico. SASE no solo coordina; convierte la feria en un sistema medible y eficiente para toda la comunidad.
+En la Secundaria Diurna 310 "Presidentes de Mexico", la plataforma de la feria organiza la Feria de Ciencias con precision. Cada alumno entra al Mapa del Tesoro, recibe una sugerencia de stand y realiza check-in con QR. La trivia final registra el aprendizaje, otorga puntos y actualiza el ranking en tiempo real. El resultado es un flujo ordenado, menos filas y datos claros para reportar el impacto academico.
 
 ## Guion Audio Overview - Alumnos (tono epico y misterioso)
 
-En la Secundaria Diurna 310 "Presidentes de Mexico", algo despierta. El Protocolo SASE 2026 abre el Mapa del Tesoro y te marca el siguiente destino. Cada stand es una mision, cada QR es una llave, cada trivia es un desafio. Suma puntos, sube en el ranking y desbloquea tu lugar en la historia de la feria. No es solo una visita: es una ruta secreta que convierte el conocimiento en poder. Bienvenido al misterio de SASE.
+En la Secundaria Diurna 310 "Presidentes de Mexico", algo despierta. El Mapa del Tesoro abre el siguiente destino. Cada stand es una mision, cada QR es una llave y cada trivia es un desafio. Suma puntos, sube en el ranking y desbloquea tu lugar en la historia de la feria. No es solo una visita: es una ruta secreta que convierte el conocimiento en poder.

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Panel de Control - Secundaria Diurna 310</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 0% 0%, #f4f3f8 0%, #eaddff 50%, #faf8fe 100%);
+            min-height: 100vh;
+        }
+        .headline-font { font-family: 'Space Grotesk', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 0.5px solid rgba(203, 196, 209, 0.3);
+        }
+        .heatmap-cell {
+            transition: all 0.3s ease;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-primary-container": "#422b75",
+                "on-secondary-container": "#783d81",
+                "surface": "#faf8fe",
+                "primary": "#68519d",
+                "surface-container-low": "#f4f3f8",
+                "outline": "#7a7581",
+                "surface-bright": "#faf8fe",
+                "on-secondary": "#ffffff",
+                "surface-container-highest": "#e3e2e7",
+                "on-secondary-fixed-variant": "#692f73",
+                "surface-dim": "#dbd9de",
+                "on-surface": "#1a1b1f",
+                "surface-container-high": "#e9e7ec",
+                "secondary-fixed": "#ffd6ff",
+                "secondary": "#83478c",
+                "on-tertiary-container": "#00423e",
+                "on-primary": "#ffffff",
+                "primary-fixed": "#eaddff",
+                "on-primary-fixed-variant": "#503983",
+                "on-error": "#ffffff",
+                "surface-tint": "#68519d",
+                "primary-fixed-dim": "#d1bcff",
+                "inverse-surface": "#2f3034",
+                "surface-container-lowest": "#ffffff",
+                "error-container": "#ffdad6",
+                "tertiary": "#006a65",
+                "outline-variant": "#cbc4d1",
+                "on-surface-variant": "#494550",
+                "background": "#faf8fe",
+                "on-error-container": "#93000a",
+                "on-tertiary": "#ffffff",
+                "inverse-on-surface": "#f2f0f5",
+                "surface-container": "#efedf2",
+                "primary-container": "#af96e8",
+                "on-primary-fixed": "#230456",
+                "tertiary-fixed": "#6af8ee",
+                "tertiary-container": "#00b7ae",
+                "surface-variant": "#e3e2e7",
+                "on-tertiary-fixed-variant": "#00504c",
+                "on-secondary-fixed": "#350040",
+                "on-tertiary-fixed": "#00201e",
+                "tertiary-fixed-dim": "#46dbd1",
+                "secondary-container": "#f8b1ff",
+                "error": "#ba1a1a",
+                "secondary-fixed-dim": "#f5aefc",
+                "on-background": "#1a1b1f",
+                "inverse-primary": "#d1bcff"
+            },
+            "fontFamily": {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-stone-50/10 backdrop-blur-3xl border-b border-white/20 shadow-sm flex justify-between items-center px-6 h-16 w-full max-w-none">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-purple-600" data-icon="science">science</span>
+<h1 class="font-['Space_Grotesk'] tracking-tight text-lg font-bold text-purple-700">DIURNA 310</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 text-stone-500 font-medium text-sm">
+<span class="text-purple-800 border-b-2 border-purple-600 pb-1">Panel de Control</span>
+<span class="hover:text-purple-600 cursor-pointer transition-colors">Estadísticas</span>
+<span class="hover:text-purple-600 cursor-pointer transition-colors">Reportes</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-[10px] font-bold text-on-primary-container border border-white/40">
+                EP
+            </div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-7xl mx-auto">
+<!-- Hero Branding Section -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<span class="text-tertiary font-bold tracking-widest text-xs uppercase">SISTEMA DE MONITOREO</span>
+<h2 class="headline-font text-4xl md:text-5xl font-bold text-on-surface mt-2 tracking-tighter">SECUNDARIA DIURNA 310<br/><span class="text-primary/60">PRESIDENTES DE MÉXICO</span></h2>
+</div>
+<!-- Timer & Global Stats Glass Card -->
+<div class="glass-panel p-6 rounded-3xl flex gap-8 items-center">
+<div class="text-center">
+<p class="text-[10px] uppercase tracking-widest text-outline font-bold mb-1">Tiempo Restante</p>
+<div class="headline-font text-3xl font-bold text-primary tabular-nums">01:14:22</div>
+</div>
+<div class="w-px h-10 bg-outline-variant/30"></div>
+<div class="text-center">
+<p class="text-[10px] uppercase tracking-widest text-outline font-bold mb-1">Promedio / Estación</p>
+<div class="headline-font text-3xl font-bold text-tertiary tabular-nums">4.2 min</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Heatmap Section -->
+<section class="lg:col-span-8 flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<h3 class="headline-font font-bold text-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="grid_view">grid_view</span>
+                        Distribución de Módulos (28)
+                    </h3>
+<div class="flex gap-2 items-center">
+<span class="w-3 h-3 rounded-full bg-surface-container-highest"></span>
+<span class="text-[10px] font-bold text-outline uppercase tracking-tighter">Baja</span>
+<span class="w-3 h-3 rounded-full bg-secondary-container"></span>
+<span class="text-[10px] font-bold text-outline uppercase tracking-tighter">Alta</span>
+</div>
+</div>
+<div class="glass-panel p-8 rounded-[2rem] grid grid-cols-4 md:grid-cols-7 gap-3">
+<!-- Generating 28 modules with varying densities -->
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container flex flex-col items-center justify-center border border-white/20 shadow-sm group">
+<span class="text-[10px] font-bold text-on-secondary-container">M01</span>
+<span class="text-xl font-bold text-on-secondary-container">12</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/40 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M02</span>
+<span class="text-xl font-bold text-primary">4</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/80 flex flex-col items-center justify-center border border-white/20 shadow-sm group">
+<span class="text-[10px] font-bold text-on-secondary-container">M03</span>
+<span class="text-xl font-bold text-on-secondary-container">9</span>
+</div>
+<!-- Repeated pattern for 28 cells with visual variety -->
+<div class="heatmap-cell aspect-square rounded-2xl bg-surface-container-highest flex flex-col items-center justify-center border border-white/10 group opacity-60">
+<span class="text-[10px] font-bold text-outline">M04</span>
+<span class="text-xl font-bold text-outline">0</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/60 flex flex-col items-center justify-center border border-white/20 shadow-sm group">
+<span class="text-[10px] font-bold text-on-secondary-container">M05</span>
+<span class="text-xl font-bold text-on-secondary-container">7</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/60 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M06</span>
+<span class="text-xl font-bold text-primary">6</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary flex flex-col items-center justify-center border border-white/20 shadow-lg group">
+<span class="text-[10px] font-bold text-white">M07</span>
+<span class="text-xl font-bold text-white">18</span>
+</div>
+<!-- Row 2 -->
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/20 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M08</span>
+<span class="text-xl font-bold text-primary">2</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/90 flex flex-col items-center justify-center border border-white/20 shadow-sm group">
+<span class="text-[10px] font-bold text-on-secondary-container">M09</span>
+<span class="text-xl font-bold text-on-secondary-container">10</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M10</span>
+<span class="text-xl font-bold text-primary">8</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/30 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-on-secondary-container">M11</span>
+<span class="text-xl font-bold text-on-secondary-container">3</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container flex flex-col items-center justify-center border border-white/20 shadow-sm group">
+<span class="text-[10px] font-bold text-on-secondary-container">M12</span>
+<span class="text-xl font-bold text-on-secondary-container">11</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-surface-container-highest flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-outline">M13</span>
+<span class="text-xl font-bold text-outline">1</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/80 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M14</span>
+<span class="text-xl font-bold text-primary">7</span>
+</div>
+<!-- Additional rows omitted for brevity in code but implied for 28 cells visual logic -->
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/50 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-on-secondary-container">M15</span>
+<span class="text-xl font-bold text-on-secondary-container">5</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M16</span>
+<span class="text-xl font-bold text-primary">8</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary flex flex-col items-center justify-center border border-white/20 shadow-lg group">
+<span class="text-[10px] font-bold text-white">M17</span>
+<span class="text-xl font-bold text-white">22</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/30 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M18</span>
+<span class="text-xl font-bold text-primary">3</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/70 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-on-secondary-container">M19</span>
+<span class="text-xl font-bold text-on-secondary-container">8</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/90 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M20</span>
+<span class="text-xl font-bold text-primary">9</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-surface-container-highest flex flex-col items-center justify-center border border-white/10 group opacity-80">
+<span class="text-[10px] font-bold text-outline">M21</span>
+<span class="text-xl font-bold text-outline">1</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/40 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-on-secondary-container">M22</span>
+<span class="text-xl font-bold text-on-secondary-container">4</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/70 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M23</span>
+<span class="text-xl font-bold text-primary">6</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary flex flex-col items-center justify-center border border-white/20 shadow-lg group">
+<span class="text-[10px] font-bold text-white">M24</span>
+<span class="text-xl font-bold text-white">15</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container/20 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M25</span>
+<span class="text-xl font-bold text-primary">2</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/60 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-on-secondary-container">M26</span>
+<span class="text-xl font-bold text-on-secondary-container">7</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-primary-container flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-primary">M27</span>
+<span class="text-xl font-bold text-primary">10</span>
+</div>
+<div class="heatmap-cell aspect-square rounded-2xl bg-secondary-container/80 flex flex-col items-center justify-center border border-white/10 group">
+<span class="text-[10px] font-bold text-on-secondary-container">M28</span>
+<span class="text-xl font-bold text-on-secondary-container">9</span>
+</div>
+</div>
+<!-- Alert Buttons -->
+<div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+<button class="flex items-center justify-center gap-3 bg-gradient-to-br from-primary to-primary-container text-white py-4 rounded-2xl shadow-lg hover:shadow-primary/20 active:scale-95 transition-all font-medium">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+                        ¡Es hora de moverse!
+                    </button>
+<button class="flex items-center justify-center gap-3 bg-white text-primary border border-primary/20 py-4 rounded-2xl hover:bg-primary/5 active:scale-95 transition-all font-medium">
+<span class="material-symbols-outlined" data-icon="quiz">quiz</span>
+                        Completa tu trivia
+                    </button>
+<button class="flex items-center justify-center gap-3 bg-error-container text-on-error-container py-4 rounded-2xl hover:bg-red-100 active:scale-95 transition-all font-bold">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+                        Alerta General
+                    </button>
+</div>
+</section>
+<!-- Student Progress Section -->
+<section class="lg:col-span-4 flex flex-col gap-4">
+<h3 class="headline-font font-bold text-xl px-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="leaderboard">leaderboard</span>
+                    Top Estudiantes
+                </h3>
+<div class="glass-panel p-4 rounded-[2rem] flex flex-col gap-3 overflow-hidden">
+<!-- Student Card 1 -->
+<div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a teenage student smiling confidently in a modern bright school setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPVlavxMU8qC_RPX4RydKHWIOY13JSmr_eiHivq6GYq1LfgxV61bSygvEQgZRFMwj_vCl0DCeaOCMdqhyhRHXqK1ZuQXAjIyUwxp0CabGdjRX47k7931RGouhS8XZcDkFY5VlGxTGkRdv8-DmwVHB1K0JF-IDvwP88lQhzyrHn8YkGCd2f5hpMt5XDjOyznWCwAjW5rPyPNEnkNfkJwwIvULCl1xJX5OJQC_xeBPyIpKns2rPyqJ6VO3GOdWLqshgVKONyUgtnacvW"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Mateo G.</p>
+<p class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
+                                    Módulo 17
+                                </p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">24/28</span>
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+</div>
+</div>
+<!-- Student Card 2 -->
+<div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="portrait of a young girl student with glasses in a soft lit indoor environment with subtle bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEI6GawI7cIpcYZV3Ua1SizSh52cx3y8BRR2j41ycr5l4obhhphCEKUBUyBMUeD6yBZlDrIyxeV2szJHxF2899VPv9il1LNO-80QSB5eeQ37v6FzDzvVjJJAKMAyWq0prFuaSBFgGN_tw-20QpdsqsSE7VTjfqarpoh6Ja885uwqA8llCsP0fVNT62YIPXWJx2I-_uo4VlwqRvQyQr13xD_zkghxwQoaz890O1Oz2c9n5PKse47RG-3D3x2UrsPjlojr0YVvBCVRoZ"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Valeria R.</p>
+<p class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
+                                    Módulo 24
+                                </p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">21/28</span>
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[75%]"></div>
+</div>
+</div>
+</div>
+<!-- Student Card 3 -->
+<div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="professional headshot of a student with a neutral expression in natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1HFnHVVKzt12e6E_IKQ6junmNWu_De4Kb4iqbiuj9_CBJNhYe7VgJbK--b3axHggIK08kVITCRx_7MhbfSES9ISRYoBHuW-IqI0crQ7MuKBeWEevXaZls2Dq-Kn_nthfBnbVlHOx5jRNh4F8FIbiQLjHGbChNE1LaCkrvPAPvaosvt10Cr6ZwhApbHdT1PK-dOERp64W1imzvQg9DPPGBuEdAekrz7MsWRFqBo2H1Hz_7fIvVXW125uEY1TXmwYC6w5h7Rumutt3i"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Diego H.</p>
+<p class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
+                                    Módulo 07
+                                </p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">19/28</span>
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[67%]"></div>
+</div>
+</div>
+</div>
+<!-- Student Card 4 -->
+<div class="bg-white/40 p-4 rounded-2xl flex items-center justify-between border border-white/60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="smiling teenage boy student with short hair in a bright educational space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2J6xgRUWqGYrR1AJLXCPMfPwKOT0mfvrxYGwtWxa0Dk265dudjBWQmGLKI_A8YRPDZr_4uqlgCZymvUFMkBrPEAKQ66cyFw_byrJrSDVmOQtTI7gIjnEoWtBHouiUuy9roeCgjiKXdfXb3115TFmxazY46f9uYftoKhwqS3brrixjSrgsfO8HE5Z_mzwH-9KjLz6XEwS1mmfoW8Hd35B6mXht-7zgKAymgQwA15isGRo_vyg1IeiBymJL419hSkf3bYsYZ1SIo8hI"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Camila S.</p>
+<p class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
+                                    Módulo 10
+                                </p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">15/28</span>
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[53%]"></div>
+</div>
+</div>
+</div>
+<button class="mt-2 text-primary font-bold text-xs hover:underline py-2">Ver lista completa</button>
+</div>
+</section>
+</div>
+</main>
+<!-- NavigationDrawer (Suppressed based on Transactional/Focused UI intent) -->
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-2xl bg-stone-50/20 backdrop-blur-2xl border-t border-white/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center w-full px-4 h-20 pb-safe md:hidden">
+<div class="flex flex-col items-center justify-center bg-purple-500/20 text-purple-900 rounded-xl px-3 py-1.5">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[11px] font-medium">Inicio</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] text-[11px] font-medium">Módulos</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-['Inter'] text-[11px] font-medium">Escanear</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[11px] font-medium">Ranking</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-600 px-3 py-1.5">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] text-[11px] font-medium">Perfil</span>
+</div>
+</nav>
+</body></html>

@@ -71,10 +71,11 @@ Objetivo: concentrar reglas verificadas del repo para futuros cambios sin mezcla
 ## 7. Documentacion heredada deprecada por canon
 
 - `README.md`: boilerplate de Vite, no documenta el producto real.
-- `.agents/workflows/dev-sase.md`: puerto incorrecto `3000`.
+- `.agents/workflows/dev-feria.md`: puerto incorrecto `3000`.
 - `netlify.toml`: asume una carpeta `web/` inexistente.
 - Los documentos narrativos de producto pueden servir de contexto, pero no mandan sobre config, codigo ni canon.
 
 ## 8. Regla de cambio futuro
 
 - Antes de cambiar auth, permisos, migraciones, RPCs, flujos de alumno/maestro, CI, despliegue o artefactos de automatizacion, abre un expediente nuevo en `specs/`.
+

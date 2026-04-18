@@ -1,5 +1,5 @@
 ---
-description: Capturar evidencias visuales del sistema SASE
+description: Capturar evidencias visuales del aplicacion
 ---
 
 // turbo-all
@@ -9,7 +9,7 @@ description: Capturar evidencias visuales del sistema SASE
 1. Crear directorio de capturas si no existe
 
 ```bash
-mkdir -p "C:\Users\cyber\Desktop\Capturas_Video_SASE\Login"
+mkdir -p "C:\Users\cyber\Desktop\Capturas_Feria_Ciencias_2026\Login"
 ```
 
 2. Iniciar servidor si no está corriendo
@@ -35,5 +35,6 @@ npm run dev
 5. Verificar que las capturas se guardaron correctamente
 
 ```bash
-dir "C:\Users\cyber\Desktop\Capturas_Video_SASE\Login"
+dir "C:\Users\cyber\Desktop\Capturas_Feria_Ciencias_2026\Login"
 ```
+

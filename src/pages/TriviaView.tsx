@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Layout } from "../components/Layout";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Timer,
-  ArrowRight,
   Trophy,
-  AlertCircle,
   ShieldAlert,
   Lock,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  ChevronRight
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { getStudentSession } from "../lib/studentSession";
+import { ScienceCore } from "../components/ScienceCore";
 
 interface Trivia {
   id: string;
@@ -42,85 +45,50 @@ export const TriviaView: React.FC = () => {
   useEffect(() => {
     const checkAccessAndFetch = async () => {
       setLoading(true);
-
-      // VERIFICACIÓN 1: ¿Viene del check-in?
-        const hasAccess = sessionStorage.getItem(`trivia_access_${id}`);
-        if (!hasAccess) {
-          // Verificar si tiene progreso (quizá recargó la página)
-        if (studentId && sessionToken && id) {
-          const { data: progreso } = await supabase.rpc("obtener_progreso_estudiante_v1", {
-            p_estudiante_id: studentId,
-            p_session_token: sessionToken,
-          });
-
-          const progresoActual = progreso?.find((item: { estacion_id: string }) => item.estacion_id === id);
-
-          if (!progresoActual) {
-            // No tiene check-in
-            setBlocked(true);
-            setBlockReason(
-              "Debes hacer check-in en el stand antes de responder la trivia.",
-            );
-            setLoading(false);
-            return;
-          }
-
-          if (
-            progresoActual.trivia_respondida_correctamente ||
-            progresoActual.puntos_ganados > 0
-          ) {
-            // Ya respondió
-            setBlocked(true);
-            setBlockReason(
-              "Ya respondiste esta trivia. Solo tienes una oportunidad por stand.",
-            );
-            setLoading(false);
-            return;
-          }
+      const hasAccess = sessionStorage.getItem(`trivia_access_${id}`);
+      if (!hasAccess && studentId && sessionToken && id) {
+        const { data: progreso } = await supabase.rpc("obtener_progreso_estudiante_v1", {
+          p_estudiante_id: studentId,
+          p_session_token: sessionToken,
+        });
+        const progresoActual = progreso?.find((item: { estacion_id: string }) => item.estacion_id === id);
+        if (!progresoActual) {
+          setBlocked(true);
+          setBlockReason("Es necesario registrar la visita en el módulo físico antes de iniciar la evaluación.");
+          setLoading(false);
+          return;
+        }
+        if (progresoActual.trivia_respondida_correctamente || progresoActual.puntos_ganados > 0) {
+          setBlocked(true);
+          setBlockReason("Esta trivia ya fue respondida. Solo hay una oportunidad por stand.");
+          setLoading(false);
+          return;
         }
       }
 
-      // Fetch trivias
-      const { data, error } = await supabase
-        .from("trivias")
-        .select("*")
-        .eq("estacion_id", id);
-
+      const { data, error } = await supabase.from("trivias").select("*").eq("estacion_id", id);
       if (!error) setTrivias(data || []);
       setLoading(false);
     };
-
     checkAccessAndFetch();
   }, [id, sessionToken, studentId]);
 
-  const handleFinish = useCallback(
-    async (finalPuntos: number) => {
-      setIsFinished(true);
-
-      // Limpiar el acceso de sesión
-      sessionStorage.removeItem(`trivia_access_${id}`);
-
-      // Guardar resultado de forma atómica usando RPC
-      if (studentId && sessionToken && id) {
-        try {
-          const { data, error: rpcError } = await supabase.rpc("finalizar_trivia_v2", {
-            p_estudiante_id: studentId,
-            p_estacion_id: id,
-            p_puntos_adicionales: finalPuntos,
-            p_session_token: sessionToken,
-          });
-
-          if (rpcError || !data?.success) {
-            console.error("Error en finalizar_trivia_v2:", rpcError || data?.message);
-            throw new Error(data?.message || "No se pudo guardar la trivia.");
-          }
-        } catch (err) {
-          console.error("Error guardando resultado:", err);
-        }
+  const handleFinish = useCallback(async (finalPuntos: number) => {
+    setIsFinished(true);
+    sessionStorage.removeItem(`trivia_access_${id}`);
+    if (studentId && sessionToken && id) {
+      try {
+        await supabase.rpc("finalizar_trivia_v2", {
+          p_estudiante_id: studentId,
+          p_estacion_id: id,
+          p_puntos_adicionales: finalPuntos,
+          p_session_token: sessionToken,
+        });
+      } catch (err) {
+        console.error(err);
       }
-    },
-    [id, sessionToken, studentId],
-  );
+    }
+  }, [id, sessionToken, studentId]);
 
   useEffect(() => {
     if (timeLeft > 0 && !isFinished && !showExplanation && !blocked) {
@@ -134,417 +102,180 @@ export const TriviaView: React.FC = () => {
   const handleAnswer = (selectedKey: string) => {
     const currentTrivia = trivias[currentIndex];
     const correct = selectedKey === currentTrivia.respuesta_correcta;
-
     if (correct) setPuntos((prev) => prev + (currentTrivia.puntos || 10));
-
     setLastAnswerCorrect(correct);
     setCurrentExplanation(currentTrivia.explicacion_post_respuesta || "");
     setShowExplanation(true);
 
-    // Mostrar explicación por 3 segundos, luego avanzar
     setTimeout(() => {
       setShowExplanation(false);
       if (currentIndex + 1 < trivias.length) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        const finalPuntos = correct
-          ? puntos + (currentTrivia.puntos || 10)
-          : puntos;
-        handleFinish(finalPuntos);
+        handleFinish(correct ? puntos + (currentTrivia.puntos || 10) : puntos);
       }
-    }, 3000);
+    }, 4000);
   };
 
-  // PANTALLA DE BLOQUEO
-  if (blocked) {
-    return (
-      <Layout title="🔒 Trivia Bloqueada">
-        <div
-          style={{
-            padding: "40px 24px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            gap: "20px",
-            flex: 1,
-          }}
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            style={{
-              width: "100px",
-              height: "100px",
-              borderRadius: "50%",
-              background: "rgba(231,76,60,0.15)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Lock size={50} color="#e74c3c" />
-          </motion.div>
-
-          <h2 style={{ color: "white", fontSize: "22px" }}>Acceso Denegado</h2>
-
-          <p
-            style={{
-              color: "rgba(255,255,255,0.6)",
-              fontSize: "14px",
-              maxWidth: "280px",
-            }}
-          >
-            {blockReason}
-          </p>
-
-          <div
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              padding: "16px",
-              borderRadius: "12px",
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                justifyContent: "center",
-              }}
-            >
-              <ShieldAlert size={16} color="var(--gold)" />
-              <span
-                style={{
-                  color: "var(--gold)",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                }}
-              >
-                SISTEMA ANTI-TRAMPA
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate("/mapa")}
-            style={{
-              width: "100%",
-              padding: "16px",
-              background: "var(--crimson)",
-              color: "white",
-              borderRadius: "14px",
-              border: "none",
-              fontWeight: "bold",
-              fontSize: "16px",
-              cursor: "pointer",
-            }}
-          >
-            Volver al Mapa
-          </button>
+  if (blocked) return (
+    <Layout>
+      <div className="flex-1 flex flex-col items-center justify-center p-10 gap-8 bg-white">
+        <div className="size-24 rounded-full bg-[var(--error-container)]/10 flex items-center justify-center text-[var(--error)]">
+          <Lock size={40} />
         </div>
-      </Layout>
-    );
-  }
-
-  if (loading) {
-    return (
-      <Layout title="Cargando Trivia...">
-        <div style={{ padding: "40px", textAlign: "center", color: "white" }}>
-          Preparando preguntas del proyecto...
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-[var(--font-display)] font-black text-[var(--on-surface)] uppercase tracking-tight">Acceso limitado</h2>
+          <p className="text-sm font-medium text-[var(--on-surface-variant)] opacity-70 max-w-[280px] mx-auto leading-relaxed">{blockReason}</p>
         </div>
-      </Layout>
-    );
-  }
-
-  if (trivias.length === 0 && !loading) {
-    return (
-      <Layout title="Trivia No Disponible">
-        <div style={{ padding: "40px", textAlign: "center", color: "white" }}>
-          <AlertCircle
-            size={48}
-            color="var(--gold)"
-            style={{ margin: "0 auto 20px" }}
-          />
-          <p>Este stand no tiene preguntas configuradas aún.</p>
-          <button
-            onClick={() => navigate("/mapa")}
-            style={{
-              marginTop: "20px",
-              background: "var(--gold)",
-              border: "none",
-              padding: "12px 24px",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            Volver al Mapa
-          </button>
+        <div className="w-full p-5 bg-[var(--surface-container-low)] rounded-3xl flex items-center gap-4 border border-[var(--surface-container-highest)]/50">
+          <ShieldAlert size={20} className="text-[var(--primary)]" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--on-surface-variant)]">Mecanismo de seguridad activo</p>
         </div>
-      </Layout>
-    );
-  }
+        <button onClick={() => navigate("/mapa")} className="w-full h-15 bg-[var(--primary)] text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-lg shadow-blue-500/20">
+          Volver al mapa
+        </button>
+      </div>
+    </Layout>
+  );
+
+  if (loading) return (
+    <Layout>
+      <div className="flex-1 flex flex-col items-center justify-center p-12 space-y-6 bg-white">
+        <ScienceCore size={120} />
+        <div className="flex flex-col items-center gap-2">
+           <Loader2 size={24} className="animate-spin text-[var(--primary)] opacity-40" />
+           <p className="text-[11px] font-bold tracking-[0.3em] uppercase text-[var(--primary)] opacity-60">Cargando trivia</p>
+        </div>
+      </div>
+    </Layout>
+  );
 
   const currentTrivia = trivias[currentIndex];
 
   return (
-    <Layout title="⏱️ Trivia Relámpago">
-      <div
-        style={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          flex: 1,
-        }}
-      >
+    <Layout>
+      <div className="flex flex-col gap-8 px-6 py-10 pb-32 flex-1 bg-white">
         {!isFinished ? (
           <>
-            {/* Timer bar */}
-            <div
-              className="surface-card"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "15px 20px",
-                borderRadius: "50px",
-                border: `1px solid ${timeLeft < 10 ? "var(--crimson)" : "rgba(255,215,0,0.3)"}`,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  color: timeLeft < 10 ? "var(--crimson)" : "white",
-                }}
-              >
-                <Timer
-                  size={20}
-                  className={timeLeft < 10 ? "animate-pulse" : ""}
-                />
-                <span style={{ fontWeight: "bold", fontSize: "18px" }}>
+            {/* Minimalist Top HUD */}
+            <header className="flex justify-between items-center gap-4">
+              <div className="flex items-center gap-4 px-5 py-3 bg-[var(--surface-container-low)] rounded-3xl border border-[var(--surface-container-highest)]/50">
+                <div className={`p-1.5 rounded-full ${timeLeft < 15 ? 'bg-[var(--error)]/20 text-[var(--error)]' : 'bg-[var(--primary)]/10 text-[var(--primary)]'}`}>
+                  <Timer size={16} className={timeLeft < 15 ? 'animate-pulse' : ''} />
+                </div>
+                <span className={`text-base font-bold font-mono ${timeLeft < 15 ? 'text-[var(--error)]' : 'text-[var(--on-surface)]'}`}>
                   00:{timeLeft.toString().padStart(2, "0")}
                 </span>
               </div>
-              <span
-                style={{
-                  fontSize: "12px",
-                  color: "var(--gold)",
-                  fontWeight: "bold",
-                }}
-              >
-                PREGUNTA {currentIndex + 1}/{trivias.length}
-              </span>
-            </div>
+              <div className="px-5 py-3 bg-[var(--surface-container-low)] rounded-3xl border border-[var(--surface-container-highest)]/50">
+                <span className="text-[10px] font-bold text-[var(--on-surface-variant)] opacity-60 tracking-widest uppercase">
+                  {currentIndex + 1} DE {trivias.length}
+                </span>
+              </div>
+            </header>
 
-            {/* Explicación post-respuesta */}
-            {showExplanation ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  gap: "16px",
-                  padding: "20px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    borderRadius: "40px",
-                    background: lastAnswerCorrect
-                      ? "rgba(39,174,96,0.2)"
-                      : "rgba(231,76,60,0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "40px",
-                  }}
+            <AnimatePresence mode="wait">
+              {showExplanation ? (
+                <motion.div 
+                  key="feedback"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="flex-1 flex flex-col items-center justify-center text-center gap-8"
                 >
-                  {lastAnswerCorrect ? "✅" : "❌"}
-                </div>
-                <h3
-                  style={{
-                    color: lastAnswerCorrect ? "#27ae60" : "#e74c3c",
-                    fontSize: "20px",
-                  }}
+                  <div className={`size-28 rounded-[2rem] flex items-center justify-center shadow-xl ${
+                    lastAnswerCorrect 
+                    ? "bg-[var(--secondary)] text-white shadow-emerald-500/20" 
+                    : "bg-[var(--error)] text-white shadow-red-500/20"
+                  }`}>
+                    {lastAnswerCorrect ? <CheckCircle size={48} strokeWidth={2.5} /> : <XCircle size={48} strokeWidth={2.5} />}
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className={`text-3xl font-[var(--font-display)] font-black uppercase tracking-tight ${lastAnswerCorrect ? 'text-[var(--secondary)]' : 'text-[var(--error)]'}`}>
+                      {lastAnswerCorrect ? '¡Correcta!' : 'Respuesta incorrecta'}
+                    </h3>
+                    <p className="text-base font-medium text-[var(--on-surface-variant)] leading-relaxed max-w-[300px] mx-auto">
+                      {currentExplanation}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center gap-3 opacity-30 mt-6">
+                    <div className="h-1 w-12 bg-[var(--primary)] rounded-full animate-pulse" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Siguiente Segmento en proceso</span>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="question"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex-1 flex flex-col"
                 >
-                  {lastAnswerCorrect ? "¡Correcto!" : "Incorrecto"}
-                </h3>
-                <p
-                  style={{
-                    color: "rgba(255,255,255,0.7)",
-                    fontSize: "14px",
-                    lineHeight: "1.5",
-                  }}
-                >
-                  {currentExplanation}
-                </p>
-              </motion.div>
-            ) : (
-              /* Pregunta y opciones */
-              <motion.div
-                key={currentIndex}
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                style={{ flex: 1 }}
-              >
-                <h2
-                  style={{
-                    fontSize: "22px",
-                    color: "white",
-                    marginBottom: "30px",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  {currentTrivia.pregunta}
-                </h2>
+                  <div className="space-y-4 mb-10">
+                    <div className="size-2 w-16 bg-[var(--primary)] rounded-full opacity-30" />
+                    <h2 className="text-3xl font-[var(--font-display)] font-black leading-[1.1] text-[var(--on-surface)]">
+                      {currentTrivia.pregunta}
+                    </h2>
+                  </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                  }}
-                >
-                  {Object.entries(currentTrivia.opciones).map(([key, val]) => (
-                    <button
-                      key={key}
-                      onClick={() => handleAnswer(key)}
-                      className="surface-card"
-                      style={{
-                        padding: "18px 20px",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        color: "white",
-                        textAlign: "left",
-                        fontSize: "15px",
-                        cursor: "pointer",
-                        display: "flex",
-                        gap: "12px",
-                      }}
-                    >
-                      <span
-                        style={{ color: "var(--gold)", fontWeight: "bold" }}
+                  <div className="grid grid-cols-1 gap-4">
+                    {Object.entries(currentTrivia.opciones).map(([key, val]) => (
+                      <motion.button
+                        key={key}
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleAnswer(key)}
+                        className="w-full p-6 premium-card text-left flex items-center gap-5 group hover:border-[var(--primary)] transition-all"
                       >
-                        {key}.
-                      </span>
-                      {val}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+                        <div className="size-9 shrink-0 rounded-xl bg-[var(--surface-container-high)] flex items-center justify-center text-[13px] font-black text-[var(--on-surface-variant)] group-hover:bg-[var(--primary)] group-hover:text-white transition-all shadow-sm">
+                          {key}
+                        </div>
+                        <span className="text-[17px] font-semibold text-[var(--on-surface)] group-hover:text-[var(--primary)] transition-colors">
+                          {val}
+                        </span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </>
         ) : (
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-            }}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex-1 flex flex-col items-center justify-center gap-10"
           >
-            <div
-              style={{
-                width: "120px",
-                height: "120px",
-                borderRadius: "60px",
-                background: puntos > 0 ? "var(--gold)" : "rgba(231,76,60,0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "24px",
-                boxShadow:
-                  puntos > 0 ? "0 0 40px rgba(255, 215, 0, 0.4)" : "none",
-              }}
-            >
-              <Trophy
-                size={60}
-                color={puntos > 0 ? "var(--deep-blue)" : "#e74c3c"}
-              />
+            <div className="relative">
+              <ScienceCore size={180} showAccessories={false} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <Trophy size={42} className={puntos > 0 ? "text-[var(--primary)]" : "text-[var(--on-surface-variant)]/30"} />
+              </div>
             </div>
 
-            <h2
-              style={{
-                color: puntos > 0 ? "var(--gold)" : "#e74c3c",
-                fontSize: "28px",
-                marginBottom: "10px",
-              }}
-            >
-              {puntos > 0 ? "¡Misión Terminada!" : "Trivia Finalizada"}
-            </h2>
-            <p style={{ color: "rgba(255,255,255,0.7)", marginBottom: "30px" }}>
-              {puntos > 0 ? (
-                <>
-                  Has ganado <strong>{puntos} puntos</strong> por tu atención.
-                </>
-              ) : (
-                "No obtuviste puntos esta vez. ¡Sigue intentando en otros stands!"
-              )}
-            </p>
-
-            <div
-              className="surface-card"
-              style={{
-                padding: "20px",
-                width: "100%",
-                marginBottom: "30px",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "white",
-                  marginBottom: "15px",
-                }}
-              >
-                Siguiente paso:
-              </p>
-              <h3 style={{ color: "var(--gold)" }}>REVISAR MAPA</h3>
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "rgba(255,255,255,0.5)",
-                  marginTop: "10px",
-                }}
-              >
-                El sistema te asignará el siguiente stand con menos gente.
+            <div className="text-center space-y-3">
+              <h2 className="text-4xl font-[var(--font-display)] font-black text-[var(--on-surface)] uppercase tracking-tight">Trivia finalizada</h2>
+              <p className="text-sm font-medium text-[var(--on-surface-variant)] opacity-60 max-w-[280px] mx-auto leading-relaxed">
+                Tus puntos ya fueron registrados. Continúa con tu recorrido por la feria.
               </p>
             </div>
 
-            <button
+            <div className="w-full grid grid-cols-2 gap-4">
+              <div className="premium-card p-6 flex flex-col items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50">PUNTOS</span>
+                <span className="text-3xl font-black text-[var(--primary)]">{puntos}</span>
+              </div>
+              <div className="premium-card p-6 flex flex-col items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-50">ESTADO</span>
+                <span className="text-sm font-bold text-[var(--secondary)]">SINCRONIZADO</span>
+              </div>
+            </div>
+
+            <button 
               onClick={() => navigate("/mapa")}
-              className="crimson-action"
-              style={{
-                width: "100%",
-                padding: "18px",
-                borderRadius: "50px",
-                border: "none",
-                fontWeight: "bold",
-                fontSize: "16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                cursor: "pointer",
-              }}
+              className="w-full h-18 bg-[var(--primary)] text-white rounded-[2rem] font-bold uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-3 shadow-2xl shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] action-glow"
             >
-              Consultar Siguiente Stand <ArrowRight size={20} />
+              Regresar al Mapa <ChevronRight size={22} />
             </button>
           </motion.div>
         )}
@@ -552,3 +283,6 @@ export const TriviaView: React.FC = () => {
     </Layout>
   );
 };
+
+
+

@@ -4,7 +4,7 @@
     - Excepción: Si el usuario te pide explícitamente hablar en otro idioma.
     - Excepción: Términos técnicos estándar (e.g., "commit", "push", "bug", "feature").
 
-## PROTOCOLOS DE SEGURIDAD Y ESTABILIDAD (SISTEMA SASE)
+## PROTOCOLOS DE SEGURIDAD Y ESTABILIDAD DEL PROYECTO
 
 2.  **Protección de Secretos y API Keys**:
     - NUNCA subas, menciones o generes archivos que contengan claves de API (`AIzaSy...`), secretos de Supabase o tokens de servicio en texto plano dentro del repositorio.
@@ -21,3 +21,4 @@
 5.  **Estabilidad sobre Novedad**:
     - No refactorices código que ya funciona a menos que sea necesario para corregir un bug crítico de seguridad o rendimiento.
     - Mantén la arquitectura actual (`src/` para código, `supabase/` para base de datos).
+

@@ -26,7 +26,7 @@
 ## Conflictos documentales detectados
 
 - `README.md` no describe el producto ni la operacion real.
-- `.agents/workflows/dev-sase.md` indica puerto `3000`.
+- `.agents/workflows/dev-feria.md` indica puerto `3000`.
 - `netlify.toml` apunta a `web/`, pero la app real vive en la raiz.
 
 ## Huecos y riesgos abiertos
@@ -39,3 +39,4 @@
 
 - Adopcion brownfield e incremental.
 - Se crea gobierno canonico encima del estado actual, sin reescribir la app.
+

@@ -34,8 +34,8 @@ const stations = [
   {"id":"ebe9d61e-f6de-453c-bd2b-6ff7847be016","nombre":"Reacciones Sorprendentes D","materia":"Química","grupo":"3D","docente_responsable":"Docente Química 2"}
 ];
 
-const QR_DIR = 'c:/Users/cyber/Desktop/FERIIA-DE-CIENCIAS-SASE/web/public/qrs';
-const BASE_URL = 'https://feria-sase.netlify.app'; // URL base para los QRs
+const QR_DIR = path.resolve('public/qrs');
+const BASE_URL = process.env.QR_BASE_URL || 'https://feria-de-ciencias-2026.invalid'; // Requiere URL real antes de ejecutar
 
 if (!fs.existsSync(QR_DIR)) {
   fs.mkdirSync(QR_DIR, { recursive: true });
@@ -44,7 +44,7 @@ if (!fs.existsSync(QR_DIR)) {
 console.log('Generando QRs...');
 
 const doc = new PDFDocument({ size: 'LETTER', margin: 50 });
-const pdfPath = 'c:/Users/cyber/Desktop/FERIIA-DE-CIENCIAS-SASE/web/public/QRs_Feria_Ciencias.pdf';
+const pdfPath = path.resolve('public/QRs_Feria_Ciencias.pdf');
 const stream = fs.createWriteStream(pdfPath);
 doc.pipe(stream);
 
@@ -58,7 +58,7 @@ async function generate() {
     // Generar QR PNG
     await QRCode.toFile(fullPath, url, {
       color: {
-        dark: '#1a2f7a',  // Color profundo SASE
+        dark: '#1a2f7a',  // Color institucional profundo
         light: '#ffffff'
       },
       width: 400
@@ -89,3 +89,4 @@ async function generate() {
 }
 
 generate().catch(console.error);
+

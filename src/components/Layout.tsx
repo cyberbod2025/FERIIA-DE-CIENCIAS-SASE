@@ -1,86 +1,61 @@
 import React from "react";
+import { Beaker, Circle } from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
   title?: string;
+  hideFooter?: boolean;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, title, hideFooter = false }) => {
   return (
-    <div
-      className="phone-frame"
-      style={{ display: "flex", flexDirection: "column" }}
-    >
-      {/* Atmosférico sutil */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "radial-gradient(circle at 10% 0%, rgba(255,215,0,0.06) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(6,182,212,0.04) 0%, transparent 40%)",
-        pointerEvents: "none",
-        zIndex: 0
-      }} />
-      
+    <div className="min-h-screen w-full text-[var(--on-background)]">
+      <header className="fixed top-0 w-full z-50 bg-white/40 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(123,97,255,0.08)] refractive-boundary">
+        <div className="flex justify-between items-center px-6 h-16 w-full max-w-md mx-auto">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] shadow-sm">
+              <Beaker size={18} />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="font-headline font-bold text-lg text-[var(--primary)] tracking-tight">
+                Feria de Ciencias
+              </span>
+              <span className="text-[10px] font-semibold text-[var(--on-surface-variant)] mt-1 uppercase tracking-[0.25em]">
+                ESD-310
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-card text-[var(--secondary)]">
+            <Circle size={8} fill="currentColor" strokeWidth={0} className="animate-pulse" />
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--on-surface-variant)]">
+              Activo
+            </span>
+          </div>
+        </div>
+      </header>
+
       {title && (
-        <div
-          className="screen-label"
-          style={{
-            textAlign: "center",
-            padding: "12px",
-            background: "rgba(0, 0, 0, 0.3)",
-            fontSize: "11px",
-            color: "var(--primary)",
-            letterSpacing: "0.4em",
-            textTransform: "uppercase",
-            borderBottom: "1px solid var(--border-light)",
-            zIndex: 1,
-            fontWeight: 800,
-            backdropFilter: "blur(10px)"
-          }}
-        >
-          {title}
+        <div className="sticky top-16 z-40 bg-white/30 backdrop-blur-md border-b border-white/20">
+          <div className="max-w-md mx-auto px-6 py-3">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.35em] text-[var(--primary)]">
+              {title}
+            </h2>
+          </div>
         </div>
       )}
-      <div
-        className="status-bar"
-        style={{
-          padding: "16px 24px 8px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontSize: "11px",
-          fontWeight: 600,
-          background: "transparent",
-          zIndex: 1
-        }}
-      >
-        <span
-          style={{
-            color: "var(--primary)",
-            fontWeight: "800",
-            letterSpacing: "0.2em",
-          }}
-        >
-          FERIA DE CIENCIAS 2026 ESD-310
-        </span>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--accent)", boxShadow: "0 0 10px var(--accent)" }}></div>
-          <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "9px" }}>CORE V.4.0</span>
-        </div>
-      </div>
-      <div
-        className="content-scroll"
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "auto",
-          overflowX: "hidden",
-          position: "relative",
-          zIndex: 1
-        }}
-      >
+
+      <main className="relative z-10 w-full max-w-md mx-auto min-h-screen pt-16">
         {children}
-      </div>
+      </main>
+
+      {!hideFooter && (
+        <footer className="w-full py-2 text-center opacity-50 pb-28">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--on-surface-variant)]">
+            Feria de Ciencias 2026 ESD-310
+          </p>
+        </footer>
+      )}
     </div>
   );
 };

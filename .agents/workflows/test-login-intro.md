@@ -9,13 +9,13 @@ description: Probar flujo completo de login con video intro
 1. Verificar que el servidor esté corriendo
 
 ```bash
-echo "Verificando servidor en localhost:3000..."
+echo "Verificando servidor en localhost:3100..."
 ```
 
 2. Limpiar localStorage para simular primera visita
 
 ```bash
-echo "Simulando primera visita (sin localStorage.sase_intro_seen)"
+echo "Simulando primera visita (sin localStorage.intro_seen)"
 ```
 
 3. Abrir navegador y capturar evidencias:
@@ -28,4 +28,5 @@ echo "Simulando primera visita (sin localStorage.sase_intro_seen)"
 
 5. Verificar fallback con prefers-reduced-motion
 
-6. Guardar capturas en: C:\Users\cyber\Desktop\Capturas_Video_SASE\Login
+6. Guardar capturas en: C:\Users\cyber\Desktop\Capturas_Feria_Ciencias_2026\Login
+

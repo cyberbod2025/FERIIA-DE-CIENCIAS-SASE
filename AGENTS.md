@@ -30,7 +30,7 @@
 - `README.md` es casi puro boilerplate de Vite; no lo tomes como documentacion del producto.
 - `netlify.toml` apunta a `web/` y no coincide con la estructura actual del repo. Si hay conflicto, confia en `package.json`, `vite.config.ts`, `vercel.json` y CI.
 - `vercel.json` si coincide con la app actual: build Vite en raiz, salida `dist` y rewrite global a `index.html`.
-- `.agents/workflows/dev-sase.md` tambien esta desactualizado: menciona puerto 3000, pero el puerto real es 3100.
+- `.agents/workflows/dev-feria.md` tambien esta desactualizado: menciona puerto 3000, pero el puerto real es 3100.
 
 ## Supabase And Security
 - La app cliente usa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`. `src/lib/supabase.ts` trae una URL por defecto, pero sin anon key solo muestra warning y la app queda incompleta.
@@ -86,3 +86,4 @@
 - artefactos de agente o scripts de automatizacion
 
 **Expedientes activos**: `specs/001-gobernanza-brownfield/`, `specs/002-auditoria-hardening/`
+
