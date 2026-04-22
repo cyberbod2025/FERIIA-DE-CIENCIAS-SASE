@@ -30,7 +30,6 @@ export const TeacherLoginView: React.FC = () => {
       if (signInError) throw signInError;
       navigate("/panel");
     } catch (err: unknown) {
-      console.error("Error en acceso maestros:", err);
       setError("Acceso no autorizado. Verifica tus datos.");
     } finally {
       setLoading(false);
@@ -38,205 +37,86 @@ export const TeacherLoginView: React.FC = () => {
   };
 
   return (
-    <Layout title="Acceso de Maestros">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          minHeight: "100%",
-          padding: "24px",
-          paddingTop: "48px",
-          gap: "32px",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "360px" }}>
-          <div style={{ textAlign: "center" }}>
-            <h1
-              style={{
-                fontSize: "32px",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "-0.03em",
-                background: "linear-gradient(180deg, #ffffff 0%, #fbbf24 100%)",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              Panel de Control
-            </h1>
-            <p
-              style={{
-                marginTop: "8px",
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                color: "var(--accent)",
-                opacity: 0.8,
-              }}
-            >
-              Solo personal autorizado
-            </p>
-          </div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <SaseNeuralCore size={160} />
+    <Layout title="Control Docente">
+      <div className="flex flex-col items-center justify-center min-h-full p-6 pt-10 pb-20 relative overflow-hidden">
+        {/* Ambient background effect */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none" />
+        
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-[400px] text-center mb-10">
+          <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">
+            Panel de <span className="text-cyan-400">Control</span>
+          </h1>
+          <p className="mt-2 text-[10px] font-bold tracking-[0.4em] uppercase text-white/30">
+            Personal Autorizado
+          </p>
         </motion.div>
 
-        <div style={{ width: "100%", maxWidth: "360px", display: "flex", flexDirection: "column", gap: "20px" }}>
-          <div>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "8px",
-                fontSize: "10px",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "#fbbf24",
-              }}
-            >
-              <Mail size={12} /> Correo Institucional
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError("");
-              }}
-              placeholder="docente@escuela.mx"
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(251, 191, 36, 0.2)",
-                borderRadius: "12px",
-                color: "white",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring" }} className="relative mb-12">
+          <div className="absolute inset-0 bg-cyan-400/20 blur-3xl rounded-full scale-150 animate-pulse" />
+          <SaseNeuralCore size={140} />
+        </motion.div>
 
-          <div>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "8px",
-                fontSize: "10px",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "#fbbf24",
-              }}
-            >
-              <Lock size={12} /> Contraseña
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError("");
-              }}
-              placeholder="********"
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(251, 191, 36, 0.2)",
-                borderRadius: "12px",
-                color: "white",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+        <div className="w-full max-w-[360px] space-y-6">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="surface-card-strong p-6 border border-white/5">
+            <div className="space-y-5">
+              <div>
+                <label className="flex items-center gap-2 mb-3 text-[10px] font-black uppercase tracking-widest text-cyan-400">
+                  <Mail size={12} /> Correo Institucional
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                  placeholder="docente@escuela.mx"
+                  className="w-full h-14 px-5 text-sm text-white placeholder:text-white/20 transition-all border outline-none bg-black/40 border-white/10 focus:border-cyan-400/30 rounded-xl"
+                />
+              </div>
 
-          {error && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              style={{
-                textAlign: "center",
-                color: "#ef4444",
-                fontSize: "10px",
-                fontWeight: 700,
-                background: "rgba(239, 68, 68, 0.1)",
-                padding: "10px 12px",
-                borderRadius: "12px",
-              }}
-            >
-              ⚠️ {error}
-            </motion.p>
-          )}
+              <div>
+                <label className="flex items-center gap-2 mb-3 text-[10px] font-black uppercase tracking-widest text-cyan-400">
+                  <Lock size={12} /> Clave de Acceso
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                  placeholder="********"
+                  className="w-full h-14 px-5 text-sm text-white placeholder:text-white/20 transition-all border outline-none bg-black/40 border-white/10 focus:border-cyan-400/30 rounded-xl"
+                />
+              </div>
 
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            style={{
-              width: "100%",
-              marginTop: "8px",
-              padding: "16px",
-              borderRadius: "12px",
-              fontWeight: 900,
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              fontSize: "14px",
-              border: loading ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(6, 182, 212, 0.5)",
-              background: loading ? "rgba(255,255,255,0.05)" : "rgba(0, 0, 0, 0.4)",
-              color: loading ? "rgba(255,255,255,0.25)" : "white",
-              cursor: loading ? "not-allowed" : "pointer",
-              boxShadow: loading ? "none" : "0 0 30px rgba(6, 182, 212, 0.15)",
-            }}
-          >
-            {loading ? "Iniciando Sesión..." : "Entrar al Sistema"}
-          </button>
+              {error && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 border bg-red-500/10 border-red-500/20 rounded-xl text-center">
+                  <span className="text-[11px] font-bold text-red-400">⚠️ {error}</span>
+                </motion.div>
+              )}
 
-          <button
+              <button
+                onClick={handleLogin}
+                disabled={loading}
+                className={`w-full h-16 rounded-2xl font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl ${
+                  loading ? "opacity-50 cursor-not-allowed bg-white/5" : "bg-gradient-to-br from-cyan-500 to-blue-700 text-white shadow-cyan-500/10 active:scale-95"
+                }`}
+              >
+                {loading ? "Sincronizando..." : "Entrar al Sistema"}
+              </button>
+            </div>
+          </motion.div>
+          
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
             onClick={() => navigate("/")}
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "12px",
-              fontSize: "10px",
-              fontWeight: 700,
-              color: loading ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.35)",
-              textTransform: "uppercase",
-              letterSpacing: "0.3em",
-              cursor: loading ? "not-allowed" : "pointer",
-            }}
+            className="w-full py-4 text-[10px] font-black tracking-[0.3em] uppercase text-white/20 hover:text-white/50 transition-colors"
           >
             Volver al Inicio
-          </button>
+          </motion.button>
         </div>
         
-        <div style={{ paddingTop: "16px", textAlign: "center" }}>
-          <p
-            style={{
-              fontSize: "9px",
-              color: "rgba(255,255,255,0.2)",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              fontWeight: 700,
-            }}
-          >
-            Protocolo de Seguridad <span style={{ color: "rgba(6, 182, 212, 0.4)" }}>ESD-310-SASE</span>
+        <div className="mt-12 text-center opacity-20">
+          <p className="text-[9px] font-black tracking-[0.3em] uppercase text-white">
+            Protocolo ESD-310-SASE
           </p>
         </div>
       </div>

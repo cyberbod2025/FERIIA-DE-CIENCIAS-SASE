@@ -59,56 +59,52 @@ export const StandDetailView: React.FC = () => {
   const [checkedIn, setCheckedIn] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [alreadyVisited, setAlreadyVisited] = useState(false);
-  const [visitResult, setVisitResult] = useState<
-    "correct" | "incorrect" | null
-  >(null);
+  const [visitResult, setVisitResult] = useState<"correct" | "incorrect" | null>(null);
   const [question, setQuestion] = useState("");
   const [isSendingQuestion, setIsSendingQuestion] = useState(false);
   const [questionSent, setQuestionSent] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
   const { studentId, sessionToken } = getStudentSession();
 
+  const fetchStand = async () => {
+    const { data, error } = await supabase.from("estaciones").select("*").eq("id", id).single();
+    if (!error) setStand(data);
+  };
+
   useEffect(() => {
-    const fetchStand = async () => {
+    const init = async () => {
       setLoading(true);
-
-      // Obtener datos del stand
-      const { data, error } = await supabase
-        .from("estaciones")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (!error) setStand(data);
-
-      // Verificar si ya visitó este stand (ANTI-TRAMPA)
+      await fetchStand();
       if (studentId && sessionToken && id) {
         const { data: progreso } = await supabase.rpc("obtener_progreso_estudiante_v1", {
           p_estudiante_id: studentId,
           p_session_token: sessionToken,
         });
-
         const progresoActual = progreso?.find((item: { estacion_id: string }) => item.estacion_id === id);
-
         if (progresoActual) {
           setAlreadyVisited(true);
-          setVisitResult(
-            progresoActual.trivia_respondida_correctamente ? "correct" : "incorrect",
-          );
+          setVisitResult(progresoActual.trivia_respondida_correctamente ? "correct" : "incorrect");
         }
       }
-
       setLoading(false);
     };
-    fetchStand();
+    init();
+
+    // Suscripción en tiempo real para ocupación
+    const sub = supabase.channel(`stand-${id}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'estaciones', filter: `id=eq.${id}` }, 
+      (payload) => setStand(payload.new as Estacion))
+      .subscribe();
+
+    return () => { supabase.removeChannel(sub); };
   }, [id, sessionToken, studentId]);
 
   const handleCheckIn = async () => {
+    setErrorMsg("");
     setShowQRModal(true);
-
     try {
       if (studentId && sessionToken && id) {
-        // Usar la función RPC atómica para registrar check-in y actualizar visitantes
         const { data, error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
           p_estudiante_id: studentId,
           p_estacion_id: id,
@@ -117,23 +113,25 @@ export const StandDetailView: React.FC = () => {
         });
 
         if (rpcError || !data?.success) {
-          console.error("Error en RPC registrar_progreso_v2:", rpcError || data?.message);
-          throw new Error(data?.message || "No se pudo registrar el check-in.");
+          const msg = data?.message || "Error al registrar check-in.";
+          setErrorMsg(msg.includes("llena") ? "🛑 STAND LLENO (Máx 20): Por favor espera a que otros alumnos salgan." : msg);
+          setShowQRModal(false);
+          return;
         }
       }
+      
+      setTimeout(() => {
+        setShowQRModal(false);
+        setCheckedIn(true);
+      }, 1500);
     } catch (err) {
-      console.error("Error en check-in:", err);
-    }
-
-    setTimeout(() => {
+      setErrorMsg("Error de conexión.");
       setShowQRModal(false);
-      setCheckedIn(true);
-    }, 2000);
+    }
   };
 
   const handleSendQuestion = async () => {
-    if (!question.trim() || !studentId || !sessionToken || !id) return;
-    
+    if (!question.trim() || !studentId || !id) return;
     setIsSendingQuestion(true);
     try {
       const { error } = await supabase.from("preguntometro").insert({
@@ -142,484 +140,162 @@ export const StandDetailView: React.FC = () => {
         pregunta: question.trim(),
         moderacion_estado: "pendiente"
       });
-
-      if (error) {
-        if (error.message.includes("limit")) {
-          alert("Has alcanzado el límite de preguntas pendientes. Espera a que los expositores respondan.");
-        } else {
-          throw error;
-        }
-      } else {
-        setQuestionSent(true);
-        setQuestion("");
-        setTimeout(() => setQuestionSent(false), 3000);
-      }
+      if (error) throw error;
+      setQuestionSent(true);
+      setQuestion("");
+      setTimeout(() => setQuestionSent(false), 3000);
     } catch (err) {
-      console.error("Error enviando pregunta:", err);
-      alert("No se pudo enviar la pregunta.");
+      setErrorMsg("No se pudo enviar la pregunta.");
     } finally {
       setIsSendingQuestion(false);
     }
   };
 
-  if (loading) {
-    return (
-      <Layout title="Cargando Stand...">
-        <div style={{ padding: "40px", textAlign: "center", color: "white" }}>
-          Buscando información del proyecto...
-        </div>
-      </Layout>
-    );
-  }
+  if (loading) return (
+    <Layout title="Sincronizando...">
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <FlaskConical size={40} className="text-blue-400 animate-pulse" />
+        <p className="mt-4 text-xs font-bold text-white/30 uppercase tracking-widest">Analizando Módulo...</p>
+      </div>
+    </Layout>
+  );
 
-  if (!stand) {
-    return (
-      <Layout title="Stand no encontrado">
-        <div style={{ padding: "40px", textAlign: "center", color: "white" }}>
-          <p>Este stand no existe.</p>
-          <button
-            onClick={() => navigate("/mapa")}
-            style={{
-              marginTop: "20px",
-              background: "var(--gold)",
-              border: "none",
-              padding: "12px 24px",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            Volver al Mapa
-          </button>
-        </div>
-      </Layout>
-    );
-  }
+  if (!stand) return (
+    <Layout title="Error">
+      <div className="p-8 text-center text-white">
+        <XCircle size={64} className="mx-auto mb-4 text-red-500/30" />
+        <h2 className="text-xl font-black italic">Módulo Extraviado</h2>
+        <button onClick={() => navigate("/mapa")} className="w-full py-4 mt-8 font-black text-black rounded-xl bg-blue-400">VOLVER AL MAPA</button>
+      </div>
+    </Layout>
+  );
 
-  // PANTALLA DE BLOQUEO: Ya visitó este stand
-  if (alreadyVisited) {
-    return (
-      <Layout title={`📍 ${stand.nombre}`}>
-        <div
-          style={{
-            padding: "40px 24px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            gap: "20px",
-            flex: 1,
-          }}
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            style={{
-              width: "100px",
-              height: "100px",
-              borderRadius: "50%",
-              background:
-                visitResult === "correct"
-                  ? "rgba(39,174,96,0.15)"
-                  : "rgba(231,76,60,0.15)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {visitResult === "correct" ? (
-              <CheckCircle size={50} color="#27ae60" />
-            ) : (
-              <XCircle size={50} color="#e74c3c" />
-            )}
-          </motion.div>
-
-          <h2 style={{ color: "white", fontSize: "22px" }}>
-            {visitResult === "correct"
-              ? "✅ Stand Completado"
-              : "❌ Ya visitaste este stand"}
-          </h2>
-
-          <p
-            style={{
-              color: "rgba(255,255,255,0.6)",
-              fontSize: "14px",
-              maxWidth: "280px",
-            }}
-          >
-            {visitResult === "correct"
-              ? "¡Felicidades! Ya respondiste correctamente la trivia de este stand."
-              : "Ya respondiste la trivia de este stand. No puedes intentar de nuevo."}
+  if (alreadyVisited) return (
+    <Layout title={stand.nombre}>
+      <div className="flex flex-col items-center justify-center p-6 space-y-8 text-center min-h-[70vh]">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`size-24 rounded-full flex items-center justify-center ${visitResult === "correct" ? "bg-green-500/20 border border-green-500/30" : "bg-red-500/20 border border-red-500/30"}`}>
+          {visitResult === "correct" ? <CheckCircle size={48} className="text-green-400" /> : <XCircle size={48} className="text-red-400" />}
+        </motion.div>
+        <div>
+          <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">{visitResult === "correct" ? "Misión Exitosa" : "Acceso Denegado"}</h2>
+          <p className="mt-3 text-sm text-white/40 leading-relaxed">
+            {visitResult === "correct" ? "Has completado este módulo con éxito. ¡Sigue explorando!" : "Ya has agotado tus intentos en este módulo de investigación."}
           </p>
-
-          <div
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              padding: "16px",
-              borderRadius: "12px",
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                justifyContent: "center",
-              }}
-            >
-              <ShieldAlert size={16} color="var(--gold)" />
-              <span
-                style={{
-                  color: "var(--gold)",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                }}
-              >
-                SISTEMA ANTI-TRAMPA
-              </span>
-            </div>
-            <p
-              style={{
-                color: "rgba(255,255,255,0.4)",
-                fontSize: "11px",
-                marginTop: "6px",
-              }}
-            >
-              Cada alumno solo tiene una oportunidad por stand.
-            </p>
-          </div>
-
-          <button
-            onClick={() => navigate("/mapa")}
-            style={{
-              width: "100%",
-              padding: "16px",
-              background: "var(--crimson)",
-              color: "white",
-              borderRadius: "14px",
-              border: "none",
-              fontWeight: "bold",
-              fontSize: "16px",
-              cursor: "pointer",
-              marginTop: "10px",
-            }}
-          >
-            Volver al Mapa
-          </button>
         </div>
-        <Navigation />
-      </Layout>
-    );
-  }
+        <button onClick={() => navigate("/mapa")} className="w-full py-5 font-black text-white rounded-2xl bg-white/5 border border-white/10 active:scale-95 transition-all">VOLVER AL MAPA</button>
+      </div>
+      <Navigation />
+    </Layout>
+  );
 
   return (
-    <Layout title={`📍 ${stand.nombre}`}>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        style={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          flex: 1,
-        }}
-      >
-        <motion.div
-          variants={itemVariants}
-          className="surface-card-strong"
-          style={{
-            padding: "24px",
-            border: "1px solid rgba(255, 215, 0, 0.1)",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: -10,
-              right: -10,
-              opacity: 0.1,
-            }}
-          >
-            <FlaskConical size={120} />
+    <Layout title={stand.nombre}>
+      <motion.div variants={containerVariants} initial="hidden" animate="visible" className="flex flex-col p-5 space-y-6 pb-24">
+        {/* Stand Header */}
+        <motion.div variants={itemVariants} className="surface-card-strong p-6 relative overflow-hidden border border-white/5">
+          <div className="absolute top-0 right-0 p-8 opacity-5"><FlaskConical size={120} /></div>
+          <div className="flex gap-2 mb-4">
+            <span className="px-3 py-1 text-[9px] font-black tracking-[0.2em] uppercase text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full">{stand.categoria}</span>
+            <span className="px-3 py-1 text-[9px] font-black tracking-[0.2em] uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full">G-{stand.grupo}</span>
           </div>
-
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            <span
-              style={{
-                background: "rgba(255, 215, 0, 0.2)",
-                color: "var(--gold)",
-                padding: "4px 12px",
-                borderRadius: "20px",
-                fontSize: "10px",
-                fontWeight: "bold",
-                letterSpacing: "0.1em",
-              }}
-            >
-              {stand.categoria?.toUpperCase()}
-            </span>
-            <span
-              style={{
-                background: "rgba(255, 255, 255, 0.1)",
-                color: "rgba(255, 255, 255, 0.8)",
-                padding: "4px 12px",
-                borderRadius: "20px",
-                fontSize: "10px",
-                fontWeight: "bold",
-                letterSpacing: "0.1em",
-              }}
-            >
-              GRUPO {stand.grupo?.toUpperCase()}
-            </span>
+          <h2 className="text-2xl font-black text-white leading-none mb-4 italic uppercase tracking-tighter">{stand.nombre}</h2>
+          <div className="space-y-1">
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Investigador Jefe</p>
+            <p className="text-sm font-bold text-white/80">{stand.docente_responsable}</p>
           </div>
+          <div className="mt-6 pt-6 border-t border-white/5">
+            <p className="text-sm leading-relaxed text-white/50">{stand.descripcion_pedagogica}</p>
+          </div>
+        </motion.div>
 
-          <p style={{ 
-            color: "var(--gold)", 
-            fontSize: "12px", 
-            fontWeight: "bold", 
-            marginTop: "12px",
-            marginBottom: "0" 
-          }}>
-            Responsable: {stand.docente_responsable}
-          </p>
-
-          <h2
-            style={{
-              fontSize: "24px",
-              color: "white",
-              marginTop: "12px",
-              marginBottom: "8px",
-            }}
-          >
-            {stand.nombre}
-          </h2>
-          <p
-            style={{
-              fontSize: "14px",
-              color: "rgba(255,255,255,0.7)",
-              lineHeight: "1.6",
-            }}
-          >
-            {stand.descripcion_pedagogica ||
-              "Descripción no disponible en este momento."}
-          </p>
+        {/* Occupancy Indicator */}
+        <motion.div variants={itemVariants} className="surface-card p-4 flex items-center justify-between border border-white/5">
+          <div className="flex items-center gap-3">
+            <div className={`size-3 rounded-full animate-pulse ${stand.visitantes_activos >= 20 ? "bg-red-500 shadow-[0_0_10px_red]" : "bg-green-500 shadow-[0_0_10px_green]"}`} />
+            <div>
+              <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Ocupación Actual</p>
+              <p className="text-sm font-black text-white">{stand.visitantes_activos} / 20 <span className="text-white/20 ml-1">alumnos</span></p>
+            </div>
+          </div>
+          <div className="w-20 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div className={`h-full transition-all duration-500 ${stand.visitantes_activos >= 20 ? "bg-red-500" : "bg-blue-400"}`} style={{ width: `${(stand.visitantes_activos / 20) * 100}%` }} />
+          </div>
         </motion.div>
 
         {!checkedIn ? (
-          <div style={{ textAlign: "center", padding: "40px 20px" }}>
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 2 }}
+          <motion.div variants={itemVariants} className="flex flex-col items-center py-6 text-center">
+            <div className="size-20 mb-6 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
+              <QrCode size={40} className="text-blue-400/50" />
+            </div>
+            <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Escaneo de Módulo</h3>
+            <p className="mt-2 text-xs text-white/30 max-w-[200px] font-bold">Identifícate en la estación para habilitar la trivia.</p>
+            
+            {errorMsg && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-4 border bg-red-500/10 border-red-500/20 rounded-xl w-full">
+                <p className="text-[11px] font-black text-red-400 text-center uppercase tracking-wider">{errorMsg}</p>
+              </motion.div>
+            )}
+
+            <button 
+              onClick={handleCheckIn} 
+              disabled={stand.visitantes_activos >= 20}
+              className={`w-full py-5 mt-8 font-black uppercase tracking-[0.2em] rounded-2xl transition-all flex items-center justify-center gap-3 ${
+                stand.visitantes_activos >= 20 
+                ? "bg-white/5 text-white/20 border border-white/5 cursor-not-allowed" 
+                : "bg-gradient-to-br from-blue-400 to-blue-700 text-white shadow-xl shadow-blue-500/10 active:scale-95"
+              }`}
             >
-              <QrCode
-                size={64}
-                color="var(--gold)"
-                style={{ margin: "0 auto 20px" }}
-              />
-            </motion.div>
-            <h3 style={{ color: "white", marginBottom: "10px" }}>
-              Escanea para empezar
-            </h3>
-            <p
-              style={{
-                color: "rgba(255,255,255,0.5)",
-                fontSize: "14px",
-                marginBottom: "30px",
-              }}
-            >
-              Busca el código QR de acceso en el stand para realizar tu
-              Check-in.
-            </p>
-            <button
-              onClick={handleCheckIn}
-              className="gold-action"
-              style={{
-                width: "100%",
-                padding: "16px",
-                color: "var(--deep-blue)",
-                borderRadius: "14px",
-                border: "none",
-                fontWeight: "bold",
-                fontSize: "16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                cursor: "pointer",
-              }}
-            >
-              Simular Escaneo <ArrowRight size={20} />
+              {stand.visitantes_activos >= 20 ? "MÓDULO SATURADO" : "SIMULAR ESCANEO"} <ArrowRight size={18} />
             </button>
-          </div>
+          </motion.div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-          >
-            <div
-              style={{
-                background: "rgba(211, 47, 47, 0.1)",
-                borderLeft: "4px solid var(--crimson)",
-                padding: "15px",
-                borderRadius: "8px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "center",
-                  color: "var(--crimson)",
-                  marginBottom: "5px",
-                }}
-              >
-                <Star size={18} fill="currentColor" />
-                <span style={{ fontWeight: "bold", fontSize: "14px" }}>
-                  ¡ATENCIÓN!
-                </span>
-              </div>
-              <p style={{ fontSize: "13px", color: "white" }}>
-                Escucha atentamente la explicación del expositor. Al finalizar,
-                se activará la <strong>Trivia de un minuto</strong> para ganar
-                tus puntos.
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="p-5 surface-card-strong border border-blue-400/20 flex gap-4 items-start">
+              <Star size={20} className="text-blue-400 shrink-0 mt-1" />
+              <p className="text-xs text-blue-100/70 font-bold leading-relaxed uppercase tracking-tighter">
+                Acceso Concedido. Escucha la explicación y luego resuelve el desafío para sumar puntos.
               </p>
             </div>
 
-            <div
-              className="surface-card"
-              style={{
-                padding: "20px",
-                border: "1px solid rgba(255,215,0,0.1)",
-              }}
-            >
-              <h4
-                style={{
-                  color: "var(--gold)",
-                  marginBottom: "10px",
-                  fontSize: "14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px"
-                }}
-              >
-                <Users size={16} /> Preguntómetro Anónimo
-              </h4>
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "rgba(255,255,255,0.5)",
-                  marginBottom: "15px",
-                }}
-              >
-                ¿Tienes alguna duda sobre la explicación? Envíala aquí.
-              </p>
+            <div className="surface-card p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Users size={16} className="text-blue-400" />
+                  <span className="text-[11px] font-black uppercase tracking-widest text-white/80">Preguntómetro</span>
+                </div>
+                <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.3em]">Modo Seguro</span>
+              </div>
               
-              <div style={{ position: "relative", marginBottom: "15px" }}>
+              <div className="relative">
                 <textarea
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="Escribe tu pregunta aquí..."
-                  disabled={questionSent || isSendingQuestion}
-                  style={{
-                    width: "100%",
-                    height: "80px",
-                    background: "rgba(0,0,0,0.2)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: "12px",
-                    padding: "12px",
-                    color: "white",
-                    fontSize: "14px",
-                    resize: "none",
-                    outline: "none",
-                  }}
+                  placeholder="¿Tienes alguna duda científica?"
+                  className="w-full h-24 p-4 text-sm text-white transition-all border outline-none bg-black/40 border-white/5 focus:border-blue-400/30 rounded-xl placeholder:text-white/10 resize-none"
                 />
                 <button
                   onClick={handleSendQuestion}
                   disabled={!question.trim() || isSendingQuestion || questionSent}
-                  style={{
-                    position: "absolute",
-                    bottom: "10px",
-                    right: "10px",
-                    background: questionSent ? "#27ae60" : "var(--gold)",
-                    color: "black",
-                    border: "none",
-                    padding: "6px 15px",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    opacity: (!question.trim() || isSendingQuestion) && !questionSent ? 0.5 : 1,
-                  }}
+                  className={`absolute bottom-3 right-3 px-4 py-2 text-[10px] font-black rounded-lg transition-all ${questionSent ? "bg-green-500 text-white" : "bg-blue-400 text-black active:scale-90"}`}
                 >
-                  {isSendingQuestion ? "Enviando..." : questionSent ? " ¡Enviada! " : "Enviar"}
+                  {questionSent ? "✓ ENVIADA" : "ENVIAR"}
                 </button>
               </div>
 
-              <button
-                onClick={() => {
-                  // Marcar acceso válido a la trivia
-                  sessionStorage.setItem(`trivia_access_${id}`, "true");
-                  navigate(`/trivia/${id}`);
-                }}
-                className="gold-action"
-                style={{
-                  width: "100%",
-                  padding: "20px",
-                  color: "black",
-                  borderRadius: "14px",
-                  border: "none",
-                  fontWeight: "900",
-                  fontSize: "18px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  boxShadow: "0 10px 30px rgba(255, 215, 0, 0.2)",
-                  cursor: "pointer",
-                }}
-              >
-                IR A LA TRIVIA
-              </button>
+              <div className="pt-4">
+                <button
+                  onClick={() => {
+                    sessionStorage.setItem(`trivia_access_${id}`, "true");
+                    navigate(`/trivia/${id}`);
+                  }}
+                  className="w-full py-5 font-black text-white uppercase tracking-[0.3em] text-sm rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 shadow-xl shadow-amber-500/10 active:scale-95 transition-all"
+                >
+                  ABRIR TRIVIA
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
-
-        <AnimatePresence>
-          {showQRModal && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: "rgba(0,0,0,0.9)",
-                zIndex: 100,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "20px",
-              }}
-            >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              >
-                <QrCode size={100} color="var(--gold)" />
-              </motion.div>
-              <h2 style={{ color: "var(--gold)" }}>Escaneando...</h2>
-              <p style={{ color: "white" }}>Registrando check-in</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.div>
       <Navigation />
     </Layout>

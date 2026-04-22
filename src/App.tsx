@@ -21,19 +21,26 @@ const ViewLoader = () => (
   </div>
 );
 
+import { ProtectedRoute } from "./components/ProtectedRoute";
+
 function App() {
   return (
     <Router>
       <Suspense fallback={<ViewLoader />}>
         <Routes>
+          {/* Públicas */}
           <Route path="/" element={<LoginView />} />
           <Route path="/panel/login" element={<TeacherLoginView />} />
-          <Route path="/panel" element={<TeacherPanelView />} />
-          <Route path="/tutorial" element={<TutorialView />} />
-          <Route path="/mapa" element={<MapView />} />
-          <Route path="/stand/:id" element={<StandDetailView />} />
-          <Route path="/trivia/:id" element={<TriviaView />} />
-          <Route path="/ranking" element={<RankingView />} />
+
+          {/* Rutas de Alumnos */}
+          <Route path="/tutorial" element={<ProtectedRoute role="student"><TutorialView /></ProtectedRoute>} />
+          <Route path="/mapa" element={<ProtectedRoute role="student"><MapView /></ProtectedRoute>} />
+          <Route path="/stand/:id" element={<ProtectedRoute role="student"><StandDetailView /></ProtectedRoute>} />
+          <Route path="/trivia/:id" element={<ProtectedRoute role="student"><TriviaView /></ProtectedRoute>} />
+          <Route path="/ranking" element={<ProtectedRoute role="student"><RankingView /></ProtectedRoute>} />
+
+          {/* Rutas de Maestros */}
+          <Route path="/panel" element={<ProtectedRoute role="teacher"><TeacherPanelView /></ProtectedRoute>} />
         </Routes>
       </Suspense>
     </Router>

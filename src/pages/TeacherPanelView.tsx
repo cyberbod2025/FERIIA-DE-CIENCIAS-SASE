@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Layout } from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import { AlertTriangle, RefreshCcw, LogOut, Users, MapPin } from "lucide-react";
+import { motion } from "framer-motion";
+import { AlertTriangle, RefreshCcw, LogOut, Users, MapPin, Target } from "lucide-react";
 
 interface PanelProfile {
   rol: "maestro" | "direccion";
@@ -134,8 +135,6 @@ export const TeacherPanelView: React.FC = () => {
   const standsActivos = estaciones.filter((e) => (e.visitantes_activos || 0) > 0);
   const standsVacios = estaciones.filter((e) => (e.visitantes_activos || 0) === 0);
 
-  const maxVisitantes = Math.max(1, ...estaciones.map((e) => e.visitantes_activos || 0));
-
   const alertasGrupos = grupos
     .filter(
       (g) =>
@@ -150,223 +149,196 @@ export const TeacherPanelView: React.FC = () => {
     .slice(0, 10);
 
   return (
-    <Layout title="Panel Maestros">
-      <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "12px",
-          }}
+    <Layout title="Panel de Control">
+      <div className="flex flex-col gap-6 p-6 pb-24 max-w-lg mx-auto">
+        
+        {/* Perfil del Staff Premium */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface-card-strong flex items-center justify-between p-5"
         >
-          <div>
-            <div style={{ color: "var(--gold)", fontWeight: 700, fontSize: "14px" }}>
-              {profile?.nombre || profile?.email || "Staff"}
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
+              <div className="relative size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl">
+                <Users size={24} className="text-blue-400" />
+              </div>
             </div>
-            <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px" }}>
-              Rol: {profile?.rol || "-"}
+            <div>
+              <div className="title-sase text-base">
+                {profile?.nombre || profile?.email?.split('@')[0] || "Staff"}
+              </div>
+              <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">
+                {profile?.rol || "SISTEMA"}
+              </div>
             </div>
           </div>
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div className="flex gap-2">
             <button
               onClick={loadData}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "8px 12px",
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: "10px",
-                color: "white",
-                fontSize: "11px",
-                cursor: "pointer",
-              }}
+              className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all active:scale-95"
             >
-              <RefreshCcw size={14} /> Actualizar
+              <RefreshCcw size={18} className={loading ? "animate-spin" : ""} />
             </button>
             <button
               onClick={handleLogout}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "8px 12px",
-                background: "rgba(231,76,60,0.2)",
-                border: "1px solid rgba(231,76,60,0.4)",
-                borderRadius: "10px",
-                color: "white",
-                fontSize: "11px",
-                cursor: "pointer",
-              }}
+              className="size-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all active:scale-95"
             >
-              <LogOut size={14} /> Salir
+              <LogOut size={18} />
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {error && (
-          <div
-            style={{
-              color: "var(--crimson)",
-              background: "rgba(231,76,60,0.12)",
-              border: "1px solid rgba(231,76,60,0.3)",
-              padding: "12px",
-              borderRadius: "12px",
-              fontSize: "12px",
-            }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold text-center flex items-center gap-3"
           >
-            {error}
-          </div>
+            <AlertTriangle size={16} /> {error}
+          </motion.div>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-          <div className="metric-card" style={{ padding: "12px" }}>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Asistencia</div>
-            <div style={{ fontSize: "18px", fontWeight: 800 }}>{totalCheckins}</div>
-          </div>
-          <div className="metric-card" style={{ padding: "12px" }}>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Precision global</div>
-            <div style={{ fontSize: "18px", fontWeight: 800 }}>{precisionGlobal}%</div>
-          </div>
-          <div className="metric-card" style={{ padding: "12px" }}>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Stands activos</div>
-            <div style={{ fontSize: "18px", fontWeight: 800 }}>{standsActivos.length}</div>
-          </div>
-          <div className="metric-card" style={{ padding: "12px" }}>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>Stands vacios</div>
-            <div style={{ fontSize: "18px", fontWeight: 800 }}>{standsVacios.length}</div>
-          </div>
+        {/* Métricas Principales Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { label: "Asistencia", value: totalCheckins, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
+            { label: "Precisión", value: `${precisionGlobal}%`, icon: Target, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+            { label: "Activos", value: standsActivos.length, icon: MapPin, color: "text-amber-400", bg: "bg-amber-500/10" },
+            { label: "Vacíos", value: standsVacios.length, icon: AlertTriangle, color: "text-rose-400", bg: "bg-rose-500/10" }
+          ].map((m, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="surface-card p-4 relative overflow-hidden group"
+            >
+              <div className={`absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity`}>
+                <m.icon size={40} />
+              </div>
+              <div className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2">
+                {m.label}
+              </div>
+              <div className={`text-2xl font-black ${m.color}`}>
+                {m.value}
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="surface-card" style={{ padding: "14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-            <MapPin size={16} color="var(--gold)" />
-            <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--gold)" }}>
-              Zonas de calor (stands)
+        {/* Monitoreo de Estaciones */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="surface-card p-6"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="size-8 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+              <MapPin size={16} className="text-amber-400" />
             </div>
+            <h3 className="title-sase text-sm">Capacidad de Estaciones</h3>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div className="flex flex-col gap-5">
             {estaciones
               .sort((a, b) => (b.visitantes_activos || 0) - (a.visitantes_activos || 0))
-              .slice(0, 8)
+              .slice(0, 6)
               .map((est) => (
-                <div key={est.id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: "12px" }}>{est.nombre}</div>
-                    <div
-                      style={{
-                        height: "6px",
-                        background: "rgba(255,255,255,0.08)",
-                        borderRadius: "999px",
-                        overflow: "hidden",
-                        marginTop: "6px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${Math.round(((est.visitantes_activos || 0) / maxVisitantes) * 100)}%`,
-                          height: "100%",
-                          background: "linear-gradient(90deg, var(--gold), #27ae60)",
-                        }}
-                      />
+                <div key={est.id} className="group">
+                  <div className="flex justify-between items-end mb-2">
+                    <div className="text-xs font-bold text-white/90 group-hover:text-blue-400 transition-colors">{est.nombre}</div>
+                    <div className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      est.visitantes_activos >= 20 ? "bg-rose-500/20 text-rose-400" : "bg-emerald-500/10 text-emerald-400"
+                    }`}>
+                      {est.visitantes_activos || 0} / 20
                     </div>
                   </div>
-                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)" }}>
-                    {est.visitantes_activos || 0} activos
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(100, ((est.visitantes_activos || 0) / 20) * 100)}%` }}
+                      className={`h-full rounded-full transition-all duration-1000 ${
+                        est.visitantes_activos >= 20 
+                          ? "bg-gradient-to-r from-rose-600 to-rose-400" 
+                          : "bg-gradient-to-r from-blue-600 to-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)]"
+                      }`}
+                    />
                   </div>
                 </div>
               ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="surface-card" style={{ padding: "14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-            <AlertTriangle size={16} color="var(--crimson)" />
-            <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--crimson)" }}>
-              Alertas por grupo
+        {/* Alertas Críticas */}
+        {alertasGrupos.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="surface-card p-6 border border-rose-500/20"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <AlertTriangle size={18} className="text-rose-400" />
+              <h3 className="title-sase text-sm text-rose-400">Intervención Requerida</h3>
             </div>
-          </div>
-          {alertasGrupos.length === 0 ? (
-            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
-              Sin alertas detectadas.
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div className="flex flex-col gap-3">
               {alertasGrupos.map((g) => (
-                <div
-                  key={g.grupo}
-                  style={{
-                    background: "rgba(231,76,60,0.08)",
-                    border: "1px solid rgba(231,76,60,0.2)",
-                    borderRadius: "10px",
-                    padding: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
+                <div key={g.grupo} className="flex items-center justify-between p-4 bg-rose-500/5 rounded-2xl border border-rose-500/10">
                   <div>
-                    <div style={{ fontSize: "13px", fontWeight: 700 }}>{g.grupo}</div>
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)" }}>
-                      Check-ins: {g.total_checkins} | Precision: {g.precision ?? 0}%
+                    <div className="text-sm font-black text-white">{g.grupo}</div>
+                    <div className="text-[10px] text-rose-400/70 font-bold uppercase tracking-wider">
+                      Precisión Crítica: {g.precision}%
                     </div>
                   </div>
-                  <div style={{ fontSize: "10px", color: "var(--crimson)" }}>
-                    Revisar flujo
+                  <div className="size-8 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-400 animate-pulse">
+                    <Target size={14} />
                   </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-
-        <div className="surface-card" style={{ padding: "14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-            <Users size={16} color="var(--gold)" />
-            <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--gold)" }}>
-              Alumnos inactivos ({">"}{INACTIVO_MINUTOS} min)
-            </div>
-          </div>
-          {alumnosInactivos.length === 0 ? (
-            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
-              Sin inactividad relevante.
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {alumnosInactivos.map((a) => (
-                <div
-                  key={a.estudiante_id}
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    borderRadius: "10px",
-                    padding: "10px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: "12px", fontWeight: 700 }}>{a.nickname}</div>
-                    <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)" }}>
-                      {a.grupo || "Sin grupo"}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)" }}>
-                    {Math.round(a.minutos_inactivo || 0)} min
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {loading && (
-          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: "12px" }}>
-            Cargando metricas...
-          </div>
+          </motion.div>
         )}
+
+        {/* Inactividad */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="surface-card p-6"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="size-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+              <Users size={16} className="text-blue-400" />
+            </div>
+            <h3 className="title-sase text-sm">Alumnos Estancados</h3>
+          </div>
+          <div className="grid gap-3">
+            {alumnosInactivos.length === 0 ? (
+              <div className="text-center py-4 text-white/20 text-xs font-bold uppercase tracking-widest">
+                Sin anomalías detectadas
+              </div>
+            ) : (
+              alumnosInactivos.map((a) => (
+                <div key={a.estudiante_id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group hover:bg-white/10 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-lg">
+                      {a.nickname.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-white/90">{a.nickname}</div>
+                      <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{a.grupo || "S/G"}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-black text-amber-400">{Math.round(a.minutos_inactivo || 0)}m</div>
+                    <div className="text-[8px] text-white/20 font-black uppercase tracking-[0.2em]">INACTIVO</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </motion.div>
       </div>
     </Layout>
   );

@@ -159,359 +159,180 @@ export const MapView: React.FC = () => {
   // Stand sugerido: el que no ha visitado y tiene menos gente
   const standSugerido = estaciones
     .filter((e) => getStandStatus(e.id) === "disponible")
-    .sort(
-      (a, b) => (a.visitantes_activos || 0) - (b.visitantes_activos || 0),
-    )[0];
+    .sort((a, b) => (a.visitantes_activos || 0) - (b.visitantes_activos || 0))[0];
 
   return (
     <Layout title="🧭 Brújula del Tesoro">
-      <div
-        className="treasure-map-container"
-        style={{
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          flex: 1,
-          overflowY: "auto",
-          background: "radial-gradient(circle at 50% 50%, rgba(236,182,19,0.03) 0%, transparent 70%)"
-        }}
-      >
-        {/* Header con grupo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Compass size={18} color="var(--gold)" />
-            <span
-              style={{
-                color: "var(--gold)",
-                fontWeight: "bold",
-                fontSize: "13px",
-              }}
-            >
-              Grupo {userGroup}
-            </span>
+      <div className="flex flex-col gap-6 p-6 pb-24 max-w-lg mx-auto min-h-full overflow-y-auto">
+        
+        {/* Header de Expedición Premium */}
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-amber-500/20 blur-lg rounded-full animate-pulse"></div>
+              <div className="relative size-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                <Compass size={20} className="text-amber-400" />
+              </div>
+            </div>
+            <div>
+              <div className="title-sase text-base">Grupo {userGroup}</div>
+              <div className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Expedición 2026</div>
+            </div>
           </div>
-          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px" }}>
-            {progreso.filter((p) => p.trivia_respondida_correctamente).length}/
-            {estaciones.length} completados
-          </span>
+          <div className="text-right">
+            <div className="text-sm font-black text-amber-400">
+              {Math.round((progreso.filter((p) => p.trivia_respondida_correctamente).length / (estaciones.length || 1)) * 100)}%
+            </div>
+            <div className="text-[9px] font-black text-white/20 uppercase tracking-widest">PROGRESO</div>
+          </div>
         </div>
 
-        {/* Barra de progreso */}
-        <div
-          style={{
-            width: "100%",
-            height: "6px",
-            background: "rgba(255,255,255,0.1)",
-            borderRadius: "3px",
-            overflow: "hidden",
-          }}
-        >
+        {/* Barra de Progreso High-Fidelity */}
+        <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5 shadow-inner">
           <motion.div
             initial={{ width: 0 }}
             animate={{
-              width: `${
-                estaciones.length > 0
-                  ? (progreso.filter((p) => p.trivia_respondida_correctamente)
-                      .length /
-                      estaciones.length) *
-                    100
-                  : 0
-              }%`,
+              width: `${estaciones.length > 0 ? (progreso.filter((p) => p.trivia_respondida_correctamente).length / estaciones.length) * 100 : 0}%`,
             }}
-            transition={{ duration: 0.8 }}
-            style={{
-              height: "100%",
-              background: "linear-gradient(90deg, var(--gold), #27ae60)",
-              borderRadius: "3px",
-            }}
+            transition={{ duration: 1.5, ease: "circOut" }}
+            className="h-full rounded-full bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-400 shadow-[0_0_20px_rgba(37,99,235,0.4)]"
           />
         </div>
 
-        {/* Stand sugerido */}
+        {/* Recomendación de IA (Sasito) */}
         {standSugerido && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ 
-              opacity: 1, 
-              y: 0,
-            }}
-            className="glass-science-quantum science-glow"
-            style={{
-              padding: "24px",
-              borderRadius: "32px",
-              position: "relative",
-              border: "1px solid rgba(255,215,0,0.4)",
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="surface-card-strong p-6 relative overflow-hidden group border-amber-500/20"
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "10px",
-              }}
-            >
-              <Compass size={16} color="var(--gold)" />
-              <span
-                style={{
-                  color: "var(--gold)",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Sugerencia del Sistema
-              </span>
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <Compass size={120} />
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "15px",
-              }}
-            >
-              <div style={{ flexShrink: 0 }}>
-                <SaseNeuralCore
-                  size={70}
-                />
+            
+            <div className="flex items-center gap-2 mb-4">
+              <div className="size-2 rounded-full bg-amber-400 animate-ping"></div>
+              <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em]">Asignación de Sasito</span>
+            </div>
+
+            <div className="flex items-center gap-6 mb-6">
+              <div className="flex-shrink-0 relative">
+                 <div className="absolute inset-0 bg-blue-500/10 blur-2xl rounded-full"></div>
+                 <SaseNeuralCore size={70} />
               </div>
-              <div style={{ flex: 1 }}>
-                <h4
-                  style={{
-                    color: "white",
-                    margin: "0 0 4px 0",
-                    fontSize: "15px",
-                  }}
-                >
-                  {MATERIA_EMOJI[standSugerido.materia] || "🔬"}{" "}
-                  {standSugerido.nombre}
-                </h4>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: "11px",
-                  }}
-                >
-                  <Users size={11} /> {standSugerido.visitantes_activos || 0}{" "}
-                  personas
+              <div className="flex-1 min-w-0">
+                <h4 className="text-lg font-black text-white truncate mb-1">{standSugerido.nombre}</h4>
+                <div className="flex items-center gap-3">
+                  <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase border ${
+                    standSugerido.materia === 'Física' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                    standSugerido.materia === 'Biología' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                    'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                  }`}>
+                    {standSugerido.materia}
+                  </span>
+                  <div className="flex items-center gap-1.5 text-[10px] text-white/40 font-bold">
+                    <Users size={12} /> {standSugerido.visitantes_activos}/20
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={() => navigate(`/stand/${standSugerido.id}`)}
-                style={{
-                  background: "var(--gold)",
-                  border: "none",
-                  padding: "10px 18px",
-                  borderRadius: "10px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                  cursor: "pointer",
-                  color: "black",
-                }}
-              >
-                Ir al Stand
-              </button>
             </div>
+
+            <button
+              onClick={() => navigate(`/stand/${standSugerido.id}`)}
+              className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl text-amber-950 font-black uppercase tracking-widest text-xs shadow-xl active:scale-[0.98] transition-transform"
+            >
+              Iniciar Misión
+            </button>
           </motion.div>
         )}
 
-        {/* Lista de todos los stands */}
-        <h3 style={{ color: "white", fontSize: "14px", margin: "4px 0 0 0" }}>
-          Todos los Stands
-        </h3>
+        {/* Mapa Estelar de Estaciones */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            <h3 className="title-sase text-lg">Mapa Estelar</h3>
+            <div className="h-px flex-1 bg-white/5"></div>
+          </div>
 
-        {loading ? (
-          <p
-            style={{
-              color: "rgba(255,255,255,0.5)",
-              textAlign: "center",
-              padding: "20px",
-            }}
-          >
-            Cargando estaciones...
-          </p>
-        ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-          >
-            {estaciones.map((estacion, i) => {
-              const status = getStandStatus(estacion.id);
-              const badge = getStatusBadge(status);
-              const color = MATERIA_COLORS[estacion.materia] || "var(--gold)";
-              const isBlocked = status !== "disponible";
+          {loading ? (
+            <div className="py-12 text-center flex flex-col items-center gap-4">
+              <div className="size-8 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Localizando estaciones...</span>
+            </div>
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col gap-3"
+            >
+              {estaciones.map((estacion) => {
+                const status = getStandStatus(estacion.id);
+                const badge = getStatusBadge(status);
+                const color = MATERIA_COLORS[estacion.materia] || "var(--gold)";
+                const isBlocked = status !== "disponible";
 
-              return (
-                <div key={estacion.id} style={{ position: "relative" }}>
-                  {/* Línea conectora (Camino del tesoro) */}
-                  {i < estaciones.length - 1 && (
-                    <div style={{
-                      position: "absolute",
-                      left: "38px",
-                      top: "60px",
-                      width: "2px",
-                      height: "20px",
-                      background: "linear-gradient(to bottom, var(--gold-glow), transparent)",
-                      zIndex: 0
-                    }} />
-                  )}
-                  
+                return (
                   <motion.div
                     key={estacion.id}
                     variants={itemVariants}
-                    whileTap={!isBlocked ? { scale: 0.97 } : {}}
-                    onClick={() => {
-                      if (!isBlocked) {
-                        navigate(`/stand/${estacion.id}`);
-                      }
-                    }}
-                    className={isBlocked ? "glass-science-quantum opacity-60" : "glass-science-quantum"}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "14px",
-                      padding: "16px",
-                      borderRadius: "24px",
-                      cursor: isBlocked ? "not-allowed" : "pointer",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      border: isBlocked ? "1px solid rgba(255,255,255,0.05)" : `1px solid ${color}33`,
-                      position: "relative",
-                      zIndex: 1,
-                    }}
-                    whileHover={!isBlocked ? { 
-                      backgroundColor: "rgba(255,255,255,0.08)",
-                      borderColor: `${color}66`,
-                      x: 8,
-                      boxShadow: `0 10px 30px -10px ${color}33`
-                    } : {}}
+                    layout
+                    whileTap={!isBlocked ? { scale: 0.98 } : {}}
+                    onClick={() => !isBlocked && navigate(`/stand/${estacion.id}`)}
+                    className={`surface-card p-4 flex items-center gap-4 transition-all ${
+                      isBlocked ? "opacity-50 grayscale bg-white/[0.02]" : "hover:bg-white/[0.05]"
+                    }`}
                   >
-                    {/* Icono de materia */}
-                    <div
-                      style={{
-                        width: "44px",
-                        height: "44px",
-                        borderRadius: "12px",
-                        background: `${color}22`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "22px",
-                        flexShrink: 0,
-                      }}
-                    >
+                    <div className={`size-12 rounded-2xl flex items-center justify-center text-2xl border shadow-lg ${
+                      isBlocked ? "bg-white/5 border-white/5" : "bg-white/5 border-white/10"
+                    }`} style={{ borderColor: isBlocked ? undefined : `${color}33` }}>
                       {MATERIA_EMOJI[estacion.materia] || "🔬"}
                     </div>
 
-                    {/* Info */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h4
-                        style={{
-                          color: isBlocked ? "rgba(255,255,255,0.5)" : "white",
-                          margin: "0 0 4px 0",
-                          fontSize: "14px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {estacion.nombre}
-                      </h4>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: color,
-                          fontWeight: "600",
-                        }}
-                      >
-                        {estacion.materia}
-                      </span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-black text-white/90 truncate mb-1">{estacion.nombre}</h4>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[9px] font-black uppercase tracking-wider" style={{ color }}>{estacion.materia}</span>
+                        {!isBlocked && (
+                          <div className="flex items-center gap-1 text-[9px] text-white/30 font-bold uppercase">
+                            <Users size={10} /> {estacion.visitantes_activos}/20
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Badge de estado & Ocupación */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                      <div
-                        style={{
-                          padding: "4px 10px",
-                          borderRadius: "20px",
-                          background: badge.bg,
-                          color: badge.color,
-                          fontSize: "10px",
-                          fontWeight: "bold",
-                          whiteSpace: "nowrap",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {badge.text}
-                      </div>
-                      {status === 'disponible' && (
-                        <div style={{ 
-                          fontSize: '9px', 
-                          color: 'rgba(255,255,255,0.4)', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '4px',
-                          background: 'rgba(0,0,0,0.2)',
-                          padding: '2px 6px',
-                          borderRadius: '4px'
-                        }}>
-                          <Users size={8} /> {estacion.visitantes_activos} activos
-                        </div>
-                      )}
+                    <div className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-colors ${
+                      status === 'completado' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                      status === 'visitado' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                      'bg-white/5 text-white/30 border-white/10'
+                    }`}>
+                      {badge.text.split(' ')[1] || badge.text}
                     </div>
                   </motion.div>
-                </div>
-              );
-            })}
-          </motion.div>
-        )}
+                );
+              })}
+            </motion.div>
+          )}
+        </div>
 
-        {/* Mensaje si completó todo */}
+        {/* Estado Final */}
         {!loading && estaciones.length > 0 && !standSugerido && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{
-              textAlign: "center",
-              padding: "20px",
-              background: "rgba(39,174,96,0.1)",
-              borderRadius: "16px",
-              border: "1px solid rgba(39,174,96,0.3)",
-            }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="surface-card-strong p-8 text-center border-emerald-500/30"
           >
-            <h3 style={{ color: "#27ae60", marginBottom: "8px" }}>
-              🏆 ¡Recorrido Completo!
-            </h3>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px" }}>
-              Ya visitaste todos los stands. Revisa tu posición en el ranking.
+            <div className="size-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+              <CheckCircle size={32} className="text-emerald-400" />
+            </div>
+            <h3 className="text-emerald-400 text-xl font-black mb-3">¡Misión Cumplida!</h3>
+            <p className="text-xs text-white/50 leading-relaxed mb-8">
+              Has explorado todos los rincones de la ciencia. Tu conocimiento ha crecido exponencialmente.
             </p>
             <button
               onClick={() => navigate("/ranking")}
-              style={{
-                marginTop: "12px",
-                background: "#27ae60",
-                border: "none",
-                padding: "10px 24px",
-                borderRadius: "10px",
-                color: "white",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
+              className="w-full py-4 bg-emerald-600 rounded-2xl text-emerald-950 font-black uppercase tracking-widest text-xs shadow-xl"
             >
-              Ver Ranking
+              Consultar Tabla de Honor
             </button>
           </motion.div>
         )}
