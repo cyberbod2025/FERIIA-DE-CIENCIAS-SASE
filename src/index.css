@@ -85,6 +85,25 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card h3 {
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.card p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+
 .btn-primary {
   background: linear-gradient(135deg, #816ab8 0%, #9a89c2 100%);
   border: 1px solid rgba(255, 255, 255, 0.2);

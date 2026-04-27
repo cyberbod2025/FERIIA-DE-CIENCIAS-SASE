@@ -35,7 +35,7 @@ export const TutorialView: React.FC = () => {
   const userName = studentName || "Artista";
 
   return (
-    <Layout title="📘 Manual de Misión">
+    <Layout title="📘 Manual de Misión" showNav={true}>
       <motion.div
         variants={containerVariants}
         initial="hidden"

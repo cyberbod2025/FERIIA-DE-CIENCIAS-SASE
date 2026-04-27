@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   QrCode,
   Users,
   Star,
   ArrowRight,
-  ShieldAlert,
   CheckCircle,
   XCircle,
   FlaskConical,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { Navigation } from "../components/Navigation";
 import { getStudentSession } from "../lib/studentSession";
 
 interface Estacion {
@@ -57,7 +55,6 @@ export const StandDetailView: React.FC = () => {
   const navigate = useNavigate();
   const [stand, setStand] = useState<Estacion | null>(null);
   const [checkedIn, setCheckedIn] = useState(false);
-  const [showQRModal, setShowQRModal] = useState(false);
   const [alreadyVisited, setAlreadyVisited] = useState(false);
   const [visitResult, setVisitResult] = useState<"correct" | "incorrect" | null>(null);
   const [question, setQuestion] = useState("");
@@ -102,7 +99,6 @@ export const StandDetailView: React.FC = () => {
 
   const handleCheckIn = async () => {
     setErrorMsg("");
-    setShowQRModal(true);
     try {
       if (studentId && sessionToken && id) {
         const { data, error: rpcError } = await supabase.rpc("registrar_progreso_v2", {
@@ -115,18 +111,15 @@ export const StandDetailView: React.FC = () => {
         if (rpcError || !data?.success) {
           const msg = data?.message || "Error al registrar check-in.";
           setErrorMsg(msg.includes("llena") ? "🛑 STAND LLENO (Máx 20): Por favor espera a que otros alumnos salgan." : msg);
-          setShowQRModal(false);
           return;
         }
       }
       
       setTimeout(() => {
-        setShowQRModal(false);
         setCheckedIn(true);
       }, 1500);
     } catch (err) {
       setErrorMsg("Error de conexión.");
-      setShowQRModal(false);
     }
   };
 
@@ -177,19 +170,17 @@ export const StandDetailView: React.FC = () => {
           {visitResult === "correct" ? <CheckCircle size={48} className="text-green-400" /> : <XCircle size={48} className="text-red-400" />}
         </motion.div>
         <div>
-          <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">{visitResult === "correct" ? "Misión Exitosa" : "Acceso Denegado"}</h2>
           <p className="mt-3 text-sm text-white/40 leading-relaxed">
             {visitResult === "correct" ? "Has completado este módulo con éxito. ¡Sigue explorando!" : "Ya has agotado tus intentos en este módulo de investigación."}
           </p>
         </div>
         <button onClick={() => navigate("/mapa")} className="w-full py-5 font-black text-white rounded-2xl bg-white/5 border border-white/10 active:scale-95 transition-all">VOLVER AL MAPA</button>
       </div>
-      <Navigation />
     </Layout>
   );
 
   return (
-    <Layout title={stand.nombre}>
+    <Layout title={stand.nombre} showNav={true}>
       <motion.div variants={containerVariants} initial="hidden" animate="visible" className="flex flex-col p-5 space-y-6 pb-24">
         {/* Stand Header */}
         <motion.div variants={itemVariants} className="surface-card-strong p-6 relative overflow-hidden border border-white/5">
@@ -204,7 +195,12 @@ export const StandDetailView: React.FC = () => {
             <p className="text-sm font-bold text-white/80">{stand.docente_responsable}</p>
           </div>
           <div className="mt-6 pt-6 border-t border-white/5">
-            <p className="text-sm leading-relaxed text-white/50">{stand.descripcion_pedagogica}</p>
+            {/* BUG FIX: Handle newline-separated description */}
+            <div className="space-y-3">
+              {(stand.descripcion_pedagogica || "Sin descripción disponible.").split("\n").map((line, i) => (
+                <p key={i} className="text-sm leading-relaxed text-white/50">{line}</p>
+              ))}
+            </div>
           </div>
         </motion.div>
 
@@ -297,7 +293,6 @@ export const StandDetailView: React.FC = () => {
           </motion.div>
         )}
       </motion.div>
-      <Navigation />
     </Layout>
   );
 };

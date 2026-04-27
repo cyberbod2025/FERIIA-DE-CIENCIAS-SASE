@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Compass, Users, CheckCircle, Lock, XCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { Navigation } from "../components/Navigation";
 import { SaseNeuralCore } from "../components/SaseNeuralCore";
 import { getStudentSession } from "../lib/studentSession";
 
@@ -162,7 +161,7 @@ export const MapView: React.FC = () => {
     .sort((a, b) => (a.visitantes_activos || 0) - (b.visitantes_activos || 0))[0];
 
   return (
-    <Layout title="🧭 Brújula del Tesoro">
+    <Layout title="🧭 Brújula del Tesoro" showNav={true}>
       <div className="flex flex-col gap-6 p-6 pb-24 max-w-lg mx-auto min-h-full overflow-y-auto">
         
         {/* Header de Expedición Premium */}
@@ -337,7 +336,6 @@ export const MapView: React.FC = () => {
           </motion.div>
         )}
       </div>
-      <Navigation />
     </Layout>
   );
 };

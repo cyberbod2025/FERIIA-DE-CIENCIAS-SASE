@@ -1,15 +1,17 @@
 import React from "react";
+import { Navigation } from "./Navigation";
 
 interface LayoutProps {
   children: React.ReactNode;
   title?: string;
+  showNav?: boolean;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, title, showNav = false }) => {
   return (
     <div
       className="phone-frame"
-      style={{ display: "flex", flexDirection: "column" }}
+      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
     >
       {/* Atmosférico sutil */}
       <div style={{
@@ -32,7 +34,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
             letterSpacing: "0.4em",
             textTransform: "uppercase",
             borderBottom: "1px solid var(--border-light)",
-            zIndex: 1,
+            zIndex: 10,
             fontWeight: 800,
             backdropFilter: "blur(10px)"
           }}
@@ -67,7 +69,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
           <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "9px" }}>CORE V.4.0</span>
         </div>
       </div>
-      <div
+      
+      <main
         className="content-scroll"
         style={{
           flex: 1,
@@ -80,7 +83,13 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         }}
       >
         {children}
-      </div>
+      </main>
+
+      {showNav && (
+        <div style={{ position: "relative", zIndex: 20 }}>
+          <Navigation />
+        </div>
+      )}
     </div>
   );
 };

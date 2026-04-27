@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Layout } from "../components/Layout";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Timer,
   ArrowRight,
   Trophy,
   AlertCircle,
-  ShieldAlert,
+  CheckCircle,
+  XCircle,
   Lock,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
@@ -26,6 +27,7 @@ export const TriviaView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [trivias, setTrivias] = useState<Trivia[]>([]);
+  const [stand, setStand] = useState<{ nombre: string } | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isFinished, setIsFinished] = useState(false);
@@ -67,6 +69,10 @@ export const TriviaView: React.FC = () => {
 
       const { data, error } = await supabase.from("trivias").select("*").eq("estacion_id", id);
       if (!error) setTrivias(data || []);
+
+      const { data: standData } = await supabase.from("estaciones").select("nombre").eq("id", id).single();
+      if (standData) setStand(standData);
+
       setLoading(false);
     };
     checkAccessAndFetch();

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { Trophy } from "lucide-react";
 import { motion } from "framer-motion";
-import { Navigation } from "../components/Navigation";
 import { supabase } from "../lib/supabase";
 
 interface EstudianteRanking {
@@ -70,7 +69,7 @@ export const RankingView: React.FC = () => {
   }, []);
 
   return (
-    <Layout title="🏆 Ranking Elite">
+    <Layout title="🏆 Ranking Elite" showNav={true}>
       <div className="flex flex-col gap-6 p-6 pb-24 max-w-lg mx-auto min-h-full">
         
         {/* Header de Honor Premium */}
@@ -160,7 +159,6 @@ export const RankingView: React.FC = () => {
           )}
         </div>
       </div>
-      <Navigation />
     </Layout>
   );
 };

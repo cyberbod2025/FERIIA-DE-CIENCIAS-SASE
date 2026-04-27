@@ -1,372 +1,160 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout } from "../components/Layout";
-import { Star, Map as MapIcon, Tent, User, Info } from "lucide-react";
 import { motion } from "framer-motion";
+import { 
+  Tent, 
+  Search, 
+  ChevronRight, 
+  Star, 
+  MapPin, 
+  Zap
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+
+interface Estacion {
+  id: string;
+  nombre: string;
+  descripcion_pedagogica: string;
+  materia: string;
+  grupo: string;
+}
 
 export const StandView: React.FC = () => {
-  const [comment, setComment] = useState("");
   const navigate = useNavigate();
+  const [feriaData, setFeriaData] = useState<Estacion[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStands = async () => {
+      const { data, error } = await supabase
+        .from("estaciones")
+        .select("id, nombre, descripcion_pedagogica, materia, grupo")
+        .order('nombre');
+      
+      if (!error && data) {
+        setFeriaData(data);
+      }
+      setLoading(false);
+    };
+    fetchStands();
+  }, []);
+
+  const filteredStands = feriaData.filter(stand => 
+    stand.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    stand.materia.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <Layout title="📱 Pantalla 4 — Interacción con Stand">
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg, var(--crimson) 0%, #8b0000 100%)",
-          padding: "20px 24px 24px",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginBottom: "12px",
-          }}
-        >
-          <span
-            style={{
-              padding: "4px 14px",
-              borderRadius: "20px",
-              fontSize: "11px",
-              fontWeight: 700,
-              background: "rgba(255, 215, 0, 0.2)",
-              border: "1px solid var(--gold)",
-              color: "var(--gold)",
-              textTransform: "uppercase",
-            }}
-          >
-            🔭 FÍSICA
-          </span>
-          <span
-            style={{
-              padding: "4px 14px",
-              borderRadius: "20px",
-              fontSize: "11px",
-              fontWeight: 700,
-              background: "rgba(255, 255, 255, 0.15)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              textTransform: "uppercase",
-            }}
-          >
-            3° Grupo B
-          </span>
-        </div>
-        <h1
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: "22px",
-            fontWeight: 900,
-            color: "var(--gold)",
-            textShadow: "0 2px 10px rgba(255, 215, 0, 0.4)",
-            lineHeight: 1.2,
-            marginBottom: "4px",
-          }}
-        >
-          La Magia de la Gravedad
-        </h1>
-        <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.7)" }}>
-          ¡El Espectáculo Continúa!
-        </p>
-      </div>
-
-      <div
-        style={{
-          padding: "16px 24px",
-          background: "rgba(255, 215, 0, 0.05)",
-          borderBottom: "1px solid rgba(255, 215, 0, 0.1)",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "11px",
-            color: "rgba(255, 255, 255, 0.5)",
-            marginBottom: "6px",
-          }}
-        >
-          TU PROGRESO EN LA FUNCIÓN
-        </p>
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.1)",
-            borderRadius: "10px",
-            height: "6px",
-          }}
-        >
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: "60%" }}
-            transition={{ duration: 1 }}
-            style={{
-              background: "linear-gradient(90deg, var(--gold), #ffa500)",
-              borderRadius: "10px",
-              height: "100%",
-              boxShadow: "0 0 10px rgba(255, 215, 0, 0.5)",
-            }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "6px",
-            fontSize: "11px",
-          }}
-        >
-          <span style={{ color: "var(--gold)", fontWeight: 700 }}>
-            ⭐ 350 puntos
-          </span>
-          <span style={{ color: "rgba(255, 255, 255, 0.4)" }}>
-            3 de 5 stands visitados
-          </span>
-        </div>
-      </div>
-
-      <div
-        style={{
-          padding: "20px 24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          overflowY: "auto",
-          flex: 1,
-        }}
-      >
-        {/* TRIVIA CARD */}
-        <div
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(13, 27, 75, 0.9), rgba(26, 47, 122, 0.6))",
-            border: "1px solid rgba(255, 215, 0, 0.3)",
-            borderRadius: "20px",
-            padding: "20px",
-            position: "relative",
-          }}
-        >
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              background: "linear-gradient(135deg, var(--gold), #ffa500)",
-              color: "#000",
-              fontSize: "10px",
-              fontWeight: 800,
-              padding: "4px 12px",
-              borderRadius: "20px",
-              marginBottom: "12px",
-              textTransform: "uppercase",
-            }}
-          >
-            🎩 DESAFÍO DEL MAGO
-          </span>
-          <p
-            style={{
-              fontSize: "15px",
-              lineHeight: 1.5,
-              color: "var(--cream)",
-              marginBottom: "16px",
-            }}
-          >
-            ¿Cuál es la fuerza invisible que mantiene a los planetas en órbita
-            alrededor del sol?
-          </p>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-          >
-            {[
-              "Fuerza Electromagnética",
-              "Fuerza Gravitacional",
-              "Fuerza Nuclear Fuerte",
-              "Tensión Superficial",
-            ].map((opt, i) => (
-              <button
-                key={i}
-                style={{
-                  background:
-                    opt === "Fuerza Gravitacional"
-                      ? "rgba(255, 215, 0, 0.12)"
-                      : "rgba(255, 255, 255, 0.06)",
-                  border:
-                    opt === "Fuerza Gravitacional"
-                      ? "1px solid rgba(255, 215, 0, 0.5)"
-                      : "1px solid rgba(255, 255, 255, 0.15)",
-                  borderRadius: "12px",
-                  padding: "12px 16px",
-                  color: "white",
-                  fontSize: "14px",
-                  textAlign: "left",
-                  cursor: "pointer",
-                }}
+    <Layout title="Directorio de Stands" showNav={true}>
+      <div className="flex flex-col gap-6 p-6 pb-32">
+        
+        {/* Search & Filter Header */}
+        <div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+            <input 
+              type="text" 
+              placeholder="Buscar stand o materia..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder:text-white/20 focus:border-blue-500/50 outline-none transition-all"
+            />
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {["Todos", "Física", "Química", "Biología", "Matemáticas"].map((cat) => (
+              <button 
+                key={cat}
+                className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40 whitespace-nowrap"
               >
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "22px",
-                    height: "22px",
-                    border: "1px solid rgba(255, 215, 0, 0.5)",
-                    borderRadius: "50%",
-                    textAlign: "center",
-                    lineHeight: "21px",
-                    fontSize: "11px",
-                    color: "var(--gold)",
-                    marginRight: "10px",
-                    fontWeight: 700,
-                    background:
-                      opt === "Fuerza Gravitacional"
-                        ? "rgba(255, 215, 0, 0.2)"
-                        : "transparent",
-                  }}
-                >
-                  {String.fromCharCode(65 + i)}
-                </span>
-                {opt} {opt === "Fuerza Gravitacional" && "✓"}
+                {cat}
               </button>
             ))}
           </div>
         </div>
 
-        {/* CURIOSITY CARD */}
-        <div
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(211, 47, 47, 0.2))",
-            border: "1px solid rgba(211, 47, 47, 0.4)",
-            borderRadius: "20px",
-            padding: "18px",
-            display: "flex",
-            gap: "12px",
-          }}
-        >
-          <Info size={28} color="var(--gold)" />
-          <div>
-            <div
-              style={{
-                fontSize: "10px",
-                fontWeight: 800,
-                color: "var(--gold)",
-                textTransform: "uppercase",
-                marginBottom: "6px",
-              }}
-            >
-              Dato Curioso
+        {/* Status Highlights */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="surface-card-strong p-4 border-blue-500/20">
+            <div className="text-blue-400 mb-1"><Zap size={16} /></div>
+            <div className="text-xl font-black text-white">{feriaData.length}</div>
+            <div className="text-[8px] font-bold text-white/30 uppercase tracking-tighter">Estaciones Totales</div>
+          </div>
+          <div className="surface-card-strong p-4 border-amber-500/20">
+            <div className="text-amber-400 mb-1"><Star size={16} /></div>
+            <div className="text-xl font-black text-white">12</div>
+            <div className="text-[8px] font-bold text-white/30 uppercase tracking-tighter">Retos Activos</div>
+          </div>
+        </div>
+
+        {/* Stands List */}
+        <div className="space-y-3">
+          <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+            <Tent size={12} /> Estaciones de Innovación
+          </h3>
+
+          {loading ? (
+            <div className="py-20 text-center text-white/20 animate-pulse text-xs font-bold uppercase tracking-widest">
+              Sincronizando Directorio...
             </div>
-            <p
-              style={{
-                fontSize: "13px",
-                color: "rgba(255, 255, 255, 0.85)",
-                lineHeight: 1.5,
-              }}
-            >
-              Si pudieras saltar en la Luna, ¡tu salto sería 6 veces más alto!
-            </p>
-          </div>
-        </div>
+          ) : (
+            <div className="grid gap-3">
+              {filteredStands.map((stand) => {
+                // BUG FIX: Handle if description is a string with newlines
+                const descriptionContent = stand.descripcion_pedagogica || "Sin descripción disponible.";
+                const list = typeof descriptionContent === 'string' ? descriptionContent.split('\n') : [String(descriptionContent)];
 
-        {/* COMMENTS */}
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.04)",
-            border: "1px dashed rgba(255, 215, 0, 0.25)",
-            borderRadius: "20px",
-            padding: "18px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "10px",
-              fontWeight: 800,
-              color: "var(--gold)",
-              textTransform: "uppercase",
-              marginBottom: "10px",
-            }}
-          >
-            🎟️ PREGUNTÓMETRO
-          </div>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="¡Escribe tu pregunta anónima al expositor!"
-            style={{
-              width: "100%",
-              background: "rgba(255, 255, 255, 0.07)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              borderRadius: "12px",
-              padding: "12px",
-              color: "white",
-              fontSize: "13px",
-              resize: "none",
-              height: "70px",
-              outline: "none",
-            }}
-          />
-        </div>
+                return (
+                  <motion.div 
+                    key={stand.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    onClick={() => navigate(`/stand/${stand.id}`)}
+                    className="surface-card-strong p-5 border-white/5 group active:scale-[0.98] transition-all cursor-pointer"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="size-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                          <Tent size={20} />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-black text-white group-hover:text-blue-300 transition-colors">{stand.nombre}</h4>
+                          <span className="text-[9px] font-bold text-blue-400/60 uppercase tracking-widest">{stand.materia}</span>
+                        </div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white/5 text-white/20">
+                        <ChevronRight size={16} />
+                      </div>
+                    </div>
 
-        <button
-          style={{
-            background: "linear-gradient(135deg, var(--gold) 0%, #ffa500 100%)",
-            color: "#1a0a00",
-            border: "none",
-            borderRadius: "16px",
-            padding: "16px",
-            width: "100%",
-            fontSize: "15px",
-            fontWeight: 800,
-            cursor: "pointer",
-            boxShadow: "0 4px 20px rgba(255, 215, 0, 0.35)",
-          }}
-        >
-          🌟 ¡Enviar Pregunta!
-        </button>
+                    <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
+                      {list.map((item, i) => (
+                        <div key={i} className="flex gap-2 items-start">
+                          <div className="size-1 rounded-full bg-blue-500/30 mt-1.5 flex-shrink-0" />
+                          <p className="text-[11px] text-white/50 leading-relaxed">
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between mt-5 pt-2">
+                      <div className="flex items-center gap-2 text-[9px] font-bold text-white/30 uppercase">
+                        <MapPin size={10} /> {stand.grupo}
+                      </div>
+                      <div className="px-2 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-[8px] font-black text-blue-400 uppercase">
+                        Ver Detalles
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
-
-      <nav
-        style={{
-          background: "rgba(10, 16, 53, 0.95)",
-          borderTop: "1px solid rgba(255, 215, 0, 0.15)",
-          padding: "12px 30px 20px",
-          display: "flex",
-          justifyContent: "space-around",
-        }}
-      >
-        {[
-          { icon: <Star />, label: "Inicio", path: "/" },
-          { icon: <MapIcon />, label: "Mapa", path: "/stand" },
-          { icon: <Tent />, label: "Stands", active: true, path: "/stand" },
-          { icon: <User />, label: "Perfil", path: "/ranking" },
-        ].map((item, i) => (
-          <div
-            key={i}
-            onClick={() => navigate(item.path)}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "4px",
-              cursor: "pointer",
-            }}
-          >
-            <span
-              style={{
-                color: item.active ? "var(--gold)" : "rgba(255, 255, 255, 0.4)",
-              }}
-            >
-              {item.icon}
-            </span>
-            <span
-              style={{
-                fontSize: "10px",
-                color: item.active ? "var(--gold)" : "rgba(255, 255, 255, 0.4)",
-              }}
-            >
-              {item.label}
-            </span>
-          </div>
-        ))}
-      </nav>
     </Layout>
   );
 };
