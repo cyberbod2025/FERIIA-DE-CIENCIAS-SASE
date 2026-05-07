@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
@@ -64,10 +64,10 @@ export const StandDetailView: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const { studentId, sessionToken } = getStudentSession();
 
-  const fetchStand = async () => {
+  const fetchStand = useCallback(async () => {
     const { data, error } = await supabase.from("estaciones").select("*").eq("id", id).single();
     if (!error) setStand(data);
-  };
+  }, [id]);
 
   useEffect(() => {
     const init = async () => {
@@ -95,7 +95,7 @@ export const StandDetailView: React.FC = () => {
       .subscribe();
 
     return () => { supabase.removeChannel(sub); };
-  }, [id, sessionToken, studentId]);
+  }, [fetchStand, id, sessionToken, studentId]);
 
   const handleCheckIn = async () => {
     setErrorMsg("");
@@ -118,7 +118,7 @@ export const StandDetailView: React.FC = () => {
       setTimeout(() => {
         setCheckedIn(true);
       }, 1500);
-    } catch (err) {
+    } catch {
       setErrorMsg("Error de conexión.");
     }
   };
@@ -137,7 +137,7 @@ export const StandDetailView: React.FC = () => {
       setQuestionSent(true);
       setQuestion("");
       setTimeout(() => setQuestionSent(false), 3000);
-    } catch (err) {
+    } catch {
       setErrorMsg("No se pudo enviar la pregunta.");
     } finally {
       setIsSendingQuestion(false);

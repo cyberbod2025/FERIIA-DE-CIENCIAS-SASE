@@ -89,9 +89,9 @@ function App() {
 
           {/* Rutas de Alumnos */}
           <Route path="/tutorial" element={<ProtectedRoute role="student"><TutorialView /></ProtectedRoute>} />
-          <Route path="/mapa" element={<ProtectedRoute><MapView /></ProtectedRoute>} />
-          <Route path="/stand" element={<ProtectedRoute><StandView /></ProtectedRoute>} />
-          <Route path="/stand/:id" element={<ProtectedRoute><StandDetailView /></ProtectedRoute>} />
+          <Route path="/mapa" element={<ProtectedRoute role="student"><MapView /></ProtectedRoute>} />
+          <Route path="/stand" element={<ProtectedRoute role="student"><StandView /></ProtectedRoute>} />
+          <Route path="/stand/:id" element={<ProtectedRoute role="student"><StandDetailView /></ProtectedRoute>} />
           <Route path="/trivia/:id" element={<ProtectedRoute role="student"><TriviaView /></ProtectedRoute>} />
           <Route path="/ranking" element={<ProtectedRoute role="student"><RankingView /></ProtectedRoute>} />
 

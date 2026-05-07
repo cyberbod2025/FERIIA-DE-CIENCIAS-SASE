@@ -29,7 +29,7 @@ export const TeacherLoginView: React.FC = () => {
 
       if (signInError) throw signInError;
       navigate("/panel");
-    } catch (err: unknown) {
+    } catch {
       setError("Acceso no autorizado. Verifica tus datos.");
     } finally {
       setLoading(false);
@@ -123,4 +123,3 @@ export const TeacherLoginView: React.FC = () => {
     </Layout>
   );
 };
-
