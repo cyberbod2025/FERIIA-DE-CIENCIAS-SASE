@@ -63,7 +63,7 @@ export const LoginView: React.FC = () => {
         sessionToken: data.session_token,
       });
       navigate("/tutorial");
-    } catch (err) {
+    } catch {
       setError("Error de conexión. Intenta de nuevo.");
     } finally {
       setLoading(false);
